@@ -1,0 +1,10 @@
+@import '~antd/dist/antd.css';
+
+.row {
+  display: flex;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
