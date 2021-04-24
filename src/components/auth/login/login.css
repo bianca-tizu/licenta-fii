@@ -1,18 +1,3 @@
-.login-card {
-    width: 700px;
-    border-radius: 15px;
-    box-shadow: 0 6px 6px -6px #777;
-}
-
-.login-wrapper {
-    background: #eef2f4;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .login-form {
     max-width: 300px;
     padding: 0 20px;
@@ -22,75 +7,14 @@
     margin: 10px 0;
 }
 
-.login-form-forgot {
-    margin-left: 3vh;
-}
-
 .login-form-action {
     display: flex;
     text-align: center;
 }
 
-.login {
-    align-items: center;
-    padding: 0 20px;
-    justify-content: space-between;
-}
-
-.illustration {
-    width: 300px;
-}
-
-.registration {
-    text-align:center;
-}
-
-.ant-form label {
-    margin-bottom: 20px;
-}
-
-/* phone  */
-@media screen and (max-width: 426px) {
-    .login-card {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    .illustration {
-        height: 200px;
-    }
-
-    .login {
-        flex-direction: column;
-        height: 100%;
-        justify-content: center;
-    }
-}
-
 /* small phone */
 @media screen and (max-width: 321px) {
-    .illustration {
-        height: 120px;
-    }
-
-    .login-card {
-        height: 100vh;
-    }
-
-    .ant-form label {
-        margin-bottom: 10px;
-    }
-
     .login-form-action {
         margin-bottom: 0;
-    }
-}
-
-@media screen and (max-width: 541px) {
-    .login-card {
-        height: 100vh;
     }
 }

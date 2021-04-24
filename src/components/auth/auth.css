@@ -1,0 +1,90 @@
+.auth-card {
+    border-radius: 4px;
+    box-shadow: 0 6px 6px -6px #777;
+}
+
+.auth-wrapper {
+    background: #eef2f4;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth {
+    align-items: center;
+    padding: 0 20px;
+    justify-content: space-between;
+}
+
+.illustration-wrapper {
+    padding: 0 10px;
+}
+
+.illustration {
+    width: 300px;
+}
+
+.ant-form {
+    padding: 0 10px;
+}
+
+.registration {
+    text-align:center;
+}
+
+.ant-form label {
+    margin-bottom: 20px;
+}
+
+.registerNavigate {
+    color: #3388CB;
+    cursor: pointer;
+}
+
+/* phone  */
+@media screen and (max-width: 426px) {
+    .auth-card {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .illustration {
+        height: 200px;
+    }
+
+    .auth {
+        flex-direction: column;
+        height: 100%;
+        justify-content: center;
+    }
+}
+
+/* small phone */
+@media screen and (max-width: 321px) {
+    .illustration {
+        height: 120px;
+    }
+
+    .ant-form label {
+        margin-bottom: 10px;
+    }
+}
+
+/* tablet */
+@media screen and (max-width: 541px) {
+    .auth-card {
+        height: 100vh;
+    }
+}
+
+/* Galaxy Fold */
+@media screen and (width:280px) {
+    .auth-card {
+        height: 107vh;
+        width: 107vw;
+    }
+}

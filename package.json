@@ -5,10 +5,15 @@
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
+    "@mikro-orm/cli": "^4.5.3",
+    "@mikro-orm/core": "^4.5.3",
+    "@mikro-orm/migrations": "^4.5.3",
+    "@mikro-orm/postgresql": "^4.5.3",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "antd": "^4.15.2",
+    "pg": "^8.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
@@ -38,5 +43,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "mikro-orm": {
+    "configPaths": [
+    "./src/mikro-orm.config.ts",
+    "./dist/mikro-orm.config.js"
+    ]
+    }
 }
