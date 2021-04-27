@@ -8,15 +8,14 @@ import Answer from './Answer';
 const { Meta } = Card;
 const { Paragraph } = Typography;
 
-const QuestionDetail = () => {
-    const [countLikes, setCountLikes] = React.useState(0);
+const QuestionDetail = ({setSelectedItem, setCountLikes, countLikes}) => {
 
     return(
         <Card
         bordered={false}
         style={{ width: "90%", marginLeft: "30px" }}
         extra={[
-            <CloseCircleOutlined />,
+            <CloseCircleOutlined onClick={() => setSelectedItem()}/>,
         ]}
       >
         <div className="question-header">

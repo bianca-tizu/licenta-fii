@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@mikro-orm/cli": "^4.5.3",
@@ -46,8 +47,14 @@
   },
   "mikro-orm": {
     "configPaths": [
-    "./src/mikro-orm.config.ts",
-    "./dist/mikro-orm.config.js"
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
     ]
-    }
+  },
+  "devDependencies": {
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.2.1"
+  }
 }

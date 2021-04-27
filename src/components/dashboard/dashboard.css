@@ -1,9 +1,9 @@
 .dashboard {
-    display: flex;
+  display: flex;
 }
 
 .question-list {
-    position: absolute;
-    top: 90px;
-    margin: 0 30px;
+  position: absolute;
+  top: 90px;
+  margin: 0 30px;
 }
