@@ -3,7 +3,7 @@ import { Comment, Avatar, Tooltip } from 'antd';
 
 import moment from 'moment';
 
-const Answer = ({ children }) => {
+const Answer = ({ children }: any) => {
     return(
         <Comment
     actions={[<span key="comment-nested-reply-to">Reply to</span>]}

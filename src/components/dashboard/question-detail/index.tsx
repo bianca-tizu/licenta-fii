@@ -8,7 +8,11 @@ import Answer from './Answer';
 const { Meta } = Card;
 const { Paragraph } = Typography;
 
-const QuestionDetail = ({setSelectedItem, setCountLikes, countLikes}) => {
+type Props = {
+    setSelectedItem: any, setCountLikes: any, countLikes: number
+}
+
+const QuestionDetail = ({setSelectedItem, setCountLikes, countLikes}: Props) => {
 
     return(
         <Card
@@ -24,7 +28,7 @@ const QuestionDetail = ({setSelectedItem, setCountLikes, countLikes}) => {
             title="Question title"
             />
             <div>
-            <Badge count={parseInt(countLikes)} style={{ backgroundColor: '#3388CB' }}/>
+            <Badge count={countLikes} style={{ backgroundColor: '#3388CB' }}/>
             <LikeOutlined key="vote" onClick={() => setCountLikes(countLikes+1)}/>
             </div>
         </div>
@@ -41,7 +45,8 @@ const QuestionDetail = ({setSelectedItem, setCountLikes, countLikes}) => {
         <Tag>Tag 2</Tag>
         <Divider />
         <Answer> 
-            <Answer /> 
+            <Answer>
+            </Answer> 
         </Answer>
 
       </Card>

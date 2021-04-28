@@ -18,7 +18,7 @@ const QuestionsList = () => {
     return questions.find(question => question.selected);
   }
 
-  const setSelectedItem = (itemId) => {
+  const setSelectedItem = (itemId: number) => {
     setQuestions((prev) => prev.map(question => question.id === itemId ? {...question, selected:true} : {...question, selected:false}))
   }
 
@@ -30,7 +30,7 @@ const QuestionsList = () => {
           key={ question.id }
           style={{ width: 300, marginBottom: 30 }}
           actions={[
-            <Badge count={parseInt(countLikes)} size="small" style={{backgroundColor: "#fff", color: "#999"}}> 
+            <Badge count={countLikes} size="small" style={{backgroundColor: "#fff", color: "#999"}}> 
               <LikeOutlined key="vote" onClick={() => setCountLikes(countLikes+1)} />
             </Badge>,
             <SendOutlined key="answer" onClick={() => setSelectedItem(question.id)}/>,
