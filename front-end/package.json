@@ -6,20 +6,15 @@
     "@ant-design/icons": "^4.6.2",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
-    "@mikro-orm/cli": "^4.5.3",
-    "@mikro-orm/core": "^4.5.4",
-    "@mikro-orm/migrations": "^4.5.3",
-    "@mikro-orm/mongodb": "^4.5.4",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "@types/jest": "^26.0.23",
+    "@types/mongodb": "^3.6.12",
     "@types/node": "^15.0.1",
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "antd": "^4.15.2",
-    "nodemon": "^2.0.7",
-    "pg": "^8.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
@@ -51,17 +46,12 @@
       "last 1 safari version"
     ]
   },
-  "mikro-orm": {
-    "configPaths": [
-      "./src/mikro-orm.config.ts",
-      "./dist/mikro-orm.config.js"
-    ]
-  },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.7",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "ts-node": "^9.1.1"
   }
 }
