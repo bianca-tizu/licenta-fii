@@ -4,9 +4,10 @@ import { MikroORM } from "@mikro-orm/core";
 
 import { __prod__ } from "./constants";
 import { Question } from "./entities/Question";
+import { User } from "./entities/User";
 
 export default {
-  entities: [Question],
+  entities: [Question, User],
   dbName: 'Fii-talks-db',
   type: 'mongo', 
   debug: !__prod__,
