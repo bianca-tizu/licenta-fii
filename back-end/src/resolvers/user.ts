@@ -6,9 +6,9 @@ import argon2 from 'argon2';
 @InputType()
 class loginInput{
   @Field()
-  email: string
+  email!: string;
   @Field()
-  password: string
+  password!: string
 }
 
 @ObjectType()
@@ -89,6 +89,8 @@ export class UserResolver {
         }]
       }
     }
+    
+    ctx.req.session.userId = user.id;
     
     return {
       user,

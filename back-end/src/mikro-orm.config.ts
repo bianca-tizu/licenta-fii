@@ -1,6 +1,5 @@
-import path from "path";
-
-import { MikroORM } from "@mikro-orm/core";
+import { Options } from "@mikro-orm/core";
+import { MongoDriver } from "@mikro-orm/mongodb";
 
 import { __prod__ } from "./constants";
 import { Question } from "./entities/Question";
@@ -12,4 +11,4 @@ export default {
   type: 'mongo', 
   debug: !__prod__,
   clientUrl: 'mongodb+srv://admind:admin@Fii-talks-cluster.f2y4g.mongodb.net/Fii-talks-db?retryWrites=true&w=majority',
-} as Parameters<typeof MikroORM.init>[0];
+} as Options;
