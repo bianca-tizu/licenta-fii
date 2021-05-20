@@ -7,9 +7,18 @@ import {
 
 import Dashboard from './components/dashboard';
 import Auth from './components/auth/Auth';
+import { createClient, Provider } from 'urql';
+
+const client = createClient({
+  url: 'http://localhost:4000/graphql',
+  fetchOptions: {
+    credentials: "include"
+  }
+});
 
 const App = () => {
   return (
+    <Provider value={client}>
     <Router>
     <div className="App">
       <Switch>
@@ -22,6 +31,7 @@ const App = () => {
       </Switch>
     </div>
     </Router>
+    </Provider>
   );
 }
 

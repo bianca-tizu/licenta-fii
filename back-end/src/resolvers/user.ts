@@ -30,6 +30,18 @@ class LoginResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User, {nullable: true})
+  async isUserLogged(
+    @Ctx() ctx:ContextType
+  ){
+    // user not logged
+    if (!ctx.req.session.userId) {
+      return null
+    }
+
+    const user = await ctx.em.findOne(User, {id: ctx.req.session.userId})
+    return user;
+  }
   //register query
   @Mutation(() => LoginResponse)
   async register(
@@ -62,6 +74,9 @@ export class UserResolver {
     } catch(err) {
       console.log("message: ", err)
     }
+    //store user id session | set a cookie on the user | keep it logged
+    ctx.req.session.userId = user.id;
+
     return {user};
   }
 

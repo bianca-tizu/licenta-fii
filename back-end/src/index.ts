@@ -16,13 +16,19 @@ import { __prod__ } from './constants';
 
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import cors from 'cors'
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
 
   const app = express();
+  app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+  }))
 
   app.use(session({
+    name: 'cookieId',
     resave: false,
     saveUninitialized: false,
     secret: 'aaabbbccc',
@@ -47,7 +53,7 @@ const main = async () => {
     context: ({req, res}) => ({ em: orm.em, req, res})
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false});
 
   app.listen(4000, () => {
     console.log('server started on localhost:4000');

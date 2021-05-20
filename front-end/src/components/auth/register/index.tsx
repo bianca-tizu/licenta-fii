@@ -1,11 +1,33 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
+import { useMutation } from 'urql';
 
+const REGISTER_MUTATION = `mutation Register($sid: String!, $email: String!, $password:String!){
+  register(
+    studentId: $sid
+    input: { email: $email, password: $password }
+  ) {
+    errors {
+      field
+      message
+    }
+    user {
+      email
+      createdAt
+      updatedAt
+      studentId
+      username
+    }
+  }
+}
+`
 const RegistrationForm = () => {
   const [form] = Form.useForm();
+  const [,register] = useMutation(REGISTER_MUTATION);
 
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
+    return register(values)
   };
 
   return (
