@@ -7,18 +7,16 @@ import {
 
 import Dashboard from './components/dashboard';
 import Auth from './components/auth/Auth';
-import { createClient, Provider } from 'urql';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
-const client = createClient({
-  url: 'http://localhost:4000/graphql',
-  fetchOptions: {
-    credentials: "include"
-  }
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/graphql',
+  cache: new InMemoryCache()
 });
 
 const App = () => {
   return (
-    <Provider value={client}>
+    <ApolloProvider client={client}>
     <Router>
     <div className="App">
       <Switch>
@@ -31,7 +29,7 @@ const App = () => {
       </Switch>
     </div>
     </Router>
-    </Provider>
+    </ApolloProvider>
   );
 }
 

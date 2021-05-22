@@ -1,33 +1,19 @@
-import React from 'react';
 import { Form, Input, Button } from 'antd';
-import { useMutation } from 'urql';
+import { useHistory } from 'react-router';
+import { useRegisterMutation } from "../../../generated/graphql"
 
-const REGISTER_MUTATION = `mutation Register($sid: String!, $email: String!, $password:String!){
-  register(
-    studentId: $sid
-    input: { email: $email, password: $password }
-  ) {
-    errors {
-      field
-      message
-    }
-    user {
-      email
-      createdAt
-      updatedAt
-      studentId
-      username
-    }
-  }
-}
-`
 const RegistrationForm = () => {
   const [form] = Form.useForm();
-  const [,register] = useMutation(REGISTER_MUTATION);
+  const [register, { data }] = useRegisterMutation();
+  const history = useHistory();
 
-  const onFinish = (values: any) => {
+
+  const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);
-    return register(values)
+    const response = await register({variables: {sid: values.sid, email: values.email, password: values.password}});
+    if(response.data?.register.user) {
+      history.push("/dashboard")
+    }
   };
 
   return (
@@ -58,11 +44,21 @@ const RegistrationForm = () => {
       <Form.Item
         name="password"
         label="Password"
+        tooltip="Your password should have minimum 1 lowercase character, 1 uppercase character and 1 number."
         rules={[
           {
             required: true,
             message: 'Please input your password!',
+            
           },
+          {
+            validator(_, value) {
+              if (!value ||/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/.test(value)) {
+                return Promise.resolve()
+              }
+              return Promise.reject(new Error('The password that you entered should be stronger!'));
+            }
+          }
         ]}
         hasFeedback
       >
@@ -103,6 +99,14 @@ const RegistrationForm = () => {
             message: 'Please input your student identification number!',
             whitespace: true,
           },
+          {
+            validator(_, value) {
+              if (!value|| value.length > 15){
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error('Student Id is not valid!'));
+            }
+          }
         ]}
       >
         <Input />

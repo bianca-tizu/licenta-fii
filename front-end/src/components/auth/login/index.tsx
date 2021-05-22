@@ -1,8 +1,10 @@
 import { Form, Input, Button, Checkbox, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import "./login.css"
+import gql from 'graphql-tag';
 
 const { Title, Text } = Typography;
+
 
 const LoginForm = () => {
   const onFinish = (values: any) => {
