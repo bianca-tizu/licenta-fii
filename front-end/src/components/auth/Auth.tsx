@@ -16,7 +16,7 @@ const Auth = () => {
                         <div className="illustration-wrapper">
                             <AuthIllustration className="illustration"/>
                         </div>
-                        {isRegistered ? <RegistrationForm /> :<LoginForm />}
+                        {isRegistered ? <RegistrationForm setIsRegistered={setIsRegistered}/> :<LoginForm />}
                     </div>
                     {!isRegistered && <p>You don't have an account? Register <span className="registerNavigate" role="button" onClick={() => {setIsRegistered(true)}}>HERE</span>!</p>}
                 </div>

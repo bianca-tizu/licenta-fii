@@ -42,6 +42,7 @@ export class UserResolver {
     const user = await ctx.em.findOne(User, {id: ctx.req.session.userId})
     return user;
   }
+  
   //register query
   @Mutation(() => LoginResponse)
   async register(
@@ -70,6 +71,17 @@ export class UserResolver {
     const username = await input.email.split("@")[0];
     const user = ctx.em.create(User, {email: input.email, password: hashedPassword, studentId: studentId, username: username})
     try {
+      const userExists = await ctx.em.findOne(User, {email: user.email})
+      if (userExists) {
+        return {
+          errors: [
+            {
+              field: "email",
+              message: "email already in use"
+            }
+          ]
+        }
+      }
       await ctx.em.persistAndFlush(user);
     } catch(err) {
       console.log("message: ", err)

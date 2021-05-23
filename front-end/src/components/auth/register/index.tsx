@@ -1,18 +1,27 @@
+import React from 'react';
 import { Form, Input, Button } from 'antd';
-import { useHistory } from 'react-router';
+
 import { useRegisterMutation } from "../../../generated/graphql"
 
-const RegistrationForm = () => {
-  const [form] = Form.useForm();
-  const [register, { data }] = useRegisterMutation();
-  const history = useHistory();
+type RegistrationFormProps = {
+  setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
+const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => {
+  const [form] = Form.useForm();
+  const [register, ] = useRegisterMutation();
+  const [errors, setErrors] = React.useState({});
 
   const onFinish = async (values: any) => {
-    console.log('Received values of form: ', values);
     const response = await register({variables: {sid: values.sid, email: values.email, password: values.password}});
+    
+    if (response.data?.register.errors) {
+      setErrors(response.data?.register.errors.map(err => err.message)[0]);
+    }
+    
     if(response.data?.register.user) {
-      history.push("/dashboard")
+      setErrors({});
+      setIsRegistered(false);
     }
   };
 
@@ -115,6 +124,7 @@ const RegistrationForm = () => {
         <Button type="primary" htmlType="submit">
           Register
         </Button>
+        {errors==="email already in use" && <p style={{color: "red", marginTop: "10px"}}>Account already exists!</p>}
       </Form.Item>
     </Form>
   );
