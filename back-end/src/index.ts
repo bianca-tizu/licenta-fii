@@ -1,4 +1,3 @@
-import { ContextType } from 'src/types';
 import "reflect-metadata";
 
 import { MikroORM } from "@mikro-orm/core";
@@ -17,6 +16,7 @@ import { __prod__ } from './constants';
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import cors from 'cors'
+
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);

@@ -67,6 +67,7 @@ export class UserResolver {
         }]
       }
     }
+
     const hashedPassword = await argon2.hash(input.password)
     const username = await input.email.split("@")[0];
     const user = ctx.em.create(User, {email: input.email, password: hashedPassword, studentId: studentId, username: username})
@@ -98,12 +99,12 @@ export class UserResolver {
     @Arg('input', () => loginInput) input: loginInput,
     @Ctx() ctx: ContextType
   ): Promise<LoginResponse> {
-    const user = await ctx.em.findOneOrFail(User, {email: input.email})
+    const user = await ctx.em.findOne(User, {email: input.email})
     if (!user) {
       return {
         errors: [{
           field: 'email',
-          message: 'that e-mail doesn\'t exist'
+          message: 'Incorrect e-mail'
         }]
       }
     };

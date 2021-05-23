@@ -10,17 +10,17 @@ type RegistrationFormProps = {
 const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => {
   const [form] = Form.useForm();
   const [register, ] = useRegisterMutation();
-  const [errors, setErrors] = React.useState({});
+  const [error, setError] = React.useState({});
 
   const onFinish = async (values: any) => {
     const response = await register({variables: {sid: values.sid, email: values.email, password: values.password}});
     
     if (response.data?.register.errors) {
-      setErrors(response.data?.register.errors.map(err => err.message)[0]);
+      setError(response.data?.register.errors.map(err => err.message)[0]);
     }
     
     if(response.data?.register.user) {
-      setErrors({});
+      setError({});
       setIsRegistered(false);
     }
   };
@@ -65,7 +65,7 @@ const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => 
               if (!value ||/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/.test(value)) {
                 return Promise.resolve()
               }
-              return Promise.reject(new Error('The password that you entered should be stronger!'));
+              return Promise.reject(new Error('The entered password should be stronger!'));
             }
           }
         ]}
@@ -124,7 +124,7 @@ const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => 
         <Button type="primary" htmlType="submit">
           Register
         </Button>
-        {errors==="email already in use" && <p style={{color: "red", marginTop: "10px"}}>Account already exists!</p>}
+        {error==="email already in use" && <p style={{color: "red", marginTop: "10px"}}>Account already exists!</p>}
         <p style={{marginTop: "10px"}}>You already have an account? Login <span className="registerNavigate" role="button" onClick={() => {setIsRegistered(false)}}>HERE</span>!</p>
       </Form.Item>
     </Form>
