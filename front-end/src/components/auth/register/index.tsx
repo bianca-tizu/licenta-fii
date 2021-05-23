@@ -39,11 +39,11 @@ const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => 
         rules={[
           {
             type: 'email',
-            message: 'The input is not valid E-mail!',
+            message: 'The input is not valid e-mail',
           },
           {
             required: true,
-            message: 'Please input your E-mail!',
+            message: 'Please enter your e-mail',
           },
         ]}
       >
@@ -57,7 +57,7 @@ const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => 
         rules={[
           {
             required: true,
-            message: 'Please input your password!',
+            message: 'Please enter your password',
             
           },
           {
@@ -105,7 +105,7 @@ const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => 
         rules={[
           {
             required: true,
-            message: 'Please input your student identification number!',
+            message: 'Please enter your student Id number',
             whitespace: true,
           },
           {
@@ -125,6 +125,7 @@ const RegistrationForm:React.FC<RegistrationFormProps> = ({setIsRegistered}) => 
           Register
         </Button>
         {errors==="email already in use" && <p style={{color: "red", marginTop: "10px"}}>Account already exists!</p>}
+        <p style={{marginTop: "10px"}}>You already have an account? Login <span className="registerNavigate" role="button" onClick={() => {setIsRegistered(false)}}>HERE</span>!</p>
       </Form.Item>
     </Form>
   );
