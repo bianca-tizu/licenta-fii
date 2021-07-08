@@ -16,6 +16,7 @@ import { __prod__ } from './constants';
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import cors from 'cors'
+import { getPayload } from "./util";
 
 
 const main = async () => {
@@ -50,7 +51,14 @@ const main = async () => {
       resolvers: [AuthResolver, QuestionResolver, UserResolver],
       validate: false
     }),
-    context: ({req, res}) => ({ em: orm.em, req, res})
+    context: ({req, res}) => {           
+      // get the user token from the headers
+      const token = req.headers.authorization || '';
+      // try to retrieve a user with the token
+      const { payload: user, loggedIn } = getPayload(token);
+  
+      return { em: orm.em, user, loggedIn }
+    }
   });
 
   apolloServer.applyMiddleware({ app, cors: false});

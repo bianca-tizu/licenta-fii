@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-undef */
 import React from "react";
 
 import {
@@ -6,9 +5,10 @@ import {
   Select,
   Button,
   Upload,
-  Input
+  Input,
+  Tag
 } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
+import { InboxOutlined, PlusOutlined } from '@ant-design/icons';
 
 const AddQuestion = () => {
   const onFinish = (values: any) => {
@@ -18,16 +18,9 @@ const AddQuestion = () => {
   return(
     <Form
       name="validate_other"
-      onFinish={onFinish}
-      initialValues={{
-        'input-number': 3,
-        'checkbox-group': ['A', 'B'],
-        rate: 3.5
-      }}
     >
       <Form.Item
         name="select"
-        label="Select"
         hasFeedback
         rules={[{ required: true, message: 'Please select a category!' }]}
       >
@@ -38,13 +31,16 @@ const AddQuestion = () => {
 
       <Form.Item 
         name="title"
-        label="Title"
         rules={[{required: true, message: "Please add a title for your question"}]}
       >
         <Input placeholder="Insert your title"/>
       </Form.Item>
 
-      <Form.Item label="Dragger">
+      <Form.Item rules={[{required: true, message: "Please add context for your question"}]}>
+        <Input.TextArea placeholder="Include all the information someone would need to answer your question" showCount maxLength={1000}/>
+      </Form.Item>
+
+      <Form.Item>
         <Form.Item name="dragger" valuePropName="fileList" noStyle>
           <Upload.Dragger name="files" action="/upload.do">
             <p className="ant-upload-drag-icon">

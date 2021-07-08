@@ -48,6 +48,8 @@ export type MutationLoginArgs = {
 
 
 export type MutationCreateQuestionArgs = {
+  content: Scalars['String'];
+  category: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -82,8 +84,9 @@ export type Question = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   title: Scalars['String'];
-  description: Scalars['String'];
+  category: Scalars['String'];
   content: Scalars['String'];
+  description: Scalars['String'];
   votes: Scalars['Float'];
 };
 
@@ -97,6 +100,7 @@ export type User = {
   username: Scalars['String'];
   studentId: Scalars['String'];
   session: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type LoginInput = {

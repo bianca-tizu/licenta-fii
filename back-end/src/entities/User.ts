@@ -39,4 +39,8 @@ export class User {
   @Field(() => String)
   @Property( {type: "string", unique: true})
   session!: string;
+
+  @Field(() => String)
+  @Property({type: "string", unique: true})
+  token: string;
 }

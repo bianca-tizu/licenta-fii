@@ -20,8 +20,15 @@ export class QuestionResolver {
   @Mutation(() => Question)
   async createQuestion( 
     @Arg('title') title: string,
+    @Arg('category') category: string,
+    @Arg('content') content: string,
     @Ctx() ctx: ContextType): Promise<Question> {
-      const question = ctx.em.create(Question, {title});
+      let description = '';
+      const sentences = content.match(/(^.*?[a-z]{2,}[.!?])\s+\W*[A-Z]/g);
+      if (sentences!=null){
+        description = sentences[0]; 
+      }
+      const question = ctx.em.create(Question, {title, description, content, category});
       await ctx.em.persistAndFlush(question);
       return question;
   }

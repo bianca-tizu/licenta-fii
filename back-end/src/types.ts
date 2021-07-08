@@ -4,6 +4,6 @@ import { Session, SessionData } from "express-session";
 
 export type ContextType = {
   em: EntityManager<any> & MongoEntityManager<any>;
-  req: Request & { session: Session & Partial<SessionData> & {userId: string} };
+  req: Request & { session: Session & Partial<SessionData> & {userId: string} & {token: string} & {loggedIn: boolean}};
   res: Response;
 };

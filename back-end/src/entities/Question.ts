@@ -27,11 +27,15 @@ export class Question {
 
   @Field()
   @Property({ type: "text" })
-  description!: string;
+  category!: string;
 
   @Field()
   @Property({ type: "text" })
   content!: string;
+
+  @Field()
+  @Property({ type: "text" })
+  description!: string;
 
   @Field()
   @Property({ type: "number" })

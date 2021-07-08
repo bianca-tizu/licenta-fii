@@ -1,14 +1,17 @@
+import { getToken } from '../util';
 import { User } from './../entities/User';
 import { ContextType } from 'src/types';
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import argon2 from 'argon2';
+
+import { AuthenticationError } from 'apollo-server-express';
 
 @InputType()
 class loginInput{
   @Field()
   email!: string;
   @Field()
-  password!: string
+  password!: string;
 }
 
 @ObjectType()
@@ -32,15 +35,14 @@ class LoginResponse {
 export class UserResolver {
   @Query(() => User, {nullable: true})
   async isUserLogged(
-    @Ctx() ctx:ContextType
+    @Ctx() ctx: any
   ){
     // user not logged
-    if (!ctx.req.session.userId) {
-      return null
+    if (!ctx.req.loggedIn) {
+      throw new AuthenticationError("Please Login Again!")
     }
 
-    const user = await ctx.em.findOne(User, {id: ctx.req.session.userId})
-    return user;
+    return ctx.user;
   }
   
   //register query
@@ -51,21 +53,11 @@ export class UserResolver {
     @Ctx() ctx: ContextType
   ): Promise<LoginResponse>  {
     if (input.email.length <= 2) {
-      return {
-        errors: [{
-          field: 'email',
-          message: 'Length must be grater than 2'
-        }]
-      }
+      throw new AuthenticationError("E-mail too short")
     }
 
     if (input.password.length <= 5) {
-      return {
-        errors: [{
-          field: 'password',
-          message: 'Length must be grater than 5'
-        }]
-      }
+      throw new AuthenticationError("Password's too short")
     }
 
     const hashedPassword = await argon2.hash(input.password)
@@ -74,23 +66,19 @@ export class UserResolver {
     try {
       const userExists = await ctx.em.findOne(User, {email: user.email})
       if (userExists) {
-        return {
-          errors: [
-            {
-              field: "email",
-              message: "email already in use"
-            }
-          ]
-        }
+        throw new AuthenticationError("User Already Exists!")
       }
-      await ctx.em.persistAndFlush(user);
+      // Creating a Token from User Payload obtained.
+      const token = getToken(user);
+      await ctx.em.persistAndFlush(ctx.em.create(User, {...user, token: token}));
+      return {user};
+
     } catch(err) {
-      console.log("message: ", err)
+      throw err;
     }
     //store user id session | set a cookie on the user | keep it logged
-    ctx.req.session.userId = user.id;
+    // ctx.req.session.userId = user.id;
 
-    return {user};
   }
 
   //login query
@@ -98,30 +86,20 @@ export class UserResolver {
   async login(
     @Arg('input', () => loginInput) input: loginInput,
     @Ctx() ctx: ContextType
-  ): Promise<LoginResponse> {
+  ){
     const user = await ctx.em.findOne(User, {email: input.email})
     if (!user) {
-      return {
-        errors: [{
-          field: 'email',
-          message: 'Incorrect e-mail'
-        }]
-      }
+      throw new AuthenticationError("Wrong e-mail!")
     };
     const valid = await argon2.verify(user.password, input.password);
     if (!valid){
-      return {
-        errors: [{
-          field: 'password',
-          message: 'Incorrect password'
-        }]
-      }
+      throw new AuthenticationError("Wrong Password!")
     }
-    
-    ctx.req.session.userId = user.id;
+    const token = getToken(user);
+    // ctx.req.session.userId = user.id;
     
     return {
-      user,
+      ...user
     };
   }
 }
