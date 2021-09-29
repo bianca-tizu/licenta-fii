@@ -1,13 +1,24 @@
-import { getToken } from '../util';
-import { User } from './../entities/User';
-import { ContextType } from 'src/types';
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
-import argon2 from 'argon2';
+import { getToken } from "../util";
+import { User } from "./../entities/User";
+import { ContextType } from "src/types";
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from "type-graphql";
+import argon2 from "argon2";
 
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError } from "apollo-server-express";
+
+const jwt = require("jsonwebtoken");
 
 @InputType()
-class loginInput{
+class loginInput {
   @Field()
   email!: string;
   @Field()
@@ -24,82 +35,88 @@ class FieldError {
 
 @ObjectType()
 class LoginResponse {
-  @Field(() => [FieldError], {nullable: true})
+  @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
-  @Field(() => User, {nullable: true})
+  @Field(() => User, { nullable: true })
   user?: User;
+
+  @Field(() => String, { nullable: false })
+  token: String;
 }
 
 @Resolver()
 export class UserResolver {
-  @Query(() => User, {nullable: true})
-  async isUserLogged(
-    @Ctx() ctx: any
-  ){
+  @Query(() => User, { nullable: true })
+  async isUserLogged(@Ctx() ctx: any) {
     // user not logged
+    console.log(ctx);
     if (!ctx.req.loggedIn) {
-      throw new AuthenticationError("Please Login Again!")
+      throw new AuthenticationError("You are not authenticated!");
     }
 
-    return ctx.user;
+    return ctx.em.findById(ctx.user.id);
   }
-  
+
   //register query
   @Mutation(() => LoginResponse)
   async register(
-    @Arg('input') input: loginInput,
-    @Arg('studentId') studentId: string,
+    @Arg("input") input: loginInput,
+    @Arg("studentId") studentId: string,
     @Ctx() ctx: ContextType
-  ): Promise<LoginResponse>  {
+  ): Promise<LoginResponse> {
     if (input.email.length <= 2) {
-      throw new AuthenticationError("E-mail too short")
+      throw new AuthenticationError("E-mail too short");
     }
 
     if (input.password.length <= 5) {
-      throw new AuthenticationError("Password's too short")
+      throw new AuthenticationError("Password's too short");
     }
 
-    const hashedPassword = await argon2.hash(input.password)
+    const hashedPassword = await argon2.hash(input.password);
     const username = await input.email.split("@")[0];
-    const user = ctx.em.create(User, {email: input.email, password: hashedPassword, studentId: studentId, username: username})
+    const user = ctx.em.create(User, {
+      email: input.email,
+      password: hashedPassword,
+      studentId: studentId,
+      username: username,
+    });
+
     try {
-      const userExists = await ctx.em.findOne(User, {email: user.email})
+      const userExists = await ctx.em.findOne(User, { email: user.email });
       if (userExists) {
-        throw new AuthenticationError("User Already Exists!")
+        throw new AuthenticationError("User Already Exists!");
       }
       // Creating a Token from User Payload obtained.
       const token = getToken(user);
-      await ctx.em.persistAndFlush(ctx.em.create(User, {...user, token: token}));
-      return {user};
-
-    } catch(err) {
+      await ctx.em.persistAndFlush(
+        ctx.em.create(User, { ...user, token: token })
+      );
+      return { token };
+    } catch (err) {
       throw err;
     }
     //store user id session | set a cookie on the user | keep it logged
     // ctx.req.session.userId = user.id;
-
   }
 
   //login query
   @Mutation(() => LoginResponse)
   async login(
-    @Arg('input', () => loginInput) input: loginInput,
+    @Arg("input", () => loginInput) input: loginInput,
     @Ctx() ctx: ContextType
-  ){
-    const user = await ctx.em.findOne(User, {email: input.email})
+  ) {
+    const user = await ctx.em.findOne(User, { email: input.email });
     if (!user) {
-      throw new AuthenticationError("Wrong e-mail!")
-    };
-    const valid = await argon2.verify(user.password, input.password);
-    if (!valid){
-      throw new AuthenticationError("Wrong Password!")
+      throw new AuthenticationError("No such user found!");
     }
+    const valid = await argon2.verify(user.password, input.password);
+    if (!valid) {
+      throw new AuthenticationError("Invalid Password!");
+    }
+
     const token = getToken(user);
-    // ctx.req.session.userId = user.id;
-    
-    return {
-      ...user
-    };
+
+    return token;
   }
 }
