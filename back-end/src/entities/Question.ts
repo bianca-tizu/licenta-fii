@@ -1,6 +1,12 @@
-import { Entity, PrimaryKey, Property, SerializedPrimaryKey } from "@mikro-orm/core";
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  SerializedPrimaryKey,
+} from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Field, ObjectType } from "type-graphql";
+import { User } from "./User";
 
 @ObjectType()
 @Entity()
@@ -20,6 +26,10 @@ export class Question {
   @Field(() => String)
   @Property({ type: "date", onUpdate: () => new Date() })
   updatedAt: Date = new Date();
+
+  @Field(() => User)
+  @Property({ type: "User" })
+  author: User = new User();
 
   @Field()
   @Property({ type: "text" })

@@ -1,3 +1,4 @@
+import { gravatar } from "./../gravatar";
 import { getToken } from "../util";
 import { User } from "./../entities/User";
 import { ContextType } from "src/types";
@@ -47,17 +48,6 @@ class LoginResponse {
 
 @Resolver()
 export class UserResolver {
-  @Query(() => User, { nullable: true })
-  async isUserLogged(@Ctx() ctx: any) {
-    // user not logged
-    console.log(ctx);
-    if (!ctx.req.loggedIn) {
-      throw new AuthenticationError("You are not authenticated!");
-    }
-
-    return ctx.em.findById(ctx.user.id);
-  }
-
   //register query
   @Mutation(() => LoginResponse)
   async register(
@@ -75,11 +65,13 @@ export class UserResolver {
 
     const hashedPassword = await argon2.hash(input.password);
     const username = await input.email.split("@")[0];
+    const avatar = gravatar(input.email);
     const user = ctx.em.create(User, {
       email: input.email,
       password: hashedPassword,
       studentId: studentId,
       username: username,
+      avatar: avatar,
     });
 
     try {

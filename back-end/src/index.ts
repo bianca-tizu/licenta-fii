@@ -18,6 +18,8 @@ import MongoStore from "connect-mongo";
 import cors from "cors";
 import { getPayload, getUserId } from "./util";
 
+import { gravatar } from "./gravatar";
+
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
 
@@ -60,8 +62,6 @@ const main = async () => {
       const token = req.headers.authorization || "";
       // try to retrieve a user with the token
       const { loggedIn, payload } = getPayload(token);
-      // const uid = getUserId(req, token);
-      console.log("LOGGED IN:" + loggedIn, "PAYLOAD:", payload);
 
       return { em: orm.em, loggedIn: loggedIn, payload: payload };
     },

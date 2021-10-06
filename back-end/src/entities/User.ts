@@ -1,4 +1,9 @@
-import { Entity, PrimaryKey, Property, SerializedPrimaryKey } from "@mikro-orm/core";
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  SerializedPrimaryKey,
+} from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Field, ObjectType } from "type-graphql";
 
@@ -6,11 +11,11 @@ import { Field, ObjectType } from "type-graphql";
 @Entity()
 export class User {
   @Field(() => String)
-  @PrimaryKey({unique: true})
+  @PrimaryKey({ unique: true })
   _id!: ObjectId;
 
   @Field(() => String)
-  @SerializedPrimaryKey({unique: true})
+  @SerializedPrimaryKey({ unique: true })
   id!: string;
 
   @Field(() => String)
@@ -22,7 +27,7 @@ export class User {
   updatedAt: Date = new Date();
 
   @Field(() => String)
-  @Property( {type: "string", unique: true })
+  @Property({ type: "string", unique: true })
   email!: string;
 
   @Field(() => String)
@@ -33,14 +38,18 @@ export class User {
   password!: string;
 
   @Field(() => String)
-  @Property( {type: "string", unique: true})
+  @Property({ type: "string", unique: true })
   studentId!: string;
 
   @Field(() => String)
-  @Property( {type: "string", unique: true})
+  @Property({ type: "string", unique: true })
   session!: string;
 
   @Field(() => String)
-  @Property({type: "string", unique: true})
+  @Property({ type: "string", unique: true })
   token: string;
+
+  @Field(() => String)
+  @Property({ type: "string" })
+  avatar: string;
 }
