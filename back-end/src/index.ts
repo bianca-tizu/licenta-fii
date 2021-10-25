@@ -16,7 +16,7 @@ import { __prod__ } from "./constants";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import cors from "cors";
-import { getPayload, getUserId } from "./util";
+import { getPayload, getUserId, getToken } from "./util";
 
 import { gravatar } from "./gravatar";
 
