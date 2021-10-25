@@ -7,15 +7,15 @@ export const getToken = (payload: any) => {
   return token;
 };
 
-export const getPayload = (token: any) => {
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    return { loggedIn: true, payload };
-  } catch (err) {
-    // Add Err Message
-    return { loggedIn: false };
-  }
-};
+// export const getPayload = (token: any) => {
+//   try {
+//     const payload = jwt.verify(token, process.env.JWT_SECRET);
+//     return { loggedIn: true, payload };
+//   } catch (err) {
+//     // Add Err Message
+//     return { loggedIn: false };
+//   }
+// };
 
 export const getUserId = (token: string | undefined) => {
   if (token) {

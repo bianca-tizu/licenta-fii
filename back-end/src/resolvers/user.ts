@@ -1,5 +1,4 @@
 import { gravatar } from "../gravatar";
-import { getToken } from "../util";
 import { User } from "../entities/User";
 import { ContextType } from "src/types";
 import {
@@ -9,7 +8,6 @@ import {
   InputType,
   Mutation,
   ObjectType,
-  Query,
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
@@ -24,26 +22,6 @@ class loginInput {
   email!: string;
   @Field()
   password!: string;
-}
-
-@ObjectType()
-class FieldError {
-  @Field()
-  field: string;
-  @Field()
-  message: string;
-}
-
-@ObjectType()
-class LoginResponse {
-  @Field(() => [FieldError], { nullable: true })
-  errors?: FieldError[];
-
-  @Field(() => User, { nullable: true })
-  user?: User;
-
-  @Field(() => String, { nullable: false })
-  token?: String;
 }
 
 @Resolver()

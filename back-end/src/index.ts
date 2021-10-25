@@ -16,7 +16,7 @@ import { __prod__ } from "./constants";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import cors from "cors";
-import { getPayload, getUserId } from "./util";
+import { getUserId } from "./util";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -59,9 +59,9 @@ const main = async () => {
       // get the user token from the headers
       const token = req.headers.authorization;
       // try to retrieve a user with the token
-      const { loggedIn, payload } = getPayload(token);
+      const { userId } = getUserId(token);
 
-      return { em: orm.em, userId: getUserId(token) };
+      return { em: orm.em, userId: userId };
     },
   });
 
