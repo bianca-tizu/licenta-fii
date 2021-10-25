@@ -1,15 +1,3 @@
 mutation Register($sid: String!, $email: String!, $password: String!) {
-  register(studentId: $sid, input: { email: $email, password: $password }) {
-    errors {
-      field
-      message
-    }
-    user {
-      email
-      createdAt
-      updatedAt
-      studentId
-      username
-    }
-  }
+  register(studentId: $sid, input: { email: $email, password: $password })
 }

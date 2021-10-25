@@ -14,22 +14,10 @@ export type Scalars = {
   Float: number;
 };
 
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
-
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<User>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  register: LoginResponse;
-  login: LoginResponse;
+  register: Scalars['String'];
+  login: Scalars['String'];
   createQuestion: Question;
   updateQuestion?: Maybe<Question>;
   deleteQuestion: Scalars['Boolean'];
@@ -67,7 +55,6 @@ export type MutationDeleteQuestionArgs = {
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
-  isUserLogged?: Maybe<User>;
   questions: Array<Question>;
   question?: Maybe<Question>;
 };
@@ -83,6 +70,7 @@ export type Question = {
   id: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  author: User;
   title: Scalars['String'];
   category: Scalars['String'];
   content: Scalars['String'];
@@ -101,6 +89,7 @@ export type User = {
   studentId: Scalars['String'];
   session: Scalars['String'];
   token: Scalars['String'];
+  avatar: Scalars['String'];
 };
 
 export type LoginInput = {
@@ -116,16 +105,7 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = (
   { __typename?: 'Mutation' }
-  & { login: (
-    { __typename?: 'LoginResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'username' | 'email'>
-    )> }
-  ) }
+  & Pick<Mutation, 'login'>
 );
 
 export type RegisterMutationVariables = Exact<{
@@ -137,31 +117,13 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
-  & { register: (
-    { __typename?: 'LoginResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'email' | 'createdAt' | 'updatedAt' | 'studentId' | 'username'>
-    )> }
-  ) }
+  & Pick<Mutation, 'register'>
 );
 
 
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
-  login(input: {email: $email, password: $password}) {
-    errors {
-      field
-      message
-    }
-    user {
-      username
-      email
-    }
-  }
+  login(input: {email: $email, password: $password})
 }
     `;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
@@ -193,19 +155,7 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($sid: String!, $email: String!, $password: String!) {
-  register(studentId: $sid, input: {email: $email, password: $password}) {
-    errors {
-      field
-      message
-    }
-    user {
-      email
-      createdAt
-      updatedAt
-      studentId
-      username
-    }
-  }
+  register(studentId: $sid, input: {email: $email, password: $password})
 }
     `;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
