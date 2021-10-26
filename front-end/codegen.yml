@@ -1,5 +1,7 @@
 overwrite: true
 schema: "http://localhost:4000/graphql"
+headers:
+  Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzUxODQzNzN9.oU3jCfYaZ6pbm8BoTjOcAeBftejS15ScebmGz4tQLik"
 documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:

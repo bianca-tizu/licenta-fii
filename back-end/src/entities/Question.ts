@@ -5,7 +5,7 @@ import {
   SerializedPrimaryKey,
 } from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
-import { Field, ObjectType } from "type-graphql";
+import { Authorized, Field, ObjectType } from "type-graphql";
 import { User } from "./User";
 
 @ObjectType()

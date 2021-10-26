@@ -14,10 +14,16 @@ export type Scalars = {
   Float: number;
 };
 
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  user?: Maybe<User>;
+  token: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  register: Scalars['String'];
-  login: Scalars['String'];
+  register: LoginResponse;
+  login: LoginResponse;
   createQuestion: Question;
   updateQuestion?: Maybe<Question>;
   deleteQuestion: Scalars['Boolean'];
@@ -105,7 +111,10 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'login'>
+  & { login: (
+    { __typename?: 'LoginResponse' }
+    & Pick<LoginResponse, 'token'>
+  ) }
 );
 
 export type RegisterMutationVariables = Exact<{
@@ -117,13 +126,18 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'register'>
+  & { register: (
+    { __typename?: 'LoginResponse' }
+    & Pick<LoginResponse, 'token'>
+  ) }
 );
 
 
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
-  login(input: {email: $email, password: $password})
+  login(input: {email: $email, password: $password}) {
+    token
+  }
 }
     `;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
@@ -155,7 +169,9 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($sid: String!, $email: String!, $password: String!) {
-  register(studentId: $sid, input: {email: $email, password: $password})
+  register(studentId: $sid, input: {email: $email, password: $password}) {
+    token
+  }
 }
     `;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;

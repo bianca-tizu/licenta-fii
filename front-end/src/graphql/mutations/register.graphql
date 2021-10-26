@@ -1,3 +1,5 @@
 mutation Register($sid: String!, $email: String!, $password: String!) {
-  register(studentId: $sid, input: { email: $email, password: $password })
+  register(studentId: $sid, input: { email: $email, password: $password }) {
+    token
+  }
 }

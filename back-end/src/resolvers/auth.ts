@@ -1,9 +1,9 @@
-import { Query, Resolver } from "type-graphql";
+import { ContextType } from "src/types";
+import { Ctx, Query, Resolver, UseMiddleware } from "type-graphql";
 
 @Resolver()
 export class AuthResolver {
   @Query(() => String)
-  hello() {
-    return "hello world"
-  }
+  @UseMiddleware()
+  async Me(@Ctx() ctx: ContextType) {}
 }
