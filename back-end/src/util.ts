@@ -1,6 +1,3 @@
-import { ContextType } from "src/types";
-import { MiddlewareFn } from "type-graphql";
-
 const jwt = require("jsonwebtoken");
 
 export const getToken = (id: any) => {
