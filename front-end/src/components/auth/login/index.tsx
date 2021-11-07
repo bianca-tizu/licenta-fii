@@ -21,8 +21,8 @@ const LoginForm = () => {
       variables: { email: values.email, password: values.password },
     });
 
-    if (response.data?.login) {
-      // setError({});
+    if (response.data) {
+      sessionStorage.setItem("token", response.data.login.token);
       history.push("/dashboard");
     }
   };
