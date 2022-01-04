@@ -1,9 +1,12 @@
 .dashboard {
   display: flex;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
 .question-list {
   position: absolute;
-  top: 90px;
+  top: 50px;
   margin: 0 30px;
 }

@@ -11,7 +11,6 @@ const { Title, Text } = Typography;
 
 const LoginForm = () => {
   const [login] = useLoginMutation();
-  const [error, setError] = React.useState({});
 
   const history = useHistory();
 

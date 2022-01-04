@@ -4,7 +4,6 @@ import { setContext } from "@apollo/client/link/context";
 
 import {
   ApolloClient,
-  ApolloLink,
   ApolloProvider,
   createHttpLink,
   InMemoryCache,
@@ -15,7 +14,6 @@ import Auth from "./components/auth/Auth";
 import GuardedRoute from "./components/GuardedRoute";
 
 import "./App.css";
-import { CookiesProvider } from "react-cookie";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
@@ -40,20 +38,18 @@ const client = new ApolloClient({
 
 const App = () => {
   return (
-    <CookiesProvider>
-      <ApolloProvider client={client}>
-        <Router>
-          <div className="App">
-            <Switch>
-              <Route exact path="/">
-                <Auth />
-              </Route>
-              <GuardedRoute component={Dashboard} path="/dashboard" />
-            </Switch>
-          </div>
-        </Router>
-      </ApolloProvider>
-    </CookiesProvider>
+    <ApolloProvider client={client}>
+      <Router>
+        <div className="App">
+          <Switch>
+            <Route exact path="/">
+              <Auth />
+            </Route>
+            <GuardedRoute component={Dashboard} exact path="/dashboard" />
+          </Switch>
+        </div>
+      </Router>
+    </ApolloProvider>
   );
 };
 
