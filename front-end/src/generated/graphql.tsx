@@ -60,7 +60,7 @@ export type MutationDeleteQuestionArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
+  Me: Scalars['String'];
   questions: Array<Question>;
   question?: Maybe<Question>;
 };

@@ -1,0 +1,11 @@
+.usericon {
+  display: flex;
+  flex-flow: row;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.username {
+  padding: 10px;
+  font-size: large;
+}

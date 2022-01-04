@@ -48,11 +48,7 @@ const App = () => {
               <Route exact path="/">
                 <Auth />
               </Route>
-              {/* TO DO: User shouldn't be able to access dashboard without the login
-              <GuardedRoute path="/dashboard" component={Dashboard}/> */}
-              <Route path="/dashboard">
-                <Dashboard />
-              </Route>
+              <GuardedRoute component={Dashboard} path="/dashboard" />
             </Switch>
           </div>
         </Router>

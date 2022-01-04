@@ -34,8 +34,20 @@ const Header = () => {
     setIsQuestionVisible(false);
   };
 
-  const handlePost = (values: any) => {
-    //   const response = await createQuestion({variables: {sid: values.sid, email: values.email, password: values.password}});
+  const handleSaveProfile = (values: any) => {
+    console.log("Save profile", values);
+    setIsUserProfileVisible(false);
+  };
+
+  const handlePost = async (values: any) => {
+    // const response = await createQuestion({
+    //   variables: {
+    //     sid: values.sid,
+    //     email: values.email,
+    //     password: values.password,
+    //   },
+    // });
+    // console.log(response);
     // if (response.data?.register.errors) {
     //   setError(response.data?.register.errors.map(err => err.message)[0]);
     // }
@@ -81,13 +93,14 @@ const Header = () => {
             onClick={() => setIsUserProfileVisible(true)}
           />
           <Modal
-            title="User profile"
+            // title="User profile"
             visible={isUserProfileVisible}
             keyboard
             maskClosable
+            onCancel={() => setIsUserProfileVisible(false)}
             footer={[
-              <Button key="post" type="primary" onClick={handlePost}>
-                Post
+              <Button key="post" type="primary" onClick={handleSaveProfile}>
+                Save
               </Button>,
             ]}
           >

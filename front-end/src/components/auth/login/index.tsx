@@ -14,12 +14,13 @@ const LoginForm = () => {
   const [error, setError] = React.useState({});
 
   const history = useHistory();
-  console.log(login);
 
   const onFinish = async (values: any) => {
     const response = await login({
       variables: { email: values.email, password: values.password },
     });
+
+    console.log(response);
 
     if (response.data) {
       sessionStorage.setItem("token", response.data.login.token);
