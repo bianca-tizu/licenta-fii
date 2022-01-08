@@ -1,13 +1,14 @@
 import React from "react";
 import QuestionsList from "./questions-list";
-import Header from "../header/Header";
+import VerticalMenu from "../header/VerticalMenu";
+import PageBanner from "./pageBanner/PageBanner";
 
 import "./dashboard.css";
 
 const Dashboard = () => {
   return (
     <div className="dashboard">
-      <Header />
+      <VerticalMenu />
       <div className="question-list">
         <QuestionsList />
       </div>

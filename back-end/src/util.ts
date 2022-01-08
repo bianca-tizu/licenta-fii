@@ -1,8 +1,12 @@
 const jwt = require("jsonwebtoken");
 
 export const getToken = (id: any) => {
+  const today = new Date();
+  const exp = new Date(today);
+  exp.setDate(today.getDate() + 60);
+
   const token = jwt.sign(id, process.env.JWT_SECRET, {
-    expiresIn: 604800, // 1 Week
+    expiresIn: exp.getTime() / 1000,
   });
   return token;
 };

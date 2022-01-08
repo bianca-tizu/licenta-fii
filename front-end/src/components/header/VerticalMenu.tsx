@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { EventHandler, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -11,6 +11,7 @@ import {
   UserOutlined,
   RadiusSettingOutlined,
   SearchOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
@@ -21,17 +22,13 @@ const useStyles = makeStyles(() => ({
   backgroundHeader: {
     backgroundColor: "#fff",
   },
-  headerLayout: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
 }));
 
-const Header = () => {
+const VerticalMenu = () => {
   const classes = useStyles();
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
   const [isUserProfileVisible, setIsUserProfileVisible] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [draft, setDraft] = useState("");
 
   const handleDraft = (values: any) => {
@@ -42,6 +39,10 @@ const Header = () => {
   const handleSaveProfile = (values: any) => {
     console.log("Save profile", values);
     setIsUserProfileVisible(false);
+  };
+
+  const handleClick = (e: any) => {
+    console.log("Menu event", e);
   };
 
   const handlePost = async (values: any) => {
@@ -63,17 +64,40 @@ const Header = () => {
   };
 
   return (
-    <div>
-      {/* <AppBar className={classes.backgroundHeader}> */}
-      {/* <Layout className={classes.backgroundHeader}> */}
-      <Menu mode="vertical" className={classes.headerLayout}>
-        <Menu.Item key="title">
-          <Typography variant="h6"> FII Talks </Typography>
-        </Menu.Item>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Typography variant="h6"> FII Talks </Typography>
+      <Menu>
+        {/* home */}
+        <Menu.Item
+          key="home"
+          icon={<HomeOutlined style={{ fontSize: "30px" }} />}
+        />
+
+        {/* search  */}
         <Menu.Item
           key="search"
-          icon={<SearchOutlined style={{ fontSize: "30px" }} />}
+          icon={
+            <SearchOutlined
+              style={{ fontSize: "30px" }}
+              onClick={() => setIsSearchVisible(true)}
+            />
+          }
         />
+        <Modal
+          title="Search"
+          visible={isSearchVisible}
+          onCancel={() => setIsSearchVisible(false)}
+        >
+          HI
+        </Modal>
+
+        {/* add a question */}
         <Menu.Item
           key="newQuestion"
           icon={<PlusCircleOutlined style={{ fontSize: "30px" }} />}
@@ -96,10 +120,14 @@ const Header = () => {
         >
           <AddQuestion />
         </Modal>
+
+        {/* see drafts */}
         <Menu.Item
           key="drafts"
           icon={<RadiusSettingOutlined style={{ fontSize: "30px" }} />}
         />
+
+        {/* user profile */}
         <Menu.Item
           key="profile"
           icon={<UserOutlined style={{ fontSize: "30px" }} />}
@@ -120,10 +148,8 @@ const Header = () => {
           <UserProfile />
         </Modal>
       </Menu>
-      {/* </Layout> */}
-      {/* </AppBar> */}
     </div>
   );
 };
 
-export default Header;
+export default VerticalMenu;

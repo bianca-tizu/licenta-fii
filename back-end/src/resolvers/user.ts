@@ -98,4 +98,23 @@ export class UserResolver {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     return { token };
   }
+
+  //   //request reset password
+  //   @Mutation(() => Boolean)
+  //   async requestReset(@Arg("email") email: string, @Ctx() ctx: ContextType) {
+  //     email = email.toLowerCase();
+
+  //     //check if the user exists
+  //     const user = await ctx.em.findOne(User, { email: email });
+  //     if (!user) {
+  //       throw new AuthenticationError("Error signing in");
+  //     }
+  //     //generate a token code for resetting that the user should receive it on the email and should enter it when he adds the new password
+  //     const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+  //     const mailResponse = await transport.sendMail({
+  //       from: process.env.MAIL_SENDER,
+  //       to: user.email,
+  //       subject: "Y",
+  //     });
+  //   }
 }
