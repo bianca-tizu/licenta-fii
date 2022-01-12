@@ -1,20 +1,20 @@
 .login-form {
-    max-width: 300px;
-    padding: 0 20px;
+  max-width: 300px;
+  padding: 0 20px;
 }
 
 .login-input {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 .login-form-action {
-    display: flex;
-    text-align: center;
+  display: flex;
+  text-align: center;
 }
 
 /* small phone */
 @media screen and (max-width: 321px) {
-    .login-form-action {
-        margin-bottom: 0;
-    }
+  .login-form-action {
+    margin-bottom: 0;
+  }
 }

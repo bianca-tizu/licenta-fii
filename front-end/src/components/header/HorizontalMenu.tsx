@@ -1,35 +1,24 @@
-import React, { EventHandler, useState } from "react";
+import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-
-import { Button, Menu, Layout } from "antd";
+import { Button, Menu } from "antd";
 import {
   PlusCircleOutlined,
   UserOutlined,
   RadiusSettingOutlined,
   SearchOutlined,
-  HomeOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
 import AddQuestion from "./add-question";
 import UserProfile from "./user-profile";
 
-const useStyles = makeStyles(() => ({
-  backgroundHeader: {
-    backgroundColor: "#fff",
-  },
-}));
+import "./menu.css";
 
-const VerticalMenu = () => {
-  const classes = useStyles();
-  const [isQuestionVisible, setIsQuestionVisible] = useState(false);
-  const [isUserProfileVisible, setIsUserProfileVisible] = useState(false);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [draft, setDraft] = useState("");
+const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
+  const [isQuestionVisible, setIsQuestionVisible] = React.useState(false);
+  const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
+  const [isDraftVisible, setIsDraftVisible] = React.useState(false);
+  const [draft, setDraft] = React.useState("");
 
   const handleDraft = (values: any) => {
     console.log("Draft triggered", values);
@@ -41,11 +30,27 @@ const VerticalMenu = () => {
     setIsUserProfileVisible(false);
   };
 
-  const handleClick = (e: any) => {
-    console.log("Menu event", e);
+  const handleClick = (event: any) => {
+    console.log("Menu event", event);
+    switch (event.key) {
+      case "search":
+        setIsSearchVisible(!isSearchVisible);
+        console.log("");
+        break;
+      case "newQuestion":
+        setIsQuestionVisible(!isQuestionVisible);
+        break;
+      case "drafts":
+        setIsDraftVisible(!isDraftVisible);
+        break;
+      case "profile":
+        setIsUserProfileVisible(!isUserProfileVisible);
+        break;
+    }
   };
 
   const handlePost = async (values: any) => {
+    console.log("HANDLE POST", values);
     // const response = await createQuestion({
     //   variables: {
     //     sid: values.sid,
@@ -67,41 +72,28 @@ const VerticalMenu = () => {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
       }}
     >
-      <Typography variant="h6"> FII Talks </Typography>
-      <Menu>
-        {/* home */}
-        <Menu.Item
-          key="home"
-          icon={<HomeOutlined style={{ fontSize: "30px" }} />}
-        />
-
+      <Menu
+        onClick={handleClick}
+        mode="horizontal"
+        theme="dark"
+        style={{
+          background: "inherit",
+          color: "#fff",
+        }}
+      >
         {/* search  */}
         <Menu.Item
           key="search"
-          icon={
-            <SearchOutlined
-              style={{ fontSize: "30px" }}
-              onClick={() => setIsSearchVisible(true)}
-            />
-          }
+          icon={<SearchOutlined className="menu-item-icon" />}
         />
-        <Modal
-          title="Search"
-          visible={isSearchVisible}
-          onCancel={() => setIsSearchVisible(false)}
-        >
-          HI
-        </Modal>
 
         {/* add a question */}
         <Menu.Item
           key="newQuestion"
-          icon={<PlusCircleOutlined style={{ fontSize: "30px" }} />}
-          onClick={() => setIsQuestionVisible(true)}
+          icon={<PlusCircleOutlined className="menu-item-icon" />}
         />
         <Modal
           title="Add a question"
@@ -124,14 +116,13 @@ const VerticalMenu = () => {
         {/* see drafts */}
         <Menu.Item
           key="drafts"
-          icon={<RadiusSettingOutlined style={{ fontSize: "30px" }} />}
+          icon={<RadiusSettingOutlined className="menu-item-icon" />}
         />
 
         {/* user profile */}
         <Menu.Item
           key="profile"
-          icon={<UserOutlined style={{ fontSize: "30px" }} />}
-          onClick={() => setIsUserProfileVisible(true)}
+          icon={<UserOutlined className="menu-item-icon" />}
         />
         <Modal
           // title="User profile"
@@ -152,4 +143,4 @@ const VerticalMenu = () => {
   );
 };
 
-export default VerticalMenu;
+export default HorizontalMenu;

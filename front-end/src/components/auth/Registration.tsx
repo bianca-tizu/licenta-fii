@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 
-import { useRegisterMutation } from "../../../generated/graphql";
+import { useRegisterMutation } from "../../generated/graphql";
 
 type RegistrationFormProps = {
   setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;

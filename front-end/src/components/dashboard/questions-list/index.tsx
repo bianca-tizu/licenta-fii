@@ -4,7 +4,7 @@ import { Card, Avatar, Badge } from "antd";
 import { SendOutlined, LikeOutlined } from "@ant-design/icons";
 
 import QuestionDetail from "../question-detail";
-import PageBanner from "../pageBanner/PageBanner";
+
 import "../dashboard.css";
 
 const { Meta } = Card;
@@ -37,7 +37,6 @@ const QuestionsList = () => {
   return (
     <div className="row">
       <div className="column" style={{ marginLeft: "105px" }}>
-        <PageBanner />
         {questions.map((question) => (
           <Card
             key={question.id}
