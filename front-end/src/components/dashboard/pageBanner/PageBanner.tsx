@@ -26,7 +26,7 @@ const PageBanner = () => {
         <div className="search-bar">
           <Search
             style={{ width: "50%" }}
-            placeholder="input search text"
+            placeholder="Search here"
             onSearch={() => console.log("SEARCH PERFORMED")}
             enterButton
             size="middle"

@@ -39,12 +39,15 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
         break;
       case "newQuestion":
         setIsQuestionVisible(!isQuestionVisible);
+        setIsSearchVisible(false);
         break;
       case "drafts":
         setIsDraftVisible(!isDraftVisible);
+        setIsSearchVisible(false);
         break;
       case "profile":
         setIsUserProfileVisible(!isUserProfileVisible);
+        setIsSearchVisible(false);
         break;
     }
   };
@@ -87,12 +90,14 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
         {/* search  */}
         <Menu.Item
           key="search"
+          title="Search"
           icon={<SearchOutlined className="menu-item-icon" />}
         />
 
         {/* add a question */}
         <Menu.Item
           key="newQuestion"
+          title="Add a question"
           icon={<PlusCircleOutlined className="menu-item-icon" />}
         />
         <Modal
@@ -117,12 +122,14 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
         <Menu.Item
           key="drafts"
           icon={<RadiusSettingOutlined className="menu-item-icon" />}
+          title="Draft questions"
         />
 
         {/* user profile */}
         <Menu.Item
           key="profile"
           icon={<UserOutlined className="menu-item-icon" />}
+          title="User profile"
         />
         <Modal
           // title="User profile"
