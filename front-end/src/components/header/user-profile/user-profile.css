@@ -1,11 +1,32 @@
-.usericon {
+.user-icon {
   display: flex;
-  flex-flow: row;
   flex-direction: row;
-  justify-content: flex-start;
+  align-items: center;
 }
 
 .username {
-  padding: 10px;
-  font-size: large;
+  font-family: fantasy;
+  font-size: 40px;
+  margin: 0 15px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.student-id {
+  margin-top: -10px;
+  margin-left: 15px;
+}
+
+.fixed-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-data {
+  display: flex;
+  flex-direction: row;
 }
