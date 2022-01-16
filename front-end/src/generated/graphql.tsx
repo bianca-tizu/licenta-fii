@@ -14,6 +14,13 @@ export type Scalars = {
   Float: number;
 };
 
+export type CreateQuestionInput = {
+  title: Scalars['String'];
+  category: Scalars['String'];
+  content: Scalars['String'];
+  tags: Array<Scalars['String']>;
+};
+
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   user?: Maybe<User>;
@@ -42,9 +49,7 @@ export type MutationLoginArgs = {
 
 
 export type MutationCreateQuestionArgs = {
-  content: Scalars['String'];
-  category: Scalars['String'];
-  title: Scalars['String'];
+  questionDetails: CreateQuestionInput;
 };
 
 
@@ -82,6 +87,7 @@ export type Question = {
   content: Scalars['String'];
   description: Scalars['String'];
   votes: Scalars['Float'];
+  tags: Array<Scalars['String']>;
 };
 
 export type User = {

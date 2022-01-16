@@ -20,7 +20,7 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
   const [draft, setDraft] = React.useState("");
 
-  const handleDraft = (values: any) => {
+  const handleDraftQuestion = (values: any) => {
     console.log("Draft triggered", values);
     setIsQuestionVisible(false);
   };
@@ -52,7 +52,7 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
     }
   };
 
-  const handlePost = async (values: any) => {
+  const handlePostQuestion = async (values: any) => {
     console.log("HANDLE POST", values);
     // const response = await createQuestion({
     //   variables: {
@@ -107,10 +107,10 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
           maskClosable
           onCancel={() => setIsQuestionVisible(false)}
           footer={[
-            <Button key="post" type="primary" onClick={handlePost}>
+            <Button key="post" type="primary" onClick={handlePostQuestion}>
               Post
             </Button>,
-            <Button key="draft" type="dashed" onClick={handleDraft}>
+            <Button key="draft" type="dashed" onClick={handleDraftQuestion}>
               Save draft
             </Button>,
           ]}

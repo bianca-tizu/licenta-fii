@@ -5,7 +5,7 @@ import {
   SerializedPrimaryKey,
 } from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
-import { Authorized, Field, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import { User } from "./User";
 
 @ObjectType()
@@ -51,7 +51,6 @@ export class Question {
   @Property({ type: "number" })
   votes!: Number;
 
-  // @Field()
-  // @Property({ type: "text" })
-  // tags!: [string];
+  @Field((type) => [String])
+  tags: string[];
 }
