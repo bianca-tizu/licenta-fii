@@ -1,15 +1,41 @@
 import React from "react";
+
 import { Form, Select, Button, Upload, Input, Tag } from "antd";
 import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
+
 import Tags from "./Tags";
 
-const AddQuestion = () => {
-  const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
+import "./add-question.css";
+
+const AddQuestion = ({ setIsQuestionVisible }: any) => {
+  const [newQuestion, setNewQuestion] = React.useState({});
+
+  const handleDraftQuestion = (values: any) => {
+    console.log("Draft triggered", values);
+    setIsQuestionVisible(false);
+  };
+
+  const handlePostQuestion = async (values: Object) => {
+    console.log("HANDLE POST", values);
+    // const response = await createQuestion({
+    //   variables: {
+    //     sid: values.sid,
+    //     email: values.email,
+    //     password: values.password,
+    //   },
+    // });
+    // console.log(response);
+    // if (response.data?.register.errors) {
+    //   setError(response.data?.register.errors.map(err => err.message)[0]);
+    // }
+    // if(response.data?.register.user) {
+    //   setError({});
+    //   setIsRegistered(false);
+    // }
   };
 
   return (
-    <Form name="validate_other">
+    <Form name="validate_other" onFinish={handlePostQuestion}>
       {/* Category selection*/}
       <Form.Item
         name="select"
@@ -64,6 +90,19 @@ const AddQuestion = () => {
 
       {/* Tags */}
       <Tags />
+
+      <div className="new-question-buttons">
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{ marginRight: "10px" }}
+        >
+          Submit
+        </Button>
+        <Button type="dashed" htmlType="button" onClick={handleDraftQuestion}>
+          Draft
+        </Button>
+      </div>
     </Form>
   );
 };

@@ -1,0 +1,13 @@
+mutation CreateQuestion(
+  $title: String!
+  $category: String!
+  $content: String!
+  $tags: [String]
+) {
+  createQuestion(
+    data: { title: $title, content: $content, category: $category, tags: $tags }
+  ) {
+    title
+    id
+  }
+}

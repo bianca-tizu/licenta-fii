@@ -19,11 +19,7 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
   const [draft, setDraft] = React.useState("");
-
-  const handleDraftQuestion = (values: any) => {
-    console.log("Draft triggered", values);
-    setIsQuestionVisible(false);
-  };
+  const [newQuestion, setNewQuestion] = React.useState({});
 
   const handleSaveProfile = (values: any) => {
     console.log("Save profile", values);
@@ -50,25 +46,6 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
         setIsSearchVisible(false);
         break;
     }
-  };
-
-  const handlePostQuestion = async (values: any) => {
-    console.log("HANDLE POST", values);
-    // const response = await createQuestion({
-    //   variables: {
-    //     sid: values.sid,
-    //     email: values.email,
-    //     password: values.password,
-    //   },
-    // });
-    // console.log(response);
-    // if (response.data?.register.errors) {
-    //   setError(response.data?.register.errors.map(err => err.message)[0]);
-    // }
-    // if(response.data?.register.user) {
-    //   setError({});
-    //   setIsRegistered(false);
-    // }
   };
 
   return (
@@ -106,16 +83,9 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
           keyboard
           maskClosable
           onCancel={() => setIsQuestionVisible(false)}
-          footer={[
-            <Button key="post" type="primary" onClick={handlePostQuestion}>
-              Post
-            </Button>,
-            <Button key="draft" type="dashed" onClick={handleDraftQuestion}>
-              Save draft
-            </Button>,
-          ]}
+          footer={null}
         >
-          <AddQuestion />
+          <AddQuestion setIsQuestionVisible={setIsQuestionVisible} />
         </Modal>
 
         {/* see drafts */}
