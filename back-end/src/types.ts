@@ -4,9 +4,10 @@ import { Session, SessionData } from "express-session";
 
 export type ContextType = {
   em: EntityManager<any> & MongoEntityManager<any>;
-  req: Request & { userId: string } & { token: string } & {
-    loggedIn: boolean;
-  };
+  req: Request;
+  userId: string;
+  token: string;
+  loggedIn: boolean;
 
   res: Response;
 };

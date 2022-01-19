@@ -13,7 +13,7 @@ export const getToken = (id: any) => {
 
 export const getPayload = (token: any) => {
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token.slice(7), process.env.JWT_SECRET);
     return { loggedIn: true, payload };
   } catch (err) {
     // Add Err Message
@@ -24,7 +24,7 @@ export const getPayload = (token: any) => {
 export const getUserId = (token: string) => {
   if (token) {
     // return the user information from the token
-    return jwt.verify(token, process.env.JWT_SECRET);
+    return jwt.verify(token.slice(7), process.env.JWT_SECRET);
   } else {
     // if there's a problem with the token, throw an error
     throw new Error("Invalid token");

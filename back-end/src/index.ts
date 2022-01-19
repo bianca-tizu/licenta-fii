@@ -6,13 +6,13 @@ import microConfig from "./config/mikro-orm.config";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 
-import { AuthResolver } from "./resolvers/auth";
 import { UserResolver } from "./resolvers/user";
 import { QuestionResolver } from "./resolvers/question";
 
 import { __prod__ } from "./constants";
 
 import { getPayload, getUserId } from "./util";
+import { ContextType } from "./types";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -20,14 +20,17 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [AuthResolver, QuestionResolver, UserResolver],
+      resolvers: [QuestionResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => {
+    context: async ({ req, res }) => {
       // get the user token from the headers
       const token = req.headers.authorization;
+
+      console.log("TOKEN: " + token);
       // try to retrieve a user with the token
-      const { loggedIn, payload } = getPayload(token);
+      const { loggedIn, payload } = await getPayload(token);
+      console.log("USER ID", payload);
 
       return { em: orm.em, userId: payload, loggedIn: loggedIn };
     },

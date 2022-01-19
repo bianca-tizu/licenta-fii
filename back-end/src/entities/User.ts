@@ -1,11 +1,13 @@
 import {
   Entity,
+  OneToMany,
   PrimaryKey,
   Property,
   SerializedPrimaryKey,
 } from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Field, ObjectType } from "type-graphql";
+import { Question } from "./Question";
 
 @ObjectType()
 @Entity()
@@ -52,4 +54,7 @@ export class User {
   @Field(() => String)
   @Property({ type: "string" })
   avatar: string;
+
+  @OneToMany(() => Question, (question) => question.author)
+  questions: Question[];
 }

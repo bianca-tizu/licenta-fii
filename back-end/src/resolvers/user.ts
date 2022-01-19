@@ -5,15 +5,17 @@ import {
   Arg,
   Ctx,
   Field,
+  FieldResolver,
   InputType,
   Mutation,
   ObjectType,
   Resolver,
+  Root,
 } from "type-graphql";
 import argon2 from "argon2";
 
 import { AuthenticationError } from "apollo-server-express";
-import { getToken } from "../util";
+import { getToken, getUserId } from "../util";
 import { ObjectBindingPattern } from "@mikro-orm/core";
 
 require("dotenv").config();

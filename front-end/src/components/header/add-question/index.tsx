@@ -6,9 +6,12 @@ import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
 import Tags from "./Tags";
 
 import "./add-question.css";
+import { useCreateQuestionMutation } from "../../../generated/graphql";
 
 const AddQuestion = ({ setIsQuestionVisible }: any) => {
   const [newQuestion, setNewQuestion] = React.useState({});
+
+  const [createQuestion] = useCreateQuestionMutation();
 
   const handleDraftQuestion = (values: any) => {
     console.log("Draft triggered", values);
@@ -18,6 +21,13 @@ const AddQuestion = ({ setIsQuestionVisible }: any) => {
   const handlePostQuestion = async (values: Object) => {
     console.log("HANDLE POST", values);
     // const response = await createQuestion({
+    //   questionDetails: {
+    //     title: values.title,
+    //   content: $content
+    //   category: $category
+    //   tags: $tags
+    //   },
+    // });
     //   variables: {
     //     sid: values.sid,
     //     email: values.email,

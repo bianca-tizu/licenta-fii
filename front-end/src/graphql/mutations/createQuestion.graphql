@@ -2,12 +2,25 @@ mutation CreateQuestion(
   $title: String!
   $category: String!
   $content: String!
-  $tags: [String]
+  $tags: [String!]!
 ) {
   createQuestion(
-    data: { title: $title, content: $content, category: $category, tags: $tags }
+    questionDetails: {
+      title: $title
+      content: $content
+      category: $category
+      tags: $tags
+    }
   ) {
-    title
     id
+    title
+    description
+    content
+    category
+    author {
+      id
+    }
+    votes
+    tags
   }
 }

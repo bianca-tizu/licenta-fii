@@ -1,5 +1,7 @@
 import {
+  ArrayType,
   Entity,
+  ManyToOne,
   PrimaryKey,
   Property,
   SerializedPrimaryKey,
@@ -28,8 +30,8 @@ export class Question {
   updatedAt: Date = new Date();
 
   @Field(() => User)
-  @Property({ type: "User" })
-  author: User = new User();
+  @ManyToOne(() => User, { mapToPk: true })
+  author: User;
 
   @Field()
   @Property({ type: "text" })
@@ -52,5 +54,6 @@ export class Question {
   votes!: Number;
 
   @Field((type) => [String])
-  tags: string[];
+  @Property({ type: ArrayType, nullable: true })
+  tags!: string[];
 }
