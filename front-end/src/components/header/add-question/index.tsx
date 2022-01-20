@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Form, Select, Button, Upload, Input } from "antd";
+import { Form, Select, Button, Upload, Input, notification } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 
 import Tags from "./Tags";
@@ -14,7 +14,10 @@ type CreateQuestionValuesType = {
   description: string;
 };
 
-const AddQuestion = ({ setIsQuestionVisible }: any) => {
+const AddQuestion = ({
+  setIsQuestionVisible,
+  setCreateQuestionLoading,
+}: any) => {
   const [newQuestion, setNewQuestion] = React.useState({});
   const [tags, setTags] = React.useState([]);
   const [error, setError] = React.useState("");
@@ -25,11 +28,13 @@ const AddQuestion = ({ setIsQuestionVisible }: any) => {
 
   const handleDraftQuestion = (values: any) => {
     console.log("Draft triggered", values);
+    // setCreateQuestionLoading(true);
     setIsQuestionVisible(false);
   };
 
   const handlePostQuestion = async (values: CreateQuestionValuesType) => {
     console.log("HANDLE POST", values, tags);
+    setCreateQuestionLoading(true);
     try {
       const { title, category, description } = values;
       const response = await createQuestion({
@@ -47,10 +52,19 @@ const AddQuestion = ({ setIsQuestionVisible }: any) => {
         setIsQuestionVisible(false);
         setError("");
         createQuestionForm.resetFields();
+        setTags([]);
+        setCreateQuestionLoading(false);
       }
     } catch (e) {
       setIsQuestionVisible(false);
-      setError("Oops, there was a problem!");
+      createQuestionForm.resetFields();
+      setTags([]);
+      notification["error"]({
+        message: "Error",
+        description: "Oops, there was a problem creating the question",
+        placement: "bottomRight",
+      });
+      setCreateQuestionLoading(false);
     }
   };
 
@@ -122,7 +136,7 @@ const AddQuestion = ({ setIsQuestionVisible }: any) => {
           htmlType="submit"
           style={{ marginRight: "10px" }}
         >
-          Submit
+          Publish
         </Button>
         <Button type="dashed" htmlType="button" onClick={handleDraftQuestion}>
           Draft

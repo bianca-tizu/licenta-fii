@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button, Menu } from "antd";
+import { Button, Menu, Spin } from "antd";
 import {
   PlusCircleOutlined,
   UserOutlined,
@@ -18,6 +18,7 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
   const [isQuestionVisible, setIsQuestionVisible] = React.useState(false);
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
+  const [createQuestionLoading, setCreateQuestionLoading] = React.useState(false);
   const [draft, setDraft] = React.useState("");
   const [newQuestion, setNewQuestion] = React.useState({});
 
@@ -85,7 +86,12 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
           onCancel={() => setIsQuestionVisible(false)}
           footer={null}
         >
-          <AddQuestion setIsQuestionVisible={setIsQuestionVisible} />
+          <Spin spinning={createQuestionLoading}>
+            <AddQuestion
+              setIsQuestionVisible={setIsQuestionVisible}
+              setCreateQuestionLoading={setCreateQuestionLoading}
+            />
+          </Spin>
         </Modal>
 
         {/* see drafts */}
