@@ -1,54 +1,68 @@
 import React from "react";
 
-import { Form, Select, Button, Upload, Input, Tag } from "antd";
-import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
+import { Form, Select, Button, Upload, Input } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
 
 import Tags from "./Tags";
 
 import "./add-question.css";
 import { useCreateQuestionMutation } from "../../../generated/graphql";
 
+type CreateQuestionValuesType = {
+  title: string;
+  category: string;
+  description: string;
+};
+
 const AddQuestion = ({ setIsQuestionVisible }: any) => {
   const [newQuestion, setNewQuestion] = React.useState({});
+  const [tags, setTags] = React.useState([]);
+  const [error, setError] = React.useState("");
 
   const [createQuestion] = useCreateQuestionMutation();
+
+  const [createQuestionForm] = Form.useForm();
 
   const handleDraftQuestion = (values: any) => {
     console.log("Draft triggered", values);
     setIsQuestionVisible(false);
   };
 
-  const handlePostQuestion = async (values: Object) => {
-    console.log("HANDLE POST", values);
-    // const response = await createQuestion({
-    //   questionDetails: {
-    //     title: values.title,
-    //   content: $content
-    //   category: $category
-    //   tags: $tags
-    //   },
-    // });
-    //   variables: {
-    //     sid: values.sid,
-    //     email: values.email,
-    //     password: values.password,
-    //   },
-    // });
-    // console.log(response);
-    // if (response.data?.register.errors) {
-    //   setError(response.data?.register.errors.map(err => err.message)[0]);
-    // }
-    // if(response.data?.register.user) {
-    //   setError({});
-    //   setIsRegistered(false);
-    // }
+  const handlePostQuestion = async (values: CreateQuestionValuesType) => {
+    console.log("HANDLE POST", values, tags);
+    try {
+      const { title, category, description } = values;
+      const response = await createQuestion({
+        variables: {
+          title: title,
+          content: description,
+          category: category,
+          tags: tags,
+        },
+      });
+
+      console.log(response);
+
+      if (response.data) {
+        setIsQuestionVisible(false);
+        setError("");
+        createQuestionForm.resetFields();
+      }
+    } catch (e) {
+      setIsQuestionVisible(false);
+      setError("Oops, there was a problem!");
+    }
   };
 
   return (
-    <Form name="validate_other" onFinish={handlePostQuestion}>
+    <Form
+      form={createQuestionForm}
+      name="createQuestion"
+      onFinish={handlePostQuestion}
+    >
       {/* Category selection*/}
       <Form.Item
-        name="select"
+        name="category"
         hasFeedback
         rules={[{ required: true, message: "Please select a category!" }]}
       >
@@ -70,6 +84,7 @@ const AddQuestion = ({ setIsQuestionVisible }: any) => {
 
       {/* Description of the question */}
       <Form.Item
+        name="description"
         rules={[
           { required: true, message: "Please add context for your question" },
         ]}
@@ -99,7 +114,7 @@ const AddQuestion = ({ setIsQuestionVisible }: any) => {
       </Form.Item>
 
       {/* Tags */}
-      <Tags />
+      <Tags tags={tags} setTags={setTags} />
 
       <div className="new-question-buttons">
         <Button

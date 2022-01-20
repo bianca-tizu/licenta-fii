@@ -1,70 +1,70 @@
 import React from "react";
-import { Form, Select, Button, Upload, Input, Tag } from "antd";
-import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
+import { Input, Tag } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
-const Tags = () => {
-  const [inputVisible, setInputVisible] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
-  const [tags, setTags] = React.useState(["Tag 1", "Tag 2", "Tag 3"]);
+const Tags = ({ tags, setTags }: any) => {
+  const [tagInputVisible, setTagInputVisible] = React.useState(false);
+  const [tagInputValue, setTagInputValue] = React.useState("");
 
-  const handleClose = (removedTag: String) => {
-    const leftTags = tags.filter((tag) => tag !== removedTag);
-    console.log(leftTags);
+  const handleRemoveTag = (removedTag: String) => {
+    const leftTags = tags.filter((tag: string) => tag !== removedTag);
     setTags(leftTags);
   };
 
-  const handleInputChange = (e: any) => {
-    setInputValue(e.target.value);
+  const handleTagInputChange = (event: any) => {
+    setTagInputValue(event.target.value);
   };
 
   const handleInputConfirm = () => {
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      setTags([...tags, inputValue]);
+    if (tagInputValue && tags.indexOf(tagInputValue) === -1) {
+      setTags([...tags, tagInputValue]);
     }
-    setInputValue("");
+    setTagInputValue("");
+    setTagInputVisible(false);
   };
 
-  const forMap = (tag: string) => {
-    const tagElem = (
+  const tagElementsMap = (tag: string) => {
+    const tagElement = (
       <Tag
         closable
-        onClose={(e) => {
-          e.preventDefault();
-          handleClose(tag);
+        onClose={(event) => {
+          event.preventDefault();
+          handleRemoveTag(tag);
         }}
       >
         {tag}
       </Tag>
     );
+
     return (
       <span key={tag} style={{ display: "inline-block" }}>
-        {tagElem}
+        {tagElement}
       </span>
     );
   };
 
-  const tagChild = tags.map(forMap);
+  const tagChild = tags.length ? tags.map(tagElementsMap) : [];
 
   return (
     <div>
       <div style={{ marginBottom: 16 }}>{tagChild}</div>
-      {inputVisible && (
+      {tagInputVisible && (
         <Input
           type="text"
           size="small"
           style={{ width: 78 }}
-          value={inputValue}
-          onChange={handleInputChange}
+          value={tagInputValue}
+          onChange={handleTagInputChange}
           onBlur={handleInputConfirm}
           onPressEnter={handleInputConfirm}
         />
       )}
-      {!inputVisible && (
+      {!tagInputVisible && (
         <Tag
           onClick={() => {
-            setInputVisible(true);
+            setTagInputVisible(true);
           }}
-          className="site-tag-plus"
+          style={{ background: "#fff", borderStyle: "dashed" }}
         >
           <PlusOutlined /> New Tag
         </Tag>
