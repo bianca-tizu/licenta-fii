@@ -1,4 +1,9 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
+
+.App {
+  max-height: 100vh;
+  overflow: auto;
+}
 
 .row {
   display: flex;

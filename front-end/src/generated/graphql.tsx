@@ -84,7 +84,6 @@ export type Question = {
   title: Scalars['String'];
   category: Scalars['String'];
   content: Scalars['String'];
-  description: Scalars['String'];
   votes: Scalars['Float'];
   tags: Array<Scalars['String']>;
 };
@@ -120,7 +119,7 @@ export type CreateQuestionMutation = (
   { __typename?: 'Mutation' }
   & { createQuestion: (
     { __typename?: 'Question' }
-    & Pick<Question, 'id' | 'title' | 'description' | 'content' | 'category' | 'votes' | 'tags'>
+    & Pick<Question, 'id' | 'title' | 'content' | 'category' | 'votes' | 'tags'>
     & { author: (
       { __typename?: 'User' }
       & Pick<User, 'id'>
@@ -157,6 +156,38 @@ export type RegisterMutation = (
   ) }
 );
 
+export type QuestionQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type QuestionQuery = (
+  { __typename?: 'Query' }
+  & { question?: Maybe<(
+    { __typename?: 'Question' }
+    & Pick<Question, 'title' | 'id' | 'category' | 'content' | 'votes' | 'tags'>
+    & { author: (
+      { __typename?: 'User' }
+      & Pick<User, 'id'>
+    ) }
+  )> }
+);
+
+export type QuestionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type QuestionsQuery = (
+  { __typename?: 'Query' }
+  & { questions: Array<(
+    { __typename?: 'Question' }
+    & Pick<Question, 'title' | 'id' | 'category' | 'content' | 'votes' | 'tags'>
+    & { author: (
+      { __typename?: 'User' }
+      & Pick<User, 'id'>
+    ) }
+  )> }
+);
+
 
 export const CreateQuestionDocument = gql`
     mutation CreateQuestion($title: String!, $category: String!, $content: String!, $tags: [String!]!) {
@@ -165,7 +196,6 @@ export const CreateQuestionDocument = gql`
   ) {
     id
     title
-    description
     content
     category
     author {
@@ -274,3 +304,88 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const QuestionDocument = gql`
+    query Question($id: String!) {
+  question(id: $id) {
+    title
+    id
+    author {
+      id
+    }
+    category
+    content
+    votes
+    tags
+  }
+}
+    `;
+
+/**
+ * __useQuestionQuery__
+ *
+ * To run a query within a React component, call `useQuestionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuestionQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useQuestionQuery(baseOptions: Apollo.QueryHookOptions<QuestionQuery, QuestionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QuestionQuery, QuestionQueryVariables>(QuestionDocument, options);
+      }
+export function useQuestionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionQuery, QuestionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QuestionQuery, QuestionQueryVariables>(QuestionDocument, options);
+        }
+export type QuestionQueryHookResult = ReturnType<typeof useQuestionQuery>;
+export type QuestionLazyQueryHookResult = ReturnType<typeof useQuestionLazyQuery>;
+export type QuestionQueryResult = Apollo.QueryResult<QuestionQuery, QuestionQueryVariables>;
+export const QuestionsDocument = gql`
+    query Questions {
+  questions {
+    title
+    id
+    author {
+      id
+    }
+    category
+    content
+    votes
+    tags
+  }
+}
+    `;
+
+/**
+ * __useQuestionsQuery__
+ *
+ * To run a query within a React component, call `useQuestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuestionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useQuestionsQuery(baseOptions?: Apollo.QueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, options);
+      }
+export function useQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, options);
+        }
+export type QuestionsQueryHookResult = ReturnType<typeof useQuestionsQuery>;
+export type QuestionsLazyQueryHookResult = ReturnType<typeof useQuestionsLazyQuery>;
+export type QuestionsQueryResult = Apollo.QueryResult<QuestionsQuery, QuestionsQueryVariables>;

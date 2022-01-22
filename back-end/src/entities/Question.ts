@@ -46,12 +46,8 @@ export class Question {
   content!: string;
 
   @Field()
-  @Property({ type: "text" })
-  description!: string;
-
-  @Field()
-  @Property({ type: "number" })
-  votes!: Number;
+  @Property({ type: "number", nullable: true })
+  votes?: Number;
 
   @Field((type) => [String])
   @Property({ type: ArrayType, nullable: true })

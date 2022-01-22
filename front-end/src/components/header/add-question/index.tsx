@@ -6,12 +6,16 @@ import { InboxOutlined } from "@ant-design/icons";
 import Tags from "./Tags";
 
 import "./add-question.css";
-import { useCreateQuestionMutation } from "../../../generated/graphql";
+import {
+  Question,
+  useCreateQuestionMutation,
+} from "../../../generated/graphql";
+import QuestionsContext from "../../../contexts/QuestionsProvider";
 
 type CreateQuestionValuesType = {
   title: string;
   category: string;
-  description: string;
+  content: string;
 };
 
 const AddQuestion = ({
@@ -26,6 +30,8 @@ const AddQuestion = ({
 
   const [createQuestionForm] = Form.useForm();
 
+  const { addQuestion } = React.useContext(QuestionsContext);
+
   const handleDraftQuestion = (values: any) => {
     console.log("Draft triggered", values);
     // setCreateQuestionLoading(true);
@@ -36,11 +42,11 @@ const AddQuestion = ({
     console.log("HANDLE POST", values, tags);
     setCreateQuestionLoading(true);
     try {
-      const { title, category, description } = values;
+      const { title, category, content } = values;
       const response = await createQuestion({
         variables: {
           title: title,
-          content: description,
+          content: content,
           category: category,
           tags: tags,
         },
@@ -49,6 +55,7 @@ const AddQuestion = ({
       console.log(response);
 
       if (response.data) {
+        addQuestion(response.data.createQuestion as Question);
         setIsQuestionVisible(false);
         setError("");
         createQuestionForm.resetFields();
@@ -98,7 +105,7 @@ const AddQuestion = ({
 
       {/* Description of the question */}
       <Form.Item
-        name="description"
+        name="content"
         rules={[
           { required: true, message: "Please add context for your question" },
         ]}

@@ -1,0 +1,13 @@
+query Questions {
+  questions {
+    title
+    id
+    author {
+      id
+    }
+    category
+    content
+    votes
+    tags
+  }
+}

@@ -14,7 +14,6 @@ mutation CreateQuestion(
   ) {
     id
     title
-    description
     content
     category
     author {
