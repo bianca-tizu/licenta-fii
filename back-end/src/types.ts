@@ -8,6 +8,5 @@ export type ContextType = {
   userId: string;
   token: string;
   loggedIn: boolean;
-
   res: Response;
 };

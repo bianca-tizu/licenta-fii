@@ -33,6 +33,7 @@ export type Mutation = {
   login: LoginResponse;
   createQuestion: Question;
   updateQuestion?: Maybe<Question>;
+  countVotes?: Maybe<Question>;
   deleteQuestion: Scalars['Boolean'];
 };
 
@@ -54,7 +55,11 @@ export type MutationCreateQuestionArgs = {
 
 
 export type MutationUpdateQuestionArgs = {
-  title?: Maybe<Scalars['String']>;
+  question?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCountVotesArgs = {
   id: Scalars['String'];
 };
 
@@ -66,12 +71,6 @@ export type MutationDeleteQuestionArgs = {
 export type Query = {
   __typename?: 'Query';
   questions: Array<Question>;
-  question?: Maybe<Question>;
-};
-
-
-export type QueryQuestionArgs = {
-  id: Scalars['String'];
 };
 
 export type Question = {
@@ -122,7 +121,7 @@ export type CreateQuestionMutation = (
     & Pick<Question, 'id' | 'title' | 'content' | 'category' | 'votes' | 'tags'>
     & { author: (
       { __typename?: 'User' }
-      & Pick<User, 'id'>
+      & Pick<User, 'id' | 'avatar'>
     ) }
   ) }
 );
@@ -156,20 +155,16 @@ export type RegisterMutation = (
   ) }
 );
 
-export type QuestionQueryVariables = Exact<{
+export type CountVotesMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type QuestionQuery = (
-  { __typename?: 'Query' }
-  & { question?: Maybe<(
+export type CountVotesMutation = (
+  { __typename?: 'Mutation' }
+  & { countVotes?: Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, 'title' | 'id' | 'category' | 'content' | 'votes' | 'tags'>
-    & { author: (
-      { __typename?: 'User' }
-      & Pick<User, 'id'>
-    ) }
+    & Pick<Question, 'votes'>
   )> }
 );
 
@@ -183,7 +178,7 @@ export type QuestionsQuery = (
     & Pick<Question, 'title' | 'id' | 'category' | 'content' | 'votes' | 'tags'>
     & { author: (
       { __typename?: 'User' }
-      & Pick<User, 'id'>
+      & Pick<User, 'id' | 'avatar'>
     ) }
   )> }
 );
@@ -200,6 +195,7 @@ export const CreateQuestionDocument = gql`
     category
     author {
       id
+      avatar
     }
     votes
     tags
@@ -304,49 +300,39 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
-export const QuestionDocument = gql`
-    query Question($id: String!) {
-  question(id: $id) {
-    title
-    id
-    author {
-      id
-    }
-    category
-    content
+export const CountVotesDocument = gql`
+    mutation CountVotes($id: String!) {
+  countVotes(id: $id) {
     votes
-    tags
   }
 }
     `;
+export type CountVotesMutationFn = Apollo.MutationFunction<CountVotesMutation, CountVotesMutationVariables>;
 
 /**
- * __useQuestionQuery__
+ * __useCountVotesMutation__
  *
- * To run a query within a React component, call `useQuestionQuery` and pass it any options that fit your needs.
- * When your component renders, `useQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useCountVotesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCountVotesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useQuestionQuery({
+ * const [countVotesMutation, { data, loading, error }] = useCountVotesMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useQuestionQuery(baseOptions: Apollo.QueryHookOptions<QuestionQuery, QuestionQueryVariables>) {
+export function useCountVotesMutation(baseOptions?: Apollo.MutationHookOptions<CountVotesMutation, CountVotesMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<QuestionQuery, QuestionQueryVariables>(QuestionDocument, options);
+        return Apollo.useMutation<CountVotesMutation, CountVotesMutationVariables>(CountVotesDocument, options);
       }
-export function useQuestionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionQuery, QuestionQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<QuestionQuery, QuestionQueryVariables>(QuestionDocument, options);
-        }
-export type QuestionQueryHookResult = ReturnType<typeof useQuestionQuery>;
-export type QuestionLazyQueryHookResult = ReturnType<typeof useQuestionLazyQuery>;
-export type QuestionQueryResult = Apollo.QueryResult<QuestionQuery, QuestionQueryVariables>;
+export type CountVotesMutationHookResult = ReturnType<typeof useCountVotesMutation>;
+export type CountVotesMutationResult = Apollo.MutationResult<CountVotesMutation>;
+export type CountVotesMutationOptions = Apollo.BaseMutationOptions<CountVotesMutation, CountVotesMutationVariables>;
 export const QuestionsDocument = gql`
     query Questions {
   questions {
@@ -354,6 +340,7 @@ export const QuestionsDocument = gql`
     id
     author {
       id
+      avatar
     }
     category
     content

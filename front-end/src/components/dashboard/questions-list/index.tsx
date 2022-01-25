@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Card, Avatar, Badge } from "antd";
-import { SendOutlined, LikeOutlined } from "@ant-design/icons";
+import { SendOutlined, LikeOutlined, CommentOutlined } from "@ant-design/icons";
 
 import "../dashboard.css";
 
@@ -12,12 +12,10 @@ import QuestionsContext from "../../../contexts/QuestionsProvider";
 const { Meta } = Card;
 
 const QuestionsList = () => {
-  const { allQuestions, error } = React.useContext(QuestionsContext);
+  const { allQuestions } = React.useContext(QuestionsContext);
   const [selectedItem, setSelectedItem] = React.useState<Question>();
-  const [countLikes, setCountLikes] = React.useState(
-    selectedItem ? selectedItem.votes : 0
-  );
-
+  const [countComments, setCountComments] = React.useState(0);
+  console.log(allQuestions);
   return (
     <>
       {allQuestions?.length ? (
@@ -28,16 +26,7 @@ const QuestionsList = () => {
                 key={question.id}
                 style={{ width: 300, marginBottom: 30 }}
                 actions={[
-                  <Badge
-                    count={countLikes}
-                    size="small"
-                    style={{ backgroundColor: "#fff", color: "#999" }}
-                  >
-                    <LikeOutlined
-                      key="vote"
-                      onClick={() => setCountLikes(countLikes + 1)}
-                    />
-                  </Badge>,
+                  <CommentOutlined />,
                   <SendOutlined
                     key="answer"
                     onClick={() => setSelectedItem(question as Question)}
@@ -45,9 +34,7 @@ const QuestionsList = () => {
                 ]}
               >
                 <Meta
-                  avatar={
-                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                  }
+                  avatar={<Avatar src={question.author.avatar} />}
                   title={question.title}
                   description={question.content}
                 />
@@ -59,14 +46,12 @@ const QuestionsList = () => {
               <QuestionDetail
                 selectedItem={selectedItem}
                 setSelectedItem={setSelectedItem}
-                setCountLikes={setCountLikes}
-                countLikes={countLikes}
               />
             )}
           </div>
         </div>
       ) : (
-        <p>{error}</p>
+        <p>Oops, there was a problem</p>
       )}
     </>
   );

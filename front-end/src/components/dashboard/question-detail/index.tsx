@@ -5,7 +5,7 @@ import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
 
 import "./question-detail.css";
 import Answer from "./Answer";
-import { Question } from "../../../generated/graphql";
+import { Question, useCountVotesMutation } from "../../../generated/graphql";
 
 const { Meta } = Card;
 const { Paragraph } = Typography;
@@ -13,16 +13,21 @@ const { Paragraph } = Typography;
 type Props = {
   selectedItem: Question;
   setSelectedItem: React.Dispatch<React.SetStateAction<Question | undefined>>;
-  setCountLikes: React.Dispatch<React.SetStateAction<number>>;
-  countLikes: number;
 };
 
-const QuestionDetail = ({
-  selectedItem,
-  setSelectedItem,
-  setCountLikes,
-  countLikes,
-}: Props) => {
+const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
+  const [votes] = useCountVotesMutation();
+  const [countLikes, setCountLikes] = React.useState(selectedItem.votes);
+
+  const handleVotes = async () => {
+    const { data } = await votes({
+      variables: { id: selectedItem.id },
+    });
+    if (data?.countVotes?.votes) {
+      setCountLikes(data?.countVotes?.votes);
+    }
+  };
+
   return (
     <Card
       bordered={false}
@@ -36,17 +41,12 @@ const QuestionDetail = ({
     >
       <div className="question-header">
         <Meta
-          avatar={
-            <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-          }
+          avatar={<Avatar src={selectedItem.author.avatar} />}
           title={selectedItem.title}
         />
         <div>
           <Badge count={countLikes} style={{ backgroundColor: "#3388CB" }} />
-          <LikeOutlined
-            key="vote"
-            onClick={() => setCountLikes(countLikes + 1)}
-          />
+          <LikeOutlined key="vote" onClick={handleVotes} />
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import {
   ArrayType,
   Entity,
+  IdentifiedReference,
   ManyToOne,
   PrimaryKey,
   Property,
@@ -30,8 +31,8 @@ export class Question {
   updatedAt: Date = new Date();
 
   @Field(() => User)
-  @ManyToOne(() => User, { mapToPk: true })
-  author: User;
+  @ManyToOne(() => User, { mapToPk: true, wrappedReference: true })
+  author!: User;
 
   @Field()
   @Property({ type: "text" })

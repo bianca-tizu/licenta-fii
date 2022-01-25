@@ -4,6 +4,7 @@ query Questions {
     id
     author {
       id
+      avatar
     }
     category
     content

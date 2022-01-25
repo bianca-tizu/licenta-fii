@@ -9,6 +9,7 @@ import {
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
   Root,
 } from "type-graphql";
@@ -74,7 +75,7 @@ export class UserResolver {
       if (!user) {
         throw new AuthenticationError("Error signing in");
       }
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
       return { token };
     } catch (err) {
       console.log(err);
@@ -97,7 +98,7 @@ export class UserResolver {
       throw new AuthenticationError("Invalid Password!");
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
     return { token };
   }
 

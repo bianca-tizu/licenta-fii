@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-export const getToken = (id: any) => {
+export const getToken = (id: string) => {
   const today = new Date();
   const exp = new Date(today);
   exp.setDate(today.getDate() + 60);
