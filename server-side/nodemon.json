@@ -1,0 +1,7 @@
+{
+  "env": {
+    "mongoDatabase": "Fii-talks-db",
+    "mongoUserName": "admind",
+    "mongoUserPassword": "admin"
+  }
+}
