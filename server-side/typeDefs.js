@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type User {
-    id: ID
+    _id: ID
     email: String
     username: String
     password: String
@@ -12,7 +12,7 @@ const typeDefs = gql`
   }
 
   type Question {
-    id: ID
+    _id: ID
     author: User
     title: String
     category: String
@@ -42,9 +42,20 @@ const typeDefs = gql`
     studentId: String
   }
 
+  input LoginInput {
+    email: String
+    password: String
+  }
+
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
   type Mutation {
     createQuestion(question: QuestionInput): Question
-    registerUser(user: RegisterInput): User
+    registerUser(user: RegisterInput): AuthPayload!
+    loginUser(user: LoginInput): AuthPayload!
   }
 `;
 

@@ -7,12 +7,23 @@ import cors from "cors";
 import typeDefs from "./typeDefs.js";
 import resolvers from "./resolvers/index.js";
 import errorController from "./errorController.js";
+import { getUser } from "./utils/getUser.js";
+
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const startServer = async () => {
   const app = express();
   const server = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
+    context: ({ req }) => {
+      const token = req.get("Authorization") || "";
+      const user = getUser(token);
+
+      return { user };
+    },
   });
   await server.start();
   server.applyMiddleware({ app });

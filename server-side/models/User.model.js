@@ -1,17 +1,14 @@
 import mongoose from "mongoose";
-import { QuestionSchema } from "./Question.model.js";
+import validator from "validator";
+import { Question } from "./Question.model.js";
 
 export const UserSchema = new mongoose.Schema({
-  id: {
-    type: mongoose.ObjectId,
-    required: true,
-    default: () => {
-      return new mongoose.Types.ObjectId();
-    },
-  },
   email: {
     type: String,
-    required: true,
+    required: [true, "Enter an email address"],
+    unique: [true, "That email address is taken"],
+    lowercase: true,
+    validate: [validator.isEmail, "Enter a valid email address"],
   },
   username: {
     type: String,
@@ -19,7 +16,8 @@ export const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "Enter a password"],
+    minLength: [4, "Password should be at least 4 characters"],
   },
   studentId: {
     type: String,
@@ -29,9 +27,7 @@ export const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  questions: {
-    type: [QuestionSchema],
-  },
+  questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
 });
 
 export const User = mongoose.model("User", UserSchema);

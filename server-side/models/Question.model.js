@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
+import { User } from "./User.model.js";
 
 export const QuestionSchema = new mongoose.Schema({
-  id: {
-    type: mongoose.ObjectId,
-  },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -26,6 +24,9 @@ export const QuestionSchema = new mongoose.Schema({
   tags: {
     type: [String],
     required: true,
+  },
+  createdAt: {
+    type: Date,
   },
 });
 
