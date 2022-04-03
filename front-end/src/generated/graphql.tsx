@@ -14,96 +14,85 @@ export type Scalars = {
   Float: number;
 };
 
-export type CreateQuestionInput = {
-  title: Scalars['String'];
-  category: Scalars['String'];
-  content: Scalars['String'];
-  tags: Array<Scalars['String']>;
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  token: Scalars['String'];
+  user: User;
 };
 
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  user?: Maybe<User>;
-  token: Scalars['String'];
+export type LoginInput = {
+  email?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  register: LoginResponse;
-  login: LoginResponse;
-  createQuestion: Question;
-  updateQuestion?: Maybe<Question>;
-  countVotes?: Maybe<Question>;
-  deleteQuestion: Scalars['Boolean'];
-};
-
-
-export type MutationRegisterArgs = {
-  studentId: Scalars['String'];
-  input: LoginInput;
-};
-
-
-export type MutationLoginArgs = {
-  input: LoginInput;
+  createQuestion?: Maybe<Question>;
+  registerUser: AuthPayload;
+  loginUser: AuthPayload;
 };
 
 
 export type MutationCreateQuestionArgs = {
-  questionDetails: CreateQuestionInput;
+  question?: Maybe<QuestionInput>;
 };
 
 
-export type MutationUpdateQuestionArgs = {
-  question?: Maybe<Scalars['String']>;
+export type MutationRegisterUserArgs = {
+  user?: Maybe<RegisterInput>;
 };
 
 
-export type MutationCountVotesArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationDeleteQuestionArgs = {
-  id: Scalars['String'];
+export type MutationLoginUserArgs = {
+  user?: Maybe<LoginInput>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  questions: Array<Question>;
+  hello?: Maybe<Scalars['String']>;
+  currentUser?: Maybe<User>;
+  getAllQuestions?: Maybe<Array<Maybe<Question>>>;
+  getQuestion?: Maybe<Question>;
+};
+
+
+export type QueryGetQuestionArgs = {
+  id?: Maybe<Scalars['ID']>;
 };
 
 export type Question = {
   __typename?: 'Question';
-  _id: Scalars['String'];
-  id: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  author: User;
-  title: Scalars['String'];
-  category: Scalars['String'];
-  content: Scalars['String'];
-  votes: Scalars['Float'];
-  tags: Array<Scalars['String']>;
+  _id?: Maybe<Scalars['ID']>;
+  author?: Maybe<User>;
+  title?: Maybe<Scalars['String']>;
+  category?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  votes?: Maybe<Scalars['Int']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type QuestionInput = {
+  title?: Maybe<Scalars['String']>;
+  category?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type RegisterInput = {
+  email?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  studentId?: Maybe<Scalars['String']>;
 };
 
 export type User = {
   __typename?: 'User';
-  _id: Scalars['String'];
-  id: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  email: Scalars['String'];
-  username: Scalars['String'];
-  studentId: Scalars['String'];
-  session: Scalars['String'];
-  token: Scalars['String'];
-  avatar: Scalars['String'];
-};
-
-export type LoginInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+  _id?: Maybe<Scalars['ID']>;
+  email?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  studentId?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  questions?: Maybe<Array<Maybe<Question>>>;
 };
 
 export type CreateQuestionMutationVariables = Exact<{
@@ -116,14 +105,14 @@ export type CreateQuestionMutationVariables = Exact<{
 
 export type CreateQuestionMutation = (
   { __typename?: 'Mutation' }
-  & { createQuestion: (
+  & { createQuestion?: Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, 'id' | 'title' | 'content' | 'category' | 'votes' | 'tags'>
-    & { author: (
+    & Pick<Question, '_id' | 'title' | 'content' | 'category' | 'votes' | 'tags'>
+    & { author?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'avatar'>
-    ) }
-  ) }
+      & Pick<User, '_id'>
+    )> }
+  )> }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -134,9 +123,9 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = (
   { __typename?: 'Mutation' }
-  & { login: (
-    { __typename?: 'LoginResponse' }
-    & Pick<LoginResponse, 'token'>
+  & { loginUser: (
+    { __typename?: 'AuthPayload' }
+    & Pick<AuthPayload, 'token'>
   ) }
 );
 
@@ -149,23 +138,10 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
-  & { register: (
-    { __typename?: 'LoginResponse' }
-    & Pick<LoginResponse, 'token'>
+  & { registerUser: (
+    { __typename?: 'AuthPayload' }
+    & Pick<AuthPayload, 'token'>
   ) }
-);
-
-export type CountVotesMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type CountVotesMutation = (
-  { __typename?: 'Mutation' }
-  & { countVotes?: Maybe<(
-    { __typename?: 'Question' }
-    & Pick<Question, 'votes'>
-  )> }
 );
 
 export type QuestionsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -173,29 +149,28 @@ export type QuestionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type QuestionsQuery = (
   { __typename?: 'Query' }
-  & { questions: Array<(
+  & { getAllQuestions?: Maybe<Array<Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, 'title' | 'id' | 'category' | 'content' | 'votes' | 'tags'>
-    & { author: (
+    & Pick<Question, 'title' | '_id' | 'category' | 'content' | 'votes' | 'tags'>
+    & { author?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'avatar'>
-    ) }
-  )> }
+      & Pick<User, '_id' | 'avatarUrl'>
+    )> }
+  )>>> }
 );
 
 
 export const CreateQuestionDocument = gql`
     mutation CreateQuestion($title: String!, $category: String!, $content: String!, $tags: [String!]!) {
   createQuestion(
-    questionDetails: {title: $title, content: $content, category: $category, tags: $tags}
+    question: {title: $title, content: $content, category: $category, tags: $tags}
   ) {
-    id
+    _id
     title
     content
     category
     author {
-      id
-      avatar
+      _id
     }
     votes
     tags
@@ -233,7 +208,7 @@ export type CreateQuestionMutationResult = Apollo.MutationResult<CreateQuestionM
 export type CreateQuestionMutationOptions = Apollo.BaseMutationOptions<CreateQuestionMutation, CreateQuestionMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
-  login(input: {email: $email, password: $password}) {
+  loginUser(user: {email: $email, password: $password}) {
     token
   }
 }
@@ -267,7 +242,7 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($sid: String!, $email: String!, $password: String!) {
-  register(studentId: $sid, input: {email: $email, password: $password}) {
+  registerUser(user: {studentId: $sid, email: $email, password: $password}) {
     token
   }
 }
@@ -300,47 +275,14 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
-export const CountVotesDocument = gql`
-    mutation CountVotes($id: String!) {
-  countVotes(id: $id) {
-    votes
-  }
-}
-    `;
-export type CountVotesMutationFn = Apollo.MutationFunction<CountVotesMutation, CountVotesMutationVariables>;
-
-/**
- * __useCountVotesMutation__
- *
- * To run a mutation, you first call `useCountVotesMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCountVotesMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [countVotesMutation, { data, loading, error }] = useCountVotesMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useCountVotesMutation(baseOptions?: Apollo.MutationHookOptions<CountVotesMutation, CountVotesMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CountVotesMutation, CountVotesMutationVariables>(CountVotesDocument, options);
-      }
-export type CountVotesMutationHookResult = ReturnType<typeof useCountVotesMutation>;
-export type CountVotesMutationResult = Apollo.MutationResult<CountVotesMutation>;
-export type CountVotesMutationOptions = Apollo.BaseMutationOptions<CountVotesMutation, CountVotesMutationVariables>;
 export const QuestionsDocument = gql`
     query Questions {
-  questions {
+  getAllQuestions {
     title
-    id
+    _id
     author {
-      id
-      avatar
+      _id
+      avatarUrl
     }
     category
     content

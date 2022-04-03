@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import argon2 from "argon2";
 import jsonwebtoken from "jsonwebtoken";
 
 import { User } from "../models/User.model.js";
@@ -10,22 +10,24 @@ dotenv.config();
 
 const userResolver = {
   Query: {
-    helloUser: (parent, args, { user }) => {
+    currentUser: async (parent, args, { user }) => {
       if (!user) {
-        throw new Error("You are not authentificated");
+        throw new AuthenticationError("You are not authentificated");
       }
-      return "hello from user";
+      const userData = await User.find({ _id: user._id });
+      return userData;
     },
   },
 
   Mutation: {
-    registerUser: async (parent, args) => {
+    registerUser: async (parent, args, context, info) => {
       const { email, password, studentId } = args.user;
 
       const emailAddress = email.trim().toLowerCase();
       const username = await emailAddress.split("@")[0];
       const avatarUrl = gravatar(emailAddress);
-      const hashedPassword = await bcrypt.hash(password, 12);
+      const hashedPassword = await argon2.hash(password);
+
       const userCheck = await User.findOne({
         $or: [
           {
@@ -38,7 +40,7 @@ const userResolver = {
       });
 
       if (userCheck) {
-        throw new Error("User already exists");
+        throw new ApolloError("User already exists");
       }
 
       const newUser = new User({
@@ -49,11 +51,13 @@ const userResolver = {
         avatarUrl: avatarUrl,
       });
       await newUser.save();
+
       const token = jsonwebtoken.sign(
-        { id: newUser.id, email: newUser.emailAddress },
+        { _id: newUser._id, email: newUser.emailAddress },
         process.env.JWT_SECRET,
         { expiresIn: "1y" }
       );
+
       return { user: newUser, token };
     },
 
@@ -63,16 +67,17 @@ const userResolver = {
       const user = await User.findOne({ where: { email: email } });
 
       if (!user) {
-        throw new Error("No user with email.");
+        throw new Error("No user with this email.");
       }
 
-      const checkPassword = await bcrypt.compare(password, user.password);
+      const checkPassword = await argon2.verify(user.password, password);
+
       if (!checkPassword) {
         throw new Error("Invalid password");
       }
 
       const token = jsonwebtoken.sign(
-        { id: user.id, email: user.emailAddress },
+        { _id: user._id, email: user.emailAddress },
         process.env.JWT_SECRET,
         { expiresIn: "1y" }
       );

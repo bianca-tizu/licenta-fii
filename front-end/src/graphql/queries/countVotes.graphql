@@ -1,5 +1,0 @@
-mutation CountVotes($id: String!) {
-  countVotes(id: $id) {
-    votes
-  }
-}

@@ -15,7 +15,7 @@ const QuestionsList = () => {
   const { allQuestions } = React.useContext(QuestionsContext);
   const [selectedItem, setSelectedItem] = React.useState<Question>();
   const [countComments, setCountComments] = React.useState(0);
-  console.log(allQuestions);
+  console.log("allQuestions", allQuestions);
   return (
     <>
       {allQuestions?.length ? (
@@ -23,7 +23,7 @@ const QuestionsList = () => {
           <div className="column" style={{ marginLeft: "105px" }}>
             {allQuestions.map((question) => (
               <Card
-                key={question.id}
+                key={question._id}
                 style={{ width: 300, marginBottom: 30 }}
                 actions={[
                   <CommentOutlined />,
@@ -34,7 +34,7 @@ const QuestionsList = () => {
                 ]}
               >
                 <Meta
-                  avatar={<Avatar src={question.author.avatar} />}
+                  avatar={<Avatar src={question.author?.avatarUrl} />}
                   title={question.title}
                   description={question.content}
                 />

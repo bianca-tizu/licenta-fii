@@ -5,20 +5,19 @@ mutation CreateQuestion(
   $tags: [String!]!
 ) {
   createQuestion(
-    questionDetails: {
+    question: {
       title: $title
       content: $content
       category: $category
       tags: $tags
     }
   ) {
-    id
+    _id
     title
     content
     category
     author {
-      id
-      avatar
+      _id
     }
     votes
     tags

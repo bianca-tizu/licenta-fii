@@ -7,16 +7,21 @@ const questionResolver = {
       return "hello";
     },
 
-    getAllQuestions: async (context) => {
+    getAllQuestions: async (parent, args, context) => {
       if (!context.user) {
         throw new Error("You're not allowed to get all questions");
       }
-      return await Question.find();
+      return await Question.find().populate("author");
     },
 
-    getQuestion: async (_parent, args, _context) => {
+    getQuestion: async (parent, args, context) => {
       const { id } = args;
-      return await Question.findById(id).populate("author");
+
+      if (!context.user) {
+        throw new Error("You're not allowed to get all questions");
+      }
+
+      return await Question.findById(id).populate("author", "-_id");
     },
   },
 
@@ -33,9 +38,11 @@ const questionResolver = {
         content,
         category,
         tags,
-        author: context.user.id,
+        author: context.user._id,
         createdAt: Date.now(),
       });
+      console.log("Create Question", question);
+      console.log("context", context);
 
       await Question.create(question);
       await User.findByIdAndUpdate(

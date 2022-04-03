@@ -21,12 +21,10 @@ const QuestionsContext = React.createContext<QuestionsContextData>(
 export const QuestionsProvider: React.FC = ({ children }) => {
   const { data, error } = useQuestionsQuery();
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
-  console.log(data, error);
 
   React.useEffect(() => {
-    console.log(data, error);
-    if (data?.questions) {
-      setAllQuestions(data.questions as Question[]);
+    if (data?.getAllQuestions) {
+      setAllQuestions(data.getAllQuestions as Question[]);
     }
   }, [data]);
 

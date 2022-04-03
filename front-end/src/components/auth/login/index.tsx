@@ -18,11 +18,9 @@ const LoginForm = () => {
     const response = await login({
       variables: { email: values.email, password: values.password },
     });
-
-    console.log(response);
-
-    if (response.data) {
-      sessionStorage.setItem("token", response.data.login.token);
+    console.log(values.password);
+    if (response.data?.loginUser.token) {
+      sessionStorage.setItem("token", response.data.loginUser.token);
       history.push("/dashboard");
     }
   };

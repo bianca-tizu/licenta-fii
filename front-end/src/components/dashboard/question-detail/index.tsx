@@ -5,7 +5,7 @@ import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
 
 import "./question-detail.css";
 import Answer from "./Answer";
-import { Question, useCountVotesMutation } from "../../../generated/graphql";
+import { Question } from "../../../generated/graphql";
 
 const { Meta } = Card;
 const { Paragraph } = Typography;
@@ -15,17 +15,20 @@ type Props = {
   setSelectedItem: React.Dispatch<React.SetStateAction<Question | undefined>>;
 };
 
+const useCountVotesMutation = () => {
+  return [""];
+};
 const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
   const [votes] = useCountVotesMutation();
   const [countLikes, setCountLikes] = React.useState(selectedItem.votes);
 
   const handleVotes = async () => {
-    const { data } = await votes({
-      variables: { id: selectedItem.id },
-    });
-    if (data?.countVotes?.votes) {
-      setCountLikes(data?.countVotes?.votes);
-    }
+    // const { data } = await votes({
+    //   variables: { id: selectedItem.id },
+    // });
+    // if (data?.countVotes?.votes) {
+    //   setCountLikes(data?.countVotes?.votes);
+    // }
   };
 
   return (
@@ -34,14 +37,14 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
       style={{ width: "90%", marginLeft: "30px" }}
       extra={[
         <CloseCircleOutlined
-          key={selectedItem.id}
+          // key={selectedItem.id}
           onClick={() => setSelectedItem(undefined)}
         />,
       ]}
     >
       <div className="question-header">
         <Meta
-          avatar={<Avatar src={selectedItem.author.avatar} />}
+          // avatar={<Avatar src={selectedItem.author.avatar} />}
           title={selectedItem.title}
         />
         <div>
@@ -50,10 +53,10 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
         </div>
       </div>
 
-      <Paragraph style={{ margin: "10px 0" }}>{selectedItem.content}</Paragraph>
+      {/* <Paragraph style={{ margin: "10px 0" }}>{selectedItem.content}</Paragraph>
       {selectedItem.tags.map((tag) => (
         <Tag key={selectedItem.id}>{tag}</Tag>
-      ))}
+      ))} */}
       <Divider />
       <Answer>
         <Answer></Answer>

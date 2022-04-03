@@ -12,7 +12,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [register] = useRegisterMutation();
-  const [error, setError] = React.useState({});
+  const [hasError, setHasError] = React.useState(false);
 
   const onFinish = async (values: any) => {
     const response = await register({
@@ -22,9 +22,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         password: values.password,
       },
     });
-
-    if (response.data?.register) {
-      setIsRegistered(false);
+    try {
+      if (response) {
+        setIsRegistered(false);
+      }
+    } catch (err) {
+      setHasError(true);
     }
   };
 

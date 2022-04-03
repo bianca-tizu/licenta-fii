@@ -1,10 +1,10 @@
 query Questions {
-  questions {
+  getAllQuestions {
     title
-    id
+    _id
     author {
-      id
-      avatar
+      _id
+      avatarUrl
     }
     category
     content
