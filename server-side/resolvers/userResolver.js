@@ -40,7 +40,7 @@ const userResolver = {
       });
 
       if (userCheck) {
-        throw new ApolloError("User already exists");
+        throw new ForbiddenError("User already exists");
       }
 
       const newUser = new User({
@@ -67,13 +67,13 @@ const userResolver = {
       const user = await User.findOne({ where: { email: email } });
 
       if (!user) {
-        throw new Error("No user with this email.");
+        throw new UserInputError("No user with this email.");
       }
 
       const checkPassword = await argon2.verify(user.password, password);
 
       if (!checkPassword) {
-        throw new Error("Invalid password");
+        throw new UserInputError("Invalid password");
       }
 
       const token = jsonwebtoken.sign(

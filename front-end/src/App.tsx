@@ -1,11 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 
 import {
   ApolloClient,
   ApolloProvider,
   createHttpLink,
+  from,
   InMemoryCache,
 } from "@apollo/client";
 
@@ -32,8 +34,34 @@ const authLink = setContext(async (req, { headers }) => {
   };
 });
 
+const errorLink = onError(
+  ({ graphQLErrors, networkError, operation, forward }) => {
+    const authToken = sessionStorage.getItem("token");
+
+    if (graphQLErrors) {
+      for (let err of graphQLErrors) {
+        switch (err.extensions?.code) {
+          case "UNAUTHENTICATED":
+            const headers = operation.getContext().headers;
+            operation.setContext({
+              headers: {
+                ...headers,
+                authorization: authToken ? `Bearer ${authToken}` : "",
+              },
+            });
+            return forward(operation);
+        }
+      }
+    }
+
+    if (networkError) {
+      console.log(`[Network error]: ${networkError}`);
+    }
+  }
+);
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: from([errorLink, authLink.concat(httpLink)]),
   cache: new InMemoryCache(),
 });
 
