@@ -1,3 +1,4 @@
+import { UserInputError } from "apollo-server";
 import argon2 from "argon2";
 import jsonwebtoken from "jsonwebtoken";
 

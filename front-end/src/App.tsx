@@ -39,6 +39,7 @@ const errorLink = onError(
     const authToken = sessionStorage.getItem("token");
 
     if (graphQLErrors) {
+      console.log("graphql error");
       for (let err of graphQLErrors) {
         switch (err.extensions?.code) {
           case "UNAUTHENTICATED":
@@ -50,6 +51,8 @@ const errorLink = onError(
               },
             });
             return forward(operation);
+          case "BAD_USER_INPUT":
+            console.log("OOPS");
         }
       }
     }
@@ -57,11 +60,12 @@ const errorLink = onError(
     if (networkError) {
       console.log(`[Network error]: ${networkError}`);
     }
+    console.log("Other type of error");
   }
 );
 
 const client = new ApolloClient({
-  link: from([errorLink, authLink.concat(httpLink)]),
+  link: from([authLink.concat(httpLink), errorLink]),
   cache: new InMemoryCache(),
 });
 

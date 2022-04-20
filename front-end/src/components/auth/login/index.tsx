@@ -1,27 +1,37 @@
 import { Form, Input, Button, Checkbox, Typography } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 
-import "./login.css";
-
-import { useLoginMutation } from "../../../generated/graphql";
 import React from "react";
 import { useHistory } from "react-router";
+
+import { useLoginMutation } from "../../../generated/graphql";
+
+import "./login.css";
 
 const { Title, Text } = Typography;
 
 const LoginForm = () => {
   const [login] = useLoginMutation();
+  const [error, setError] = React.useState("");
 
   const history = useHistory();
 
   const onFinish = async (values: any) => {
-    const response = await login({
-      variables: { email: values.email, password: values.password },
-    });
-    console.log(values.password);
-    if (response.data?.loginUser.token) {
-      sessionStorage.setItem("token", response.data.loginUser.token);
-      history.push("/dashboard");
+    try {
+      setError("");
+
+      const response = await login({
+        variables: { email: values.email, password: values.password },
+      });
+
+      if (response.data?.loginUser.token) {
+        sessionStorage.setItem("token", response.data.loginUser.token);
+        history.push("/dashboard");
+      } else if (!response.data?.loginUser.token) {
+        history.push("/");
+      }
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -33,6 +43,12 @@ const LoginForm = () => {
       onFinish={onFinish}
     >
       <Title level={3}>Welcome back!</Title>
+      {error && (
+        <p style={{ color: "red" }}>
+          <LoginOutlined style={{ color: "#ff0000", marginRight: "5px" }} />
+          {error}
+        </p>
+      )}
       <Text type="secondary">Please log in to your account.</Text>
       <Form.Item
         name="email"
@@ -63,12 +79,6 @@ const LoginForm = () => {
         <Button htmlType="submit" className="login-form-button">
           Log in
         </Button>
-        {/* {error === "Incorrect password" && (
-          <p style={{ color: "red", marginTop: "10px" }}>Wrong password</p>
-        )}
-        {error === "Incorrect e-mail" && (
-          <p style={{ color: "red", marginTop: "10px" }}>Wrong e-mail</p>
-        )} */}
       </Form.Item>
     </Form>
   );
