@@ -1,10 +1,11 @@
-import { UserInputError } from "apollo-server";
-import argon2 from "argon2";
+import { UserInputError, ForbiddenError } from "apollo-server";
 import jsonwebtoken from "jsonwebtoken";
+import argon2 from "argon2";
 
 import { User } from "../models/User.model.js";
 
 import { gravatar } from "../assets/gravatar.js";
+
 import dotenv from "dotenv";
 
 dotenv.config();

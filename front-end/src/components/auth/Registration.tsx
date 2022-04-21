@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
+import { LoginOutlined } from "@ant-design/icons";
 
 import { useRegisterMutation } from "../../generated/graphql";
 
@@ -12,22 +13,23 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [register] = useRegisterMutation();
-  const [hasError, setHasError] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   const onFinish = async (values: any) => {
-    const response = await register({
-      variables: {
-        sid: values.sid,
-        email: values.email,
-        password: values.password,
-      },
-    });
     try {
+      const response = await register({
+        variables: {
+          sid: values.sid,
+          email: values.email,
+          password: values.password,
+        },
+      });
       if (response) {
+        setError("");
         setIsRegistered(false);
       }
-    } catch (err) {
-      setHasError(true);
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -42,16 +44,16 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       <Form.Item
         name="email"
         label="E-mail"
-        // rules={[
-        //   {
-        //     type: "email",
-        //     message: "The input is not valid e-mail",
-        //   },
-        //   {
-        //     required: true,
-        //     message: "Please enter your e-mail",
-        //   },
-        // ]}
+        rules={[
+          {
+            type: "email",
+            message: "The e-mail is not valid",
+          },
+          {
+            required: true,
+            message: "Please enter an e-mail",
+          },
+        ]}
       >
         <Input />
       </Form.Item>
@@ -63,21 +65,21 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         rules={[
           {
             required: true,
-            message: "Please enter your password",
+            message: "Please enter a password",
           },
-          // {
-          //   validator(_, value) {
-          //     if (
-          //       !value ||
-          //       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/.test(value)
-          //     ) {
-          //       return Promise.resolve();
-          //     }
-          //     return Promise.reject(
-          //       new Error("The entered password should be stronger!")
-          //     );
-          //   },
-          // },
+          {
+            validator(_, value) {
+              if (
+                !value ||
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/.test(value)
+              ) {
+                return Promise.resolve();
+              }
+              return Promise.reject(
+                new Error("The entered password should be stronger!")
+              );
+            },
+          },
         ]}
         hasFeedback
       >
@@ -92,19 +94,19 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         rules={[
           {
             required: true,
-            message: "Please confirm your password!",
+            message: "Please confirm the password!",
           },
-          // ({ getFieldValue }) => ({
-          //   validator(_, value) {
-          //     if (!value || getFieldValue("password") === value) {
-          //       return Promise.resolve();
-          //     }
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue("password") === value) {
+                return Promise.resolve();
+              }
 
-          //     return Promise.reject(
-          //       new Error("The two passwords that you entered do not match!")
-          //     );
-          //   },
-          // }),
+              return Promise.reject(
+                new Error("The two passwords do not match!")
+              );
+            },
+          }),
         ]}
       >
         <Input.Password />
@@ -120,14 +122,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             message: "Please enter your student Id number",
             whitespace: true,
           },
-          // {
-          //   validator(_, value) {
-          //     if (!value || value.length > 15) {
-          //       return Promise.resolve();
-          //     }
-          //     return Promise.reject(new Error("Student Id is not valid!"));
-          //   },
-          // },
+          {
+            validator(_, value) {
+              if (!value || value.length > 15) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error("Student id is not valid!"));
+            },
+          },
         ]}
       >
         <Input />
@@ -136,11 +138,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         <Button type="primary" htmlType="submit">
           Register
         </Button>
-        {/* {error === "email already in use" && (
+        {error && (
           <p style={{ color: "red", marginTop: "10px" }}>
-            Account already exists!
+            <LoginOutlined style={{ color: "#ff0000", marginRight: "5px" }} />
+            {error}
           </p>
-        )} */}
+        )}
         <p style={{ marginTop: "10px" }}>
           You already have an account? Login{" "}
           <span

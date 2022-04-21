@@ -53,7 +53,7 @@ const LoginForm = () => {
       <Form.Item
         name="email"
         className="username-input"
-        rules={[{ required: true, message: "Please input your email" }]}
+        rules={[{ required: true, message: "Please enter an email" }]}
       >
         <Input
           prefix={<UserOutlined className="site-form-item-icon" />}
@@ -62,7 +62,7 @@ const LoginForm = () => {
       </Form.Item>
       <Form.Item
         name="password"
-        rules={[{ required: true, message: "Please input your password" }]}
+        rules={[{ required: true, message: "Please enter a password" }]}
       >
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
