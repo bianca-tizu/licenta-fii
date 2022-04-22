@@ -1,11 +1,12 @@
 import React from "react";
+import { Form, Select, Button, Input, notification } from "antd";
 
-import { Form, Select, Button, Upload, Input, notification } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 import Tags from "./Tags";
-
 import "./add-question.css";
+
 import {
   Question,
   useCreateQuestionMutation,
@@ -104,30 +105,25 @@ const AddQuestion = ({
       {/* Description of the question */}
       <Form.Item
         name="content"
+        valuePropName="data"
+        getValueFromEvent={(event: Event, editor: any) => {
+          const data = editor.getData();
+          return data;
+        }}
         rules={[{ required: true, message: "Please add some context" }]}
       >
-        <Input.TextArea
-          placeholder="Include all the information someone would need to answer your question"
-          showCount
-          maxLength={1000}
+        <CKEditor
+          editor={ClassicEditor}
+          data="<p>Hello from CKEditor 5!</p>"
+          onReady={(editor: any) => {
+            // You can store the "editor" and use when it is needed.
+            console.log("Editor is ready to use!", editor);
+          }}
+          onChange={(event: Event, editor: any) => {
+            const data = editor.getData();
+            console.log({ event, editor, data });
+          }}
         />
-      </Form.Item>
-
-      {/* Additional files */}
-      <Form.Item>
-        <Form.Item name="dragger" valuePropName="fileList" noStyle>
-          <Upload.Dragger name="files" action="/upload.do">
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Support for a single or bulk upload.
-            </p>
-          </Upload.Dragger>
-        </Form.Item>
       </Form.Item>
 
       {/* Tags */}

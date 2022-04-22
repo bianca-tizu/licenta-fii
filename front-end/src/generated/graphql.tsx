@@ -28,8 +28,8 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createQuestion?: Maybe<Question>;
-  registerUser: AuthPayload;
   loginUser: AuthPayload;
+  registerUser: AuthPayload;
 };
 
 
@@ -38,21 +38,21 @@ export type MutationCreateQuestionArgs = {
 };
 
 
-export type MutationRegisterUserArgs = {
-  user?: Maybe<RegisterInput>;
-};
-
-
 export type MutationLoginUserArgs = {
   user?: Maybe<LoginInput>;
 };
 
+
+export type MutationRegisterUserArgs = {
+  user?: Maybe<RegisterInput>;
+};
+
 export type Query = {
   __typename?: 'Query';
-  hello?: Maybe<Scalars['String']>;
   currentUser?: Maybe<User>;
   getAllQuestions?: Maybe<Array<Maybe<Question>>>;
   getQuestion?: Maybe<Question>;
+  hello?: Maybe<Scalars['String']>;
 };
 
 
@@ -64,18 +64,18 @@ export type Question = {
   __typename?: 'Question';
   _id?: Maybe<Scalars['ID']>;
   author?: Maybe<User>;
-  title?: Maybe<Scalars['String']>;
   category?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
-  votes?: Maybe<Scalars['Int']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  title?: Maybe<Scalars['String']>;
+  votes?: Maybe<Scalars['Int']>;
 };
 
 export type QuestionInput = {
-  title?: Maybe<Scalars['String']>;
   category?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  title?: Maybe<Scalars['String']>;
 };
 
 export type RegisterInput = {
@@ -87,12 +87,12 @@ export type RegisterInput = {
 export type User = {
   __typename?: 'User';
   _id?: Maybe<Scalars['ID']>;
-  email?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-  studentId?: Maybe<Scalars['String']>;
   avatarUrl?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
   questions?: Maybe<Array<Maybe<Question>>>;
+  studentId?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
 };
 
 export type CreateQuestionMutationVariables = Exact<{
