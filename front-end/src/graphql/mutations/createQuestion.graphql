@@ -18,6 +18,7 @@ mutation CreateQuestion(
     category
     author {
       _id
+      avatarUrl
     }
     votes
     tags

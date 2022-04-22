@@ -39,8 +39,8 @@ const AddQuestion = ({
   };
 
   const handlePostQuestion = async (values: CreateQuestionValuesType) => {
-    console.log("HANDLE POST", values, tags);
     setCreateQuestionLoading(true);
+
     try {
       const { title, category, content } = values;
       const response = await createQuestion({
@@ -96,9 +96,7 @@ const AddQuestion = ({
       {/* Title of the question */}
       <Form.Item
         name="title"
-        rules={[
-          { required: true, message: "Please add a title for your question" },
-        ]}
+        rules={[{ required: true, message: "Please add a title" }]}
       >
         <Input placeholder="Insert your title" />
       </Form.Item>
@@ -106,9 +104,7 @@ const AddQuestion = ({
       {/* Description of the question */}
       <Form.Item
         name="content"
-        rules={[
-          { required: true, message: "Please add context for your question" },
-        ]}
+        rules={[{ required: true, message: "Please add some context" }]}
       >
         <Input.TextArea
           placeholder="Include all the information someone would need to answer your question"

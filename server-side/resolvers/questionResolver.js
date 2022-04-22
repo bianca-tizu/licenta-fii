@@ -30,7 +30,7 @@ const questionResolver = {
       const { title, category, content, tags } = args.question;
 
       if (!context.user) {
-        throw new Error("You're not allowed to get all questions");
+        throw new Error("You're not allowed to view the questions");
       }
 
       const question = new Question({
@@ -44,14 +44,18 @@ const questionResolver = {
       console.log("Create Question", question);
       console.log("context", context);
 
-      await Question.create(question);
+      const result = await question.save();
+      const author = await User.findById(context.user._id);
+      if (!author) {
+        throw new Error("User not found");
+      }
       await User.findByIdAndUpdate(
         context.user.id,
         { $push: { questions: question._id } },
         { new: true, useFindAndModify: false }
       );
 
-      return question;
+      return { ...result._doc, author: { ...author._doc } };
     },
   },
 };

@@ -110,7 +110,7 @@ export type CreateQuestionMutation = (
     & Pick<Question, '_id' | 'title' | 'content' | 'category' | 'votes' | 'tags'>
     & { author?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, '_id'>
+      & Pick<User, '_id' | 'avatarUrl'>
     )> }
   )> }
 );
@@ -171,6 +171,7 @@ export const CreateQuestionDocument = gql`
     category
     author {
       _id
+      avatarUrl
     }
     votes
     tags
