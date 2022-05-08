@@ -28,6 +28,9 @@ export const QuestionSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
   },
+  isDraft: {
+    type: Boolean,
+  },
 });
 
 export const Question = mongoose.model("Question", QuestionSchema);

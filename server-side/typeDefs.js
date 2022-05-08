@@ -19,6 +19,7 @@ const typeDefs = gql`
     content: String
     votes: Int
     tags: [String]
+    isDraft: Boolean
   }
 
   type Query {
@@ -34,6 +35,7 @@ const typeDefs = gql`
     category: String
     content: String
     tags: [String]
+    isDraft: Boolean
   }
 
   input RegisterInput {

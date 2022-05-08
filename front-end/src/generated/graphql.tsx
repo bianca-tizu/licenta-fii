@@ -66,6 +66,7 @@ export type Question = {
   author?: Maybe<User>;
   category?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
+  isDraft?: Maybe<Scalars['Boolean']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
   title?: Maybe<Scalars['String']>;
   votes?: Maybe<Scalars['Int']>;
@@ -74,6 +75,7 @@ export type Question = {
 export type QuestionInput = {
   category?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
+  isDraft?: Maybe<Scalars['Boolean']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
   title?: Maybe<Scalars['String']>;
 };
@@ -100,6 +102,7 @@ export type CreateQuestionMutationVariables = Exact<{
   category: Scalars['String'];
   content: Scalars['String'];
   tags: Array<Scalars['String']> | Scalars['String'];
+  isDraft?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -107,7 +110,7 @@ export type CreateQuestionMutation = (
   { __typename?: 'Mutation' }
   & { createQuestion?: Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, '_id' | 'title' | 'content' | 'category' | 'votes' | 'tags'>
+    & Pick<Question, '_id' | 'title' | 'content' | 'category' | 'votes' | 'tags' | 'isDraft'>
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, '_id' | 'avatarUrl'>
@@ -161,9 +164,9 @@ export type QuestionsQuery = (
 
 
 export const CreateQuestionDocument = gql`
-    mutation CreateQuestion($title: String!, $category: String!, $content: String!, $tags: [String!]!) {
+    mutation CreateQuestion($title: String!, $category: String!, $content: String!, $tags: [String!]!, $isDraft: Boolean) {
   createQuestion(
-    question: {title: $title, content: $content, category: $category, tags: $tags}
+    question: {title: $title, content: $content, category: $category, tags: $tags, isDraft: $isDraft}
   ) {
     _id
     title
@@ -175,6 +178,7 @@ export const CreateQuestionDocument = gql`
     }
     votes
     tags
+    isDraft
   }
 }
     `;
@@ -197,6 +201,7 @@ export type CreateQuestionMutationFn = Apollo.MutationFunction<CreateQuestionMut
  *      category: // value for 'category'
  *      content: // value for 'content'
  *      tags: // value for 'tags'
+ *      isDraft: // value for 'isDraft'
  *   },
  * });
  */

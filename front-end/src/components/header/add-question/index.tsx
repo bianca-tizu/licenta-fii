@@ -50,6 +50,7 @@ const AddQuestion = ({
           content: content,
           category: category,
           tags: tags,
+          isDraft: false,
         },
       });
 
