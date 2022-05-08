@@ -24,7 +24,7 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
 
   const handleVotes = async () => {
     // const { data } = await votes({
-    //   variables: { id: selectedItem.id },
+    //   variables: { id: selectedItem._id },
     // });
     // if (data?.countVotes?.votes) {
     //   setCountLikes(data?.countVotes?.votes);
@@ -37,14 +37,14 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
       style={{ width: "90%", marginLeft: "30px" }}
       extra={[
         <CloseCircleOutlined
-          // key={selectedItem.id}
+          key={selectedItem._id}
           onClick={() => setSelectedItem(undefined)}
         />,
       ]}
     >
       <div className="question-header">
         <Meta
-          // avatar={<Avatar src={selectedItem.author.avatar} />}
+          avatar={<Avatar src={selectedItem.author?.avatarUrl} />}
           title={selectedItem.title}
         />
         <div>
@@ -53,10 +53,20 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
         </div>
       </div>
 
-      {/* <Paragraph style={{ margin: "10px 0" }}>{selectedItem.content}</Paragraph>
-      {selectedItem.tags.map((tag) => (
-        <Tag key={selectedItem.id}>{tag}</Tag>
-      ))} */}
+      <Paragraph style={{ margin: "10px 0" }}>
+        {selectedItem.content && (
+          <div className="additional">
+            <div
+              dangerouslySetInnerHTML={{
+                __html: selectedItem.content,
+              }}
+            ></div>
+          </div>
+        )}
+      </Paragraph>
+      {selectedItem.tags?.map((tag) => (
+        <Tag key={selectedItem._id}>{tag}</Tag>
+      ))}
       <Divider />
       <Answer>
         <Answer></Answer>

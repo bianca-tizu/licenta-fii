@@ -1,3 +1,11 @@
 .question-list {
   margin: 0 30px;
 }
+
+.additional {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  margin-top: 1rem;
+  color: rgba(0, 0, 0, 0.45);
+}

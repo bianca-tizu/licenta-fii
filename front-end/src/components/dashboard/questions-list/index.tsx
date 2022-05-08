@@ -16,6 +16,17 @@ const QuestionsList = () => {
   const [selectedItem, setSelectedItem] = React.useState<Question>();
   const [countComments, setCountComments] = React.useState(0);
   console.log("allQuestions", allQuestions);
+  const processString = allQuestions.filter((question) => {
+    if (question.content) {
+      return {
+        ...question,
+        content: document
+          .createRange()
+          .createContextualFragment(question.content),
+      };
+    }
+  });
+  console.log("processString", processString);
   return (
     <>
       {allQuestions?.length ? (
@@ -36,8 +47,16 @@ const QuestionsList = () => {
                 <Meta
                   avatar={<Avatar src={question.author?.avatarUrl} />}
                   title={question.title}
-                  description={question.content}
                 />
+                {question.content && (
+                  <div className="additional">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: question.content,
+                      }}
+                    ></div>
+                  </div>
+                )}
               </Card>
             ))}
           </div>
