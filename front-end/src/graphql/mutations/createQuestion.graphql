@@ -1,6 +1,6 @@
 mutation CreateQuestion(
-  $title: String!
-  $content: String!
+  $title: String
+  $content: String
   $tags: [String!]!
   $isDraft: Boolean
 ) {

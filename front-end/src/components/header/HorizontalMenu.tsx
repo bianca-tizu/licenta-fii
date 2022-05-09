@@ -6,6 +6,7 @@ import {
   UserOutlined,
   RadiusSettingOutlined,
   SearchOutlined,
+  QuestionOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
@@ -14,17 +15,19 @@ import UserProfile from "./user-profile";
 
 import "./menu.css";
 
-const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
+const HorizontalMenu = ({
+  isSearchVisible,
+  setIsSearchVisible,
+  isDraftVisible,
+  setIsDraftVisible,
+}: any) => {
   const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState(
     false
   );
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
-  const [isDraftVisible, setIsDraftVisible] = React.useState(false);
   const [createQuestionLoading, setCreateQuestionLoading] = React.useState(
     false
   );
-  const [draft, setDraft] = React.useState("");
-  const [newQuestion, setNewQuestion] = React.useState({});
 
   const handleSaveProfile = (values: any) => {
     console.log("Save profile", values);
@@ -33,16 +36,18 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
 
   const handleClick = (event: any) => {
     switch (event.key) {
+      case "questions":
+        setIsDraftVisible(false);
+        break;
       case "search":
         setIsSearchVisible(!isSearchVisible);
-        console.log("");
         break;
       case "newQuestion":
         setIsQuestionDialogVisible(!isQuestionDialogVisible);
         setIsSearchVisible(false);
         break;
       case "drafts":
-        setIsDraftVisible(!isDraftVisible);
+        setIsDraftVisible(true);
         setIsSearchVisible(false);
         break;
       case "profile":
@@ -68,6 +73,13 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
           color: "#fff",
         }}
       >
+        {/* questions */}
+        <Menu.Item
+          key="questions"
+          icon={<QuestionOutlined className="menu-item-icon" />}
+          title="See questions"
+        />
+
         {/* search  */}
         <Menu.Item
           key="search"

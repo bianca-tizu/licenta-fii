@@ -9,7 +9,7 @@ import "./page-banner.css";
 
 const { Search } = Input;
 
-const PageBanner = () => {
+const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
   const [isSearchVisible, setIsSearchVisible] = React.useState(false);
 
   return (
@@ -19,6 +19,8 @@ const PageBanner = () => {
         <HorizontalMenu
           isSearchVisible={isSearchVisible}
           setIsSearchVisible={setIsSearchVisible}
+          isDraftVisible={isDraftVisible}
+          setIsDraftVisible={setIsDraftVisible}
         />
         <PageBannerSVG className="image-banner" />
       </div>

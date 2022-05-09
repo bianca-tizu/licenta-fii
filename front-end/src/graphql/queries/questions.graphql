@@ -9,5 +9,6 @@ query Questions {
     content
     votes
     tags
+    isDraft
   }
 }

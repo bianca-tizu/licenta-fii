@@ -40,34 +40,13 @@ const AddQuestion = ({
   };
 
   const handleDraftQuestion = async () => {
-    setCreateQuestionLoading(true);
-
-    try {
-      const { title, content } = questionValues;
-      const response = await createQuestion({
-        variables: {
-          title: title,
-          content: content,
-          tags: tags,
-          isDraft: true,
-        },
-      });
-
-      if (response.data) {
-        // addQuestion(response.data.createQuestion as Question);
-        saveQuestion();
-      }
-    } catch (e) {
-      errorWhenSavingQuestion();
-      notification["error"]({
-        message: "Error",
-        description: "Oops, there was a problem while saving the draft",
-        placement: "bottomRight",
-      });
-    }
+    handlePostQuestion(questionValues, true);
   };
 
-  const handlePostQuestion = async (values: CreateQuestionValuesType) => {
+  const handlePostQuestion = async (
+    values: CreateQuestionValuesType,
+    isDraft?: boolean
+  ) => {
     setCreateQuestionLoading(true);
 
     try {
@@ -77,7 +56,7 @@ const AddQuestion = ({
           title: title,
           content: content,
           tags: tags,
-          isDraft: false,
+          isDraft: isDraft,
         },
       });
 

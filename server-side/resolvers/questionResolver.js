@@ -12,10 +12,8 @@ const questionResolver = {
         throw new Error("You're not allowed to get all questions");
       }
       const questions = await Question.find().populate("author");
-      const filteredQuestions = questions.filter(
-        (question) => !question.isDraft
-      );
-      return filteredQuestions;
+
+      return questions.reverse();
     },
 
     getQuestion: async (parent, args, context) => {
@@ -43,7 +41,7 @@ const questionResolver = {
         content,
         tags,
         author: context.user._id,
-        createdAt: Date.now(),
+        createdAt: new Date(Date.now()),
         isDraft,
       });
       console.log("Create Question", question);

@@ -50,6 +50,7 @@ export type MutationRegisterUserArgs = {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<User>;
+  getAllDraftQuestions?: Maybe<Array<Maybe<Question>>>;
   getAllQuestions?: Maybe<Array<Maybe<Question>>>;
   getQuestion?: Maybe<Question>;
   hello?: Maybe<Scalars['String']>;
@@ -96,8 +97,8 @@ export type User = {
 };
 
 export type CreateQuestionMutationVariables = Exact<{
-  title: Scalars['String'];
-  content: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
   tags: Array<Scalars['String']> | Scalars['String'];
   isDraft?: Maybe<Scalars['Boolean']>;
 }>;
@@ -151,7 +152,7 @@ export type QuestionsQuery = (
   { __typename?: 'Query' }
   & { getAllQuestions?: Maybe<Array<Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags'>
+    & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags' | 'isDraft'>
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, '_id' | 'avatarUrl'>
@@ -161,7 +162,7 @@ export type QuestionsQuery = (
 
 
 export const CreateQuestionDocument = gql`
-    mutation CreateQuestion($title: String!, $content: String!, $tags: [String!]!, $isDraft: Boolean) {
+    mutation CreateQuestion($title: String, $content: String, $tags: [String!]!, $isDraft: Boolean) {
   createQuestion(
     question: {title: $title, content: $content, tags: $tags, isDraft: $isDraft}
   ) {
@@ -288,6 +289,7 @@ export const QuestionsDocument = gql`
     content
     votes
     tags
+    isDraft
   }
 }
     `;

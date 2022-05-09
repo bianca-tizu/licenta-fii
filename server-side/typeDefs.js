@@ -17,6 +17,7 @@ const typeDefs = gql`
     title: String
     content: String
     votes: Int
+    createdAt: String
     tags: [String]
     isDraft: Boolean
   }
@@ -26,6 +27,7 @@ const typeDefs = gql`
     currentUser: User
 
     getAllQuestions: [Question]
+    getAllDraftQuestions: [Question]
     getQuestion(id: ID): Question
   }
 

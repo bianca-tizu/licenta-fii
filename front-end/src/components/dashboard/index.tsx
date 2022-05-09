@@ -6,11 +6,16 @@ import { QuestionsProvider } from "../../contexts/QuestionsProvider";
 import "./dashboard.css";
 
 const Dashboard = () => {
+  const [isDraftVisible, setIsDraftVisible] = React.useState(false);
+
   return (
     <QuestionsProvider>
-      <PageBanner />
+      <PageBanner
+        isDraftVisible={isDraftVisible}
+        setIsDraftVisible={setIsDraftVisible}
+      />
       <div className="question-list">
-        <QuestionsList />
+        <QuestionsList isDraftVisible={isDraftVisible} />
       </div>
     </QuestionsProvider>
   );
