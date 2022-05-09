@@ -3,7 +3,6 @@ import { Route, Redirect } from "react-router-dom";
 
 const GuardedRoute = ({ component: Component, ...rest }: any) => {
   const token = sessionStorage.getItem("token");
-  console.log("Checking token for guarded route: ", token);
 
   return (
     <Route

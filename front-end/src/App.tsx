@@ -22,7 +22,6 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext(async (req, { headers }) => {
-  console.log(headers);
   // get the authentication token from local storage if it exists
   const authToken = await sessionStorage.getItem("token");
   // return the headers to the context so httpLink can read them
@@ -39,7 +38,6 @@ const errorLink = onError(
     const authToken = sessionStorage.getItem("token");
 
     if (graphQLErrors) {
-      console.log("graphql error");
       for (let err of graphQLErrors) {
         switch (err.extensions?.code) {
           case "UNAUTHENTICATED":

@@ -41,7 +41,7 @@ const AddQuestion = ({
 
   const handleDraftQuestion = async () => {
     setCreateQuestionLoading(true);
-    console.log(questionValues);
+
     try {
       const { title, content } = questionValues;
       const response = await createQuestion({
@@ -52,7 +52,7 @@ const AddQuestion = ({
           isDraft: true,
         },
       });
-      console.log("Draft triggered", response);
+
       if (response.data) {
         // addQuestion(response.data.createQuestion as Question);
         saveQuestion();
@@ -80,8 +80,6 @@ const AddQuestion = ({
           isDraft: false,
         },
       });
-
-      console.log(response);
 
       if (response.data) {
         addQuestion(response.data.createQuestion as Question);

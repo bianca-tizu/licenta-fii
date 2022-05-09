@@ -32,7 +32,6 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
   };
 
   const handleClick = (event: any) => {
-    console.log("Menu event", event);
     switch (event.key) {
       case "search":
         setIsSearchVisible(!isSearchVisible);

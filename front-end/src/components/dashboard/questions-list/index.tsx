@@ -15,7 +15,7 @@ const QuestionsList = () => {
   const { allQuestions } = React.useContext(QuestionsContext);
   const [selectedItem, setSelectedItem] = React.useState<Question>();
   const [countComments, setCountComments] = React.useState(0);
-  console.log("allQuestions", allQuestions);
+
   const processString = allQuestions.filter((question) => {
     if (question.content) {
       return {
