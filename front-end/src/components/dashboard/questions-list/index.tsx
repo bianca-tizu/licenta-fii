@@ -52,7 +52,7 @@ const QuestionsList = () => {
                   <div className="additional">
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: question.content,
+                        __html: question.content.split(".")[0],
                       }}
                     ></div>
                   </div>

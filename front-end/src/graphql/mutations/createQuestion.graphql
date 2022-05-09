@@ -1,6 +1,5 @@
 mutation CreateQuestion(
   $title: String!
-  $category: String!
   $content: String!
   $tags: [String!]!
   $isDraft: Boolean
@@ -9,7 +8,6 @@ mutation CreateQuestion(
     question: {
       title: $title
       content: $content
-      category: $category
       tags: $tags
       isDraft: $isDraft
     }
@@ -17,7 +15,6 @@ mutation CreateQuestion(
     _id
     title
     content
-    category
     author {
       _id
       avatarUrl

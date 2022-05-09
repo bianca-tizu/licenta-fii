@@ -15,10 +15,14 @@ import UserProfile from "./user-profile";
 import "./menu.css";
 
 const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
-  const [isQuestionVisible, setIsQuestionVisible] = React.useState(false);
+  const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState(
+    false
+  );
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
-  const [createQuestionLoading, setCreateQuestionLoading] = React.useState(false);
+  const [createQuestionLoading, setCreateQuestionLoading] = React.useState(
+    false
+  );
   const [draft, setDraft] = React.useState("");
   const [newQuestion, setNewQuestion] = React.useState({});
 
@@ -35,7 +39,7 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
         console.log("");
         break;
       case "newQuestion":
-        setIsQuestionVisible(!isQuestionVisible);
+        setIsQuestionDialogVisible(!isQuestionDialogVisible);
         setIsSearchVisible(false);
         break;
       case "drafts":
@@ -80,15 +84,15 @@ const HorizontalMenu = ({ isSearchVisible, setIsSearchVisible }: any) => {
         />
         <Modal
           title="Add a question"
-          visible={isQuestionVisible}
+          visible={isQuestionDialogVisible}
           keyboard
           maskClosable
-          onCancel={() => setIsQuestionVisible(false)}
+          onCancel={() => setIsQuestionDialogVisible(false)}
           footer={null}
         >
           <Spin spinning={createQuestionLoading}>
             <AddQuestion
-              setIsQuestionVisible={setIsQuestionVisible}
+              setIsQuestionDialogVisible={setIsQuestionDialogVisible}
               setCreateQuestionLoading={setCreateQuestionLoading}
             />
           </Spin>

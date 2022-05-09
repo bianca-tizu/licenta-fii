@@ -31,7 +31,7 @@ const questionResolver = {
 
   Mutation: {
     createQuestion: async (parent, args, context) => {
-      const { title, category, content, tags, isDraft } = args.question;
+      const { title, content, tags, isDraft } = args.question;
       console.log(args);
 
       if (!context.user) {
@@ -41,7 +41,6 @@ const questionResolver = {
       const question = new Question({
         title: isDraft ? "[Draft]" + title : title,
         content,
-        category,
         tags,
         author: context.user._id,
         createdAt: Date.now(),

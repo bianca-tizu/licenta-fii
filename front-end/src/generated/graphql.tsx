@@ -64,7 +64,6 @@ export type Question = {
   __typename?: 'Question';
   _id?: Maybe<Scalars['ID']>;
   author?: Maybe<User>;
-  category?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
   isDraft?: Maybe<Scalars['Boolean']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -73,7 +72,6 @@ export type Question = {
 };
 
 export type QuestionInput = {
-  category?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
   isDraft?: Maybe<Scalars['Boolean']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -99,7 +97,6 @@ export type User = {
 
 export type CreateQuestionMutationVariables = Exact<{
   title: Scalars['String'];
-  category: Scalars['String'];
   content: Scalars['String'];
   tags: Array<Scalars['String']> | Scalars['String'];
   isDraft?: Maybe<Scalars['Boolean']>;
@@ -110,7 +107,7 @@ export type CreateQuestionMutation = (
   { __typename?: 'Mutation' }
   & { createQuestion?: Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, '_id' | 'title' | 'content' | 'category' | 'votes' | 'tags' | 'isDraft'>
+    & Pick<Question, '_id' | 'title' | 'content' | 'votes' | 'tags' | 'isDraft'>
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, '_id' | 'avatarUrl'>
@@ -154,7 +151,7 @@ export type QuestionsQuery = (
   { __typename?: 'Query' }
   & { getAllQuestions?: Maybe<Array<Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, 'title' | '_id' | 'category' | 'content' | 'votes' | 'tags'>
+    & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags'>
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, '_id' | 'avatarUrl'>
@@ -164,14 +161,13 @@ export type QuestionsQuery = (
 
 
 export const CreateQuestionDocument = gql`
-    mutation CreateQuestion($title: String!, $category: String!, $content: String!, $tags: [String!]!, $isDraft: Boolean) {
+    mutation CreateQuestion($title: String!, $content: String!, $tags: [String!]!, $isDraft: Boolean) {
   createQuestion(
-    question: {title: $title, content: $content, category: $category, tags: $tags, isDraft: $isDraft}
+    question: {title: $title, content: $content, tags: $tags, isDraft: $isDraft}
   ) {
     _id
     title
     content
-    category
     author {
       _id
       avatarUrl
@@ -198,7 +194,6 @@ export type CreateQuestionMutationFn = Apollo.MutationFunction<CreateQuestionMut
  * const [createQuestionMutation, { data, loading, error }] = useCreateQuestionMutation({
  *   variables: {
  *      title: // value for 'title'
- *      category: // value for 'category'
  *      content: // value for 'content'
  *      tags: // value for 'tags'
  *      isDraft: // value for 'isDraft'
@@ -290,7 +285,6 @@ export const QuestionsDocument = gql`
       _id
       avatarUrl
     }
-    category
     content
     votes
     tags

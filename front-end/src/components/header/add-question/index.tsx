@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Select, Button, Input, notification } from "antd";
+import { Form, Button, Input, notification } from "antd";
 
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -15,15 +15,17 @@ import QuestionsContext from "../../../contexts/QuestionsProvider";
 
 type CreateQuestionValuesType = {
   title: string;
-  category: string;
   content: string;
 };
 
 const AddQuestion = ({
-  setIsQuestionVisible,
+  setIsQuestionDialogVisible,
   setCreateQuestionLoading,
 }: any) => {
-  const [newQuestion, setNewQuestion] = React.useState({});
+  const [questionValues, setQuestionValues] = React.useState({
+    title: "",
+    content: "",
+  });
   const [tags, setTags] = React.useState([]);
   const [error, setError] = React.useState("");
 
@@ -33,22 +35,47 @@ const AddQuestion = ({
 
   const { addQuestion } = React.useContext(QuestionsContext);
 
-  const handleDraftQuestion = (values: any) => {
-    console.log("Draft triggered", values);
-    // setCreateQuestionLoading(true);
-    setIsQuestionVisible(false);
+  const onChange = (changedValues, allValues) => {
+    setQuestionValues(allValues);
+  };
+
+  const handleDraftQuestion = async () => {
+    setCreateQuestionLoading(true);
+    console.log(questionValues);
+    try {
+      const { title, content } = questionValues;
+      const response = await createQuestion({
+        variables: {
+          title: title,
+          content: content,
+          tags: tags,
+          isDraft: true,
+        },
+      });
+      console.log("Draft triggered", response);
+      if (response.data) {
+        // addQuestion(response.data.createQuestion as Question);
+        saveQuestion();
+      }
+    } catch (e) {
+      errorWhenSavingQuestion();
+      notification["error"]({
+        message: "Error",
+        description: "Oops, there was a problem while saving the draft",
+        placement: "bottomRight",
+      });
+    }
   };
 
   const handlePostQuestion = async (values: CreateQuestionValuesType) => {
     setCreateQuestionLoading(true);
 
     try {
-      const { title, category, content } = values;
+      const { title, content } = values;
       const response = await createQuestion({
         variables: {
           title: title,
           content: content,
-          category: category,
           tags: tags,
           isDraft: false,
         },
@@ -58,23 +85,39 @@ const AddQuestion = ({
 
       if (response.data) {
         addQuestion(response.data.createQuestion as Question);
-        setIsQuestionVisible(false);
-        setError("");
-        createQuestionForm.resetFields();
-        setTags([]);
-        setCreateQuestionLoading(false);
+        saveQuestion();
       }
     } catch (e) {
-      setIsQuestionVisible(false);
-      createQuestionForm.resetFields();
-      setTags([]);
+      errorWhenSavingQuestion();
       notification["error"]({
         message: "Error",
-        description: "Oops, there was a problem creating the question",
+        description: "Oops, there was a problem while saving the question",
         placement: "bottomRight",
       });
-      setCreateQuestionLoading(false);
     }
+  };
+
+  const saveQuestion = () => {
+    setIsQuestionDialogVisible(false);
+    setError("");
+    createQuestionForm.resetFields();
+    setTags([]);
+    setCreateQuestionLoading(false);
+    setQuestionValues({
+      title: "",
+      content: "",
+    });
+  };
+
+  const errorWhenSavingQuestion = () => {
+    setIsQuestionDialogVisible(false);
+    createQuestionForm.resetFields();
+    setTags([]);
+    setCreateQuestionLoading(false);
+    setQuestionValues({
+      title: "",
+      content: "",
+    });
   };
 
   return (
@@ -82,19 +125,8 @@ const AddQuestion = ({
       form={createQuestionForm}
       name="createQuestion"
       onFinish={handlePostQuestion}
+      onValuesChange={onChange}
     >
-      {/* Category selection*/}
-      <Form.Item
-        name="category"
-        hasFeedback
-        rules={[{ required: true, message: "Please select a category!" }]}
-      >
-        <Select placeholder="Please select a category">
-          <Select.Option value="jack">Jack</Select.Option>
-          <Select.Option value="lucy">Lucy</Select.Option>
-        </Select>
-      </Form.Item>
-
       {/* Title of the question */}
       <Form.Item
         name="title"
@@ -115,6 +147,17 @@ const AddQuestion = ({
       >
         <CKEditor
           editor={ClassicEditor}
+          config={{
+            removePlugins: [
+              "Heading",
+              "Indent",
+              "ImageUpload",
+              "BlockQuote",
+              "Table",
+              "MediaEmbed",
+              "EasyImage",
+            ],
+          }}
           data="<p>Hello from CKEditor 5!</p>"
           onReady={(editor: any) => {
             // You can store the "editor" and use when it is needed.

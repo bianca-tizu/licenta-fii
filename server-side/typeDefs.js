@@ -15,7 +15,6 @@ const typeDefs = gql`
     _id: ID
     author: User
     title: String
-    category: String
     content: String
     votes: Int
     tags: [String]
@@ -32,7 +31,6 @@ const typeDefs = gql`
 
   input QuestionInput {
     title: String
-    category: String
     content: String
     tags: [String]
     isDraft: Boolean

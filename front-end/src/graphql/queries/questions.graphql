@@ -6,7 +6,6 @@ query Questions {
       _id
       avatarUrl
     }
-    category
     content
     votes
     tags
