@@ -29,7 +29,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
   }, [data]);
 
   const addQuestion = (question: Question) => {
-    setAllQuestions((prev) => [...prev, question]);
+    setAllQuestions((prev) => [question, ...prev]);
   };
 
   const questionsData = {

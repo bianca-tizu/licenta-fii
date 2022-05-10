@@ -21,6 +21,7 @@ type CreateQuestionValuesType = {
 const AddQuestion = ({
   setIsQuestionDialogVisible,
   setCreateQuestionLoading,
+  setIsDraftVisible,
 }: any) => {
   const [questionValues, setQuestionValues] = React.useState({
     title: "",
@@ -63,6 +64,7 @@ const AddQuestion = ({
       if (response.data) {
         addQuestion(response.data.createQuestion as Question);
         saveQuestion();
+        setIsDraftVisible(isDraft);
       }
     } catch (e) {
       errorWhenSavingQuestion();

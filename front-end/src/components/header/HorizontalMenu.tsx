@@ -103,6 +103,7 @@ const HorizontalMenu = ({
         >
           <Spin spinning={createQuestionLoading}>
             <AddQuestion
+              setIsDraftVisible={setIsDraftVisible}
               setIsQuestionDialogVisible={setIsQuestionDialogVisible}
               setCreateQuestionLoading={setCreateQuestionLoading}
             />
