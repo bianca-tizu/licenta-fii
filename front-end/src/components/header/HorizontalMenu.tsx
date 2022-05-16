@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button, Menu, Spin } from "antd";
+import { Badge, Button, Menu, Spin } from "antd";
 import {
   PlusCircleOutlined,
   UserOutlined,
@@ -111,11 +111,17 @@ const HorizontalMenu = ({
         </Modal>
 
         {/* see drafts */}
-        <Menu.Item
-          key="drafts"
-          icon={<RadiusSettingOutlined className="menu-item-icon" />}
-          title="Draft questions"
-        />
+        <>
+          <Menu.Item
+            key="drafts"
+            icon={<RadiusSettingOutlined className="menu-item-icon" />}
+            title="Draft questions"
+          />
+          <Badge
+            dot
+            style={{ position: "absolute", right: "20px", bottom: "5px" }}
+          ></Badge>
+        </>
 
         {/* user profile */}
         <Menu.Item
