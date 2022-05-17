@@ -24,7 +24,7 @@ const typeDefs = gql`
 
   type Query {
     hello: String
-    currentUser: User
+    getCurrentUser: User
 
     getAllQuestions: [Question]
     getAllDraftQuestions: [Question]

@@ -1,10 +1,9 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Typography, Form, Input } from "antd";
-import React, { useState } from "react";
+import { Avatar, Form, Input, Image } from "antd";
+import React from "react";
+import { useGetCurrentUserQuery } from "../../../generated/graphql";
 
 import "./user-profile.css";
-
-const { Text, Paragraph } = Typography;
 
 const UserProfile = () => {
   const [editableEmail, setEditableEmail] = React.useState("test@test.com");
@@ -13,11 +12,20 @@ const UserProfile = () => {
   const [enterNewPassword, setEnterNewPassword] = React.useState("");
   const randomColor = () => Math.floor(Math.random() * 16777215).toString(16);
 
+  const { data, error } = useGetCurrentUserQuery();
+
+  const currentUser = {
+    _id: data?.getCurrentUser?._id || "",
+    username: data?.getCurrentUser?.username || "",
+    avatarUrl: data?.getCurrentUser?.avatarUrl || "",
+  };
+
   return (
     <>
       <div className="user-details">
         <div className="user-icon">
           <Avatar
+            src={<Image src={currentUser.avatarUrl} />}
             style={{
               backgroundColor: `#${randomColor()}`,
               marginBottom: "10px",
@@ -26,13 +34,13 @@ const UserProfile = () => {
             size={60}
           />
           <div className="fixed-details">
-            <p className="username">USERNAME</p>
+            <p className="username">{currentUser.username}</p>
             <p className="student-id">012345678910</p>
           </div>
         </div>
       </div>
       <Form name="user-details" layout="vertical">
-        <Form.Item name={["user", "name"]} label="Name">
+        <Form.Item name={["user", "name"]} label="Display name">
           <Input value={editableName} />
         </Form.Item>
         <Form.Item name={["user", "mail"]} label="E-mail">
