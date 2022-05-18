@@ -1,4 +1,8 @@
-import { UserInputError, ForbiddenError } from "apollo-server";
+import {
+  UserInputError,
+  ForbiddenError,
+  AuthenticationError,
+} from "apollo-server";
 import jsonwebtoken from "jsonwebtoken";
 import argon2 from "argon2";
 
@@ -12,13 +16,11 @@ dotenv.config();
 
 const userResolver = {
   Query: {
-    getCurrentUser: async (parent, args, { user }) => {
+    getCurrentUser: (parent, args, { user }) => {
       if (!user) {
         throw new AuthenticationError("You are not authentificated");
       }
-      const userData = await User.find({ _id: user._id });
-      console.log("USER DATA: ", userData);
-      return userData;
+      return User.find({ _id: user._id }).then((res) => res[0]);
     },
   },
 
@@ -86,6 +88,10 @@ const userResolver = {
       );
 
       return { token, user };
+    },
+
+    updateUser: async (parent, args) => {
+      const { _id, username, email, password } = args.user;
     },
   },
 };

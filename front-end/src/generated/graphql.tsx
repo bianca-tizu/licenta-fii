@@ -153,7 +153,7 @@ export type GetCurrentUserQuery = (
   { __typename?: 'Query' }
   & { getCurrentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, '_id' | 'avatarUrl' | 'username'>
+    & Pick<User, '_id' | 'avatarUrl' | 'username' | 'studentId' | 'email'>
   )> }
 );
 
@@ -295,6 +295,8 @@ export const GetCurrentUserDocument = gql`
     _id
     avatarUrl
     username
+    studentId
+    email
   }
 }
     `;

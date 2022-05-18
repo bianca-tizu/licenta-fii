@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Badge, Button, Menu, Spin } from "antd";
+import { Badge, Menu, Spin } from "antd";
 import {
   PlusCircleOutlined,
   UserOutlined,
@@ -28,11 +28,6 @@ const HorizontalMenu = ({
   const [createQuestionLoading, setCreateQuestionLoading] = React.useState(
     false
   );
-
-  const handleSaveProfile = (values: any) => {
-    console.log("Save profile", values);
-    setIsUserProfileVisible(false);
-  };
 
   const handleClick = (event: any) => {
     switch (event.key) {
@@ -135,13 +130,9 @@ const HorizontalMenu = ({
           keyboard
           maskClosable
           onCancel={() => setIsUserProfileVisible(false)}
-          footer={[
-            <Button key="post" type="primary" onClick={handleSaveProfile}>
-              Save
-            </Button>,
-          ]}
+          footer={null}
         >
-          <UserProfile />
+          <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
         </Modal>
       </Menu>
     </div>

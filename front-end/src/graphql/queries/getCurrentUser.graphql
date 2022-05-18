@@ -3,5 +3,7 @@ query GetCurrentUser {
     _id
     avatarUrl
     username
+    studentId
+    email
   }
 }
