@@ -51,7 +51,7 @@ const typeDefs = gql`
 
   input UserInput {
     email: String
-    studentId: String
+    username: String
     password: String
   }
 

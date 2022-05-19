@@ -1,12 +1,17 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Form, Input, Image, Button } from "antd";
 import React from "react";
-import { useGetCurrentUserQuery } from "../../../generated/graphql";
+import {
+  useGetCurrentUserQuery,
+  useUpdateUserMutation,
+} from "../../../generated/graphql";
 
 import "./user-profile.css";
 
 const UserProfile = ({ setIsUserProfileVisible }: any) => {
   const { data, error } = useGetCurrentUserQuery();
+  const [updateUser] = useUpdateUserMutation();
+  const [updateUserForm] = Form.useForm();
 
   const currentUser = {
     _id: data?.getCurrentUser?._id || "",
@@ -22,35 +27,40 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
   const [newPassword, setNewPassword] = React.useState("");
   const [enterNewPassword, setEnterNewPassword] = React.useState("");
 
-  const handleUserChanges = (values: any) => {
+  const handleUserChanges = async (values: any) => {
     setIsUserProfileVisible(false);
     console.log(values);
   };
 
   return (
     <>
-      <div className="user-details">
-        <div className="user-icon">
-          <Avatar
-            src={<Image src={currentUser.avatarUrl} />}
-            style={{
-              backgroundColor: `#${randomColor()}`,
-              marginBottom: "10px",
-            }}
-            icon={<UserOutlined />}
-            size={60}
-          />
-          <div className="fixed-details">
-            <p className="username">{currentUser.username}</p>
-            <p className="student-id">{currentUser.studentId}</p>
+      <Form
+        form={updateUserForm}
+        name="user-details"
+        layout="vertical"
+        onFinish={handleUserChanges}
+      >
+        <div className="user-details">
+          <div className="user-icon">
+            <Avatar
+              src={<Image src={currentUser.avatarUrl} />}
+              style={{
+                backgroundColor: `#${randomColor()}`,
+                marginBottom: "10px",
+              }}
+              icon={<UserOutlined />}
+              size={60}
+            />
+            <div className="fixed-details">
+              <p className="username">{currentUser.username}</p>
+              <p className="student-id">{currentUser.studentId}</p>
+            </div>
           </div>
         </div>
-      </div>
-      <Form name="user-details" layout="vertical" onFinish={handleUserChanges}>
-        <Form.Item name={["user", "name"]} label="Display name">
+        <Form.Item name="username" label="Display name">
           <Input value={editableName} onChange={() => setEditableName} />
         </Form.Item>
-        <Form.Item name={["user", "mail"]} label="E-mail">
+        <Form.Item name="email" label="E-mail">
           <Input value={editableEmail} onChange={() => setEditableEmail} />
         </Form.Item>
       </Form>
