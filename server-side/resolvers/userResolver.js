@@ -90,8 +90,20 @@ const userResolver = {
       return { token, user };
     },
 
-    updateUser: async (parent, args) => {
-      const { _id, username, email, password } = args.user;
+    updateUser: async (parent, args, { user }) => {
+      const hashedPassword = await argon2.hash(args.user.password);
+
+      const userToUpdate = await User.findOne({ where: { _id: user._id } });
+      Object.keys(args.user).forEach((value) => {
+        if (value === "password") {
+          userToUpdate[value] = hashedPassword;
+        } else {
+          userToUpdate[value] = args.user[value];
+        }
+      });
+
+      const updatedUser = await userToUpdate.save();
+      return updatedUser;
     },
   },
 };

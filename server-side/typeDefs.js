@@ -49,6 +49,12 @@ const typeDefs = gql`
     password: String
   }
 
+  input UserInput {
+    email: String
+    studentId: String
+    password: String
+  }
+
   type AuthPayload {
     token: String!
     user: User!
@@ -58,6 +64,7 @@ const typeDefs = gql`
     createQuestion(question: QuestionInput): Question
     registerUser(user: RegisterInput): AuthPayload!
     loginUser(user: LoginInput): AuthPayload!
+    updateUser(user: UserInput): User
   }
 `;
 
