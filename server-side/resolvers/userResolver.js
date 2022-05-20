@@ -95,10 +95,19 @@ const userResolver = {
 
       const userToUpdate = await User.findOne({ where: { _id: user._id } });
       Object.keys(args.user).forEach((value) => {
-        if (value === "password") {
-          userToUpdate[value] = hashedPassword;
-        } else {
-          userToUpdate[value] = args.user[value];
+        if (args.user[value] === userToUpdate[value]) {
+          const capitalizeValue =
+            value.charAt(0).toUpperCase() + value.slice(1);
+          throw new Error(
+            `${capitalizeValue} ${args.user[value]} already in use`
+          );
+        }
+        if (args.user[value] !== "") {
+          if (value === "password") {
+            userToUpdate[value] = hashedPassword;
+          } else {
+            userToUpdate[value] = args.user[value];
+          }
         }
       });
 

@@ -169,7 +169,7 @@ export type UpdateUserMutation = (
   { __typename?: 'Mutation' }
   & { updateUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'email' | 'username' | 'studentId'>
+    & Pick<User, 'email' | 'username'>
   )> }
 );
 
@@ -321,7 +321,6 @@ export const UpdateUserDocument = gql`
   updateUser(user: {email: $email, username: $username, password: $password}) {
     email
     username
-    studentId
   }
 }
     `;

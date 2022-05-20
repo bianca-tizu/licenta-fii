@@ -4,6 +4,5 @@ mutation UpdateUser($email: String, $username: String, $password: String) {
   ) {
     email
     username
-    studentId
   }
 }

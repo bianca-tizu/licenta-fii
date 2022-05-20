@@ -125,7 +125,6 @@ const HorizontalMenu = ({
           title="User profile"
         />
         <Modal
-          // title="User profile"
           visible={isUserProfileVisible}
           keyboard
           maskClosable
