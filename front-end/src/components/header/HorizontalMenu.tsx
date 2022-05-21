@@ -7,6 +7,7 @@ import {
   RadiusSettingOutlined,
   SearchOutlined,
   QuestionOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
@@ -133,6 +134,12 @@ const HorizontalMenu = ({
         >
           <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
         </Modal>
+
+        <Menu.Item
+          key="logout"
+          icon={<LogoutOutlined className="menu-item-icon" />}
+          title="Logout"
+        />
       </Menu>
     </div>
   );
