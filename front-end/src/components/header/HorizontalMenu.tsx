@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Badge, Menu, Spin } from "antd";
+import { Badge, Button, Menu, Spin } from "antd";
 import {
   PlusCircleOutlined,
   UserOutlined,
@@ -8,6 +8,7 @@ import {
   SearchOutlined,
   QuestionOutlined,
   LogoutOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
@@ -15,6 +16,7 @@ import AddQuestion from "./add-question";
 import UserProfile from "./user-profile";
 
 import "./menu.css";
+import { useHistory } from "react-router-dom";
 
 const HorizontalMenu = ({
   isSearchVisible,
@@ -26,9 +28,19 @@ const HorizontalMenu = ({
     false
   );
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
+  const [isLogoutDialogVisible, setIsLogoutDialogVisible] = React.useState(
+    false
+  );
   const [createQuestionLoading, setCreateQuestionLoading] = React.useState(
     false
   );
+
+  let history = useHistory();
+
+  const handleLogout = async () => {
+    await sessionStorage.removeItem("token");
+    history.push("/");
+  };
 
   const handleClick = (event: any) => {
     switch (event.key) {
@@ -48,6 +60,10 @@ const HorizontalMenu = ({
         break;
       case "profile":
         setIsUserProfileVisible(!isUserProfileVisible);
+        setIsSearchVisible(false);
+        break;
+      case "logout":
+        setIsLogoutDialogVisible(!isLogoutDialogVisible);
         setIsSearchVisible(false);
         break;
     }
@@ -140,6 +156,17 @@ const HorizontalMenu = ({
           icon={<LogoutOutlined className="menu-item-icon" />}
           title="Logout"
         />
+        <Modal
+          visible={isLogoutDialogVisible}
+          keyboard
+          maskClosable
+          onCancel={() => setIsLogoutDialogVisible(false)}
+          okText="Yes"
+          cancelText="No"
+          onOk={handleLogout}
+        >
+          Are you sure you want to log out?
+        </Modal>
       </Menu>
     </div>
   );

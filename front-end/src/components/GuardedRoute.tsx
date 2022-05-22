@@ -1,14 +1,20 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import { isExpired } from "react-jwt";
 
 const GuardedRoute = ({ component: Component, ...rest }: any) => {
   const token = sessionStorage.getItem("token");
+  const isTokenExpired = token && isExpired(token);
 
   return (
     <Route
       {...rest}
       render={(props) =>
-        token ? <Component {...props} /> : <Redirect to="/" />
+        token && !isTokenExpired ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/" />
+        )
       }
     />
   );

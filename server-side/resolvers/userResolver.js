@@ -84,7 +84,7 @@ const userResolver = {
       const token = jsonwebtoken.sign(
         { _id: user._id, email: user.emailAddress },
         process.env.JWT_SECRET,
-        { expiresIn: 86400 }
+        { expiresIn: 14400 }
       );
 
       return { token, user };
