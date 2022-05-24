@@ -10,13 +10,16 @@ import { User } from "../models/User.model.js";
 
 import { gravatar } from "../assets/gravatar.js";
 
+import { getResetPassToken } from "../utils/getResetPassToken.js";
+import { sendEmail } from "../utils/sendEmail.js";
+
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const userResolver = {
   Query: {
-    getCurrentUser: (parent, args, { user }) => {
+    getCurrentUser: (_parent, _args, { user }) => {
       if (!user) {
         throw new AuthenticationError("You are not authentificated");
       }
@@ -25,7 +28,7 @@ const userResolver = {
   },
 
   Mutation: {
-    registerUser: async (parent, args, context, info) => {
+    registerUser: async (_parent, args, _context, _info) => {
       const { email, password, studentId } = args.user;
 
       const emailAddress = email.trim().toLowerCase();
@@ -66,7 +69,7 @@ const userResolver = {
       return { user: newUser, token };
     },
 
-    loginUser: async (parent, args) => {
+    loginUser: async (_parent, args) => {
       const { email, password } = args.user;
 
       const user = await User.findOne({ where: { email: email } });
@@ -90,7 +93,7 @@ const userResolver = {
       return { token, user };
     },
 
-    updateUser: async (parent, args, { user }) => {
+    updateUser: async (_parent, args, { user }) => {
       const hashedPassword = await argon2.hash(args.user.password);
 
       const userToUpdate = await User.findOne({ where: { _id: user._id } });
@@ -113,6 +116,51 @@ const userResolver = {
 
       const updatedUser = await userToUpdate.save();
       return updatedUser;
+    },
+
+    forgetPassword: async (_parent, args) => {
+      const { resetPassToken, resetPassExpire } = getResetPassToken();
+      const { email } = args;
+
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        throw new UserInputError("No user with this email.");
+      }
+
+      const userToUpdate = await User.findOneAndUpdate(
+        { email: email },
+        {
+          $set: {
+            resetPassToken: resetPassToken,
+            resetPassExpire: resetPassExpire,
+          },
+        }
+      );
+
+      const updatedUser = await userToUpdate.save();
+      try {
+        await sendEmail({
+          email: updatedUser.email,
+          subject: "Password reset token",
+          message:
+            "You are receiving this email because you (or someone else) has requested the reset of a password.",
+        });
+        return updatedUser;
+      } catch (err) {
+        console.log("Forget pass err", err);
+        const userToUpdate = await User.findOneAndUpdate(
+          { email: email },
+          {
+            $set: {
+              resetPassToken: undefined,
+              resetPassExpire: undefined,
+            },
+          }
+        );
+
+        await userToUpdate.save();
+        throw new Error("Email could not be sent");
+      }
     },
   },
 };

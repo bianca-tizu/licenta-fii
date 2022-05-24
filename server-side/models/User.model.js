@@ -27,6 +27,12 @@ export const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  resetPassToken: {
+    type: String,
+  },
+  resetPassExpire: {
+    type: String,
+  },
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
 });
 

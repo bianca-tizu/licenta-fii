@@ -9,6 +9,8 @@ const typeDefs = gql`
     studentId: String
     avatarUrl: String
     questions: [Question]
+    resetPassToken: String
+    resetPassExpire: String
   }
 
   type Question {
@@ -65,6 +67,7 @@ const typeDefs = gql`
     registerUser(user: RegisterInput): AuthPayload!
     loginUser(user: LoginInput): AuthPayload!
     updateUser(user: UserInput): User
+    forgetPassword(email: String): User!
   }
 `;
 
