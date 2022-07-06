@@ -28,6 +28,7 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createQuestion?: Maybe<Question>;
+  forgetPassword: User;
   loginUser: AuthPayload;
   registerUser: AuthPayload;
   updateUser?: Maybe<User>;
@@ -36,6 +37,11 @@ export type Mutation = {
 
 export type MutationCreateQuestionArgs = {
   question?: Maybe<QuestionInput>;
+};
+
+
+export type MutationForgetPasswordArgs = {
+  email?: Maybe<Scalars['String']>;
 };
 
 
@@ -99,6 +105,8 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   questions?: Maybe<Array<Maybe<Question>>>;
+  resetPassExpire?: Maybe<Scalars['String']>;
+  resetPassToken?: Maybe<Scalars['String']>;
   studentId?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
 };
@@ -127,6 +135,19 @@ export type CreateQuestionMutation = (
       & Pick<User, '_id' | 'avatarUrl'>
     )> }
   )> }
+);
+
+export type ForgetPasswordMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type ForgetPasswordMutation = (
+  { __typename?: 'Mutation' }
+  & { forgetPassword: (
+    { __typename?: 'User' }
+    & Pick<User, 'resetPassToken'>
+  ) }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -247,6 +268,39 @@ export function useCreateQuestionMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateQuestionMutationHookResult = ReturnType<typeof useCreateQuestionMutation>;
 export type CreateQuestionMutationResult = Apollo.MutationResult<CreateQuestionMutation>;
 export type CreateQuestionMutationOptions = Apollo.BaseMutationOptions<CreateQuestionMutation, CreateQuestionMutationVariables>;
+export const ForgetPasswordDocument = gql`
+    mutation ForgetPassword($email: String!) {
+  forgetPassword(email: $email) {
+    resetPassToken
+  }
+}
+    `;
+export type ForgetPasswordMutationFn = Apollo.MutationFunction<ForgetPasswordMutation, ForgetPasswordMutationVariables>;
+
+/**
+ * __useForgetPasswordMutation__
+ *
+ * To run a mutation, you first call `useForgetPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useForgetPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [forgetPasswordMutation, { data, loading, error }] = useForgetPasswordMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useForgetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ForgetPasswordMutation, ForgetPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ForgetPasswordMutation, ForgetPasswordMutationVariables>(ForgetPasswordDocument, options);
+      }
+export type ForgetPasswordMutationHookResult = ReturnType<typeof useForgetPasswordMutation>;
+export type ForgetPasswordMutationResult = Apollo.MutationResult<ForgetPasswordMutation>;
+export type ForgetPasswordMutationOptions = Apollo.BaseMutationOptions<ForgetPasswordMutation, ForgetPasswordMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   loginUser(user: {email: $email, password: $password}) {

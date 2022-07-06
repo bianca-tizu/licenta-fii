@@ -1,10 +1,13 @@
-import { Form, Input, Button, Checkbox, Typography } from "antd";
+import { Form, Input, Button, Typography, Modal } from "antd";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 
 import React from "react";
 import { useHistory } from "react-router";
 
-import { useLoginMutation } from "../../../generated/graphql";
+import {
+  useForgetPasswordMutation,
+  useLoginMutation,
+} from "../../../generated/graphql";
 
 import "./login.css";
 
@@ -12,7 +15,12 @@ const { Title, Text } = Typography;
 
 const LoginForm = () => {
   const [login] = useLoginMutation();
+  const [forgetPassword] = useForgetPasswordMutation();
   const [error, setError] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [showResetPasswordModal, setShowResetPasswordModal] = React.useState(
+    false
+  );
 
   const history = useHistory();
 
@@ -32,6 +40,26 @@ const LoginForm = () => {
       }
     } catch (err: any) {
       setError(err.message);
+    }
+  };
+
+  const resetPassword = async () => {
+    try {
+      setError("");
+      const response = await forgetPassword({
+        variables: { email: email },
+      });
+
+      if (response.data?.forgetPassword.resetPassToken) {
+        setEmail("");
+        setShowResetPasswordModal(false);
+        //display notification
+        //show code input and set new password
+      }
+    } catch (err: any) {
+      setError(err.message);
+      setShowResetPasswordModal(false);
+      setEmail("");
     }
   };
 
@@ -71,8 +99,32 @@ const LoginForm = () => {
         />
       </Form.Item>
 
-      <Form.Item name="remember" valuePropName="checked" noStyle>
-        <Checkbox>Remember me</Checkbox>
+      <Form.Item noStyle>
+        <Text
+          style={{ color: "#1890FF", cursor: "pointer" }}
+          onClick={() => setShowResetPasswordModal(!showResetPasswordModal)}
+        >
+          Forgot password
+        </Text>
+        <Modal
+          title="Reset your password"
+          centered
+          visible={showResetPasswordModal}
+          okText="Send"
+          onOk={resetPassword}
+          onCancel={() => {
+            setShowResetPasswordModal(false);
+            setEmail("");
+          }}
+        >
+          <Input
+            placeholder="E-mail"
+            value={email}
+            onChange={(e: any) => {
+              setEmail(e.target.value);
+            }}
+          />
+        </Modal>
       </Form.Item>
 
       <Form.Item className="login-form-action">
