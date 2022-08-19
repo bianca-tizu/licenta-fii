@@ -1,4 +1,4 @@
-import { Form, Input, Button, Typography, Modal } from "antd";
+import { Form, Input, Button, Typography, Modal, notification } from "antd";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 
 import React from "react";
@@ -53,7 +53,11 @@ const LoginForm = () => {
       if (response.data?.forgetPassword.resetPassToken) {
         setEmail("");
         setShowResetPasswordModal(false);
-        //display notification
+        notification["info"]({
+          key: "",
+          message: "",
+          description: "We have sent you a password recovery mail.",
+        });
         //show code input and set new password
       }
     } catch (err: any) {

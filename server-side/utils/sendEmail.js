@@ -11,7 +11,7 @@ export const sendEmail = async (options) => {
   });
 
   let info = await transporter.sendMail({
-    from: `${process.env.ADMIN_EMAIL} <${process.env.FROM_EMAIL}>`, // sender address
+    from: `${process.env.ADMIN_EMAIL} <${process.env.ADMIN_EMAIL}>`, // sender address
     to: options.email, // list of receivers
     subject: options.subject, // Subject line
     text: options.message, // plain text body
