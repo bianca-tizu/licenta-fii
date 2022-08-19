@@ -146,8 +146,6 @@ const userResolver = {
           message:
             "You are receiving this email because you (or someone else) has requested the reset of a password." +
             "Follow this link: localhost:8000/reset/" +
-            user._id +
-            "/" +
             resetPassToken +
             " and you'll manage to reset the password.",
         });
