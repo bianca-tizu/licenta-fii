@@ -30,14 +30,14 @@ const questionResolver = {
   Mutation: {
     createQuestion: async (parent, args, context) => {
       const { title, content, tags, isDraft } = args.question;
-      console.log(args);
+      console.log('Create question args: ',args);
 
       if (!context.user) {
         throw new Error("You're not allowed to view the questions");
       }
 
       const question = new Question({
-        title: isDraft ? "[Draft]" + title : title,
+        title: isDraft ? `[Draft] ${title}`: title,
         content,
         tags,
         author: context.user._id,

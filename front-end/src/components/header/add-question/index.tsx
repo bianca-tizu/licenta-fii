@@ -36,7 +36,7 @@ const AddQuestion = ({
 
   const { addQuestion } = React.useContext(QuestionsContext);
 
-  const onChange = (allValues) => {
+  const onChange = (_changedValue, allValues) => {
     setQuestionValues(allValues);
   };
 
