@@ -27,4 +27,6 @@ export const QuestionSchema = new mongoose.Schema({
   },
 });
 
+QuestionSchema.index({ title: "text", content: "text" });
+
 export const Question = mongoose.model("Question", QuestionSchema);

@@ -29,8 +29,8 @@ const typeDefs = gql`
     getCurrentUser: User
 
     getAllQuestions: [Question]
-    getAllDraftQuestions: [Question]
     getQuestion(id: ID): Question
+    searchQuestions(keyword: String): [Question]
   }
 
   input QuestionInput {

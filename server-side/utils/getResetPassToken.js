@@ -9,7 +9,6 @@ export const getResetPassToken = () => {
     .digest("hex");
 
   const resetPassExpire = Date.now() + 10 * 60 * 1000;
-  console.log("Reset pass: ", resetToken, resetPassExpire, resetPassToken);
 
   return { resetPassToken, resetPassExpire };
 };

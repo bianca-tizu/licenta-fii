@@ -1,6 +1,6 @@
 import * as nodemailer from "nodemailer";
 
-export const sendEmail = async (options) => {
+export const sendEmail = async options => {
   let transporter = nodemailer.createTransport({
     host: "smtp.ethereal.email",
     port: 587,
@@ -16,6 +16,4 @@ export const sendEmail = async (options) => {
     subject: options.subject, // Subject line
     text: options.message, // plain text body
   });
-
-  console.log("Message sent ", info);
 };

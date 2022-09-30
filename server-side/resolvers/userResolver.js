@@ -23,7 +23,7 @@ const userResolver = {
       if (!user) {
         throw new AuthenticationError("You are not authentificated");
       }
-      return User.find({ _id: user._id }).then((res) => res[0]);
+      return User.find({ _id: user._id }).then(res => res[0]);
     },
   },
 
@@ -97,7 +97,7 @@ const userResolver = {
       const hashedPassword = await argon2.hash(args.user.password);
 
       const userToUpdate = await User.findOne({ where: { _id: user._id } });
-      Object.keys(args.user).forEach((value) => {
+      Object.keys(args.user).forEach(value => {
         if (args.user[value] === userToUpdate[value]) {
           const capitalizeValue =
             value.charAt(0).toUpperCase() + value.slice(1);
@@ -151,7 +151,6 @@ const userResolver = {
         });
         return updatedUser;
       } catch (err) {
-        console.log("Forget pass err", err);
         const userToUpdate = await User.findOneAndUpdate(
           { email: email },
           {

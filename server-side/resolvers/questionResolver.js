@@ -25,27 +25,30 @@ const questionResolver = {
 
       return await Question.findById(id).populate("author", "-_id");
     },
+
+    searchQuestions: async (parent, args) => {
+      const query = { $text: { $search: args.keyword } };
+
+      return await Question.find(query).populate("author");
+    },
   },
 
   Mutation: {
     createQuestion: async (parent, args, context) => {
       const { title, content, tags, isDraft } = args.question;
-      console.log('Create question args: ',args);
 
       if (!context.user) {
         throw new Error("You're not allowed to view the questions");
       }
 
       const question = new Question({
-        title: isDraft ? `[Draft] ${title}`: title,
+        title: isDraft ? `[Draft] ${title}` : title,
         content,
         tags,
         author: context.user._id,
         createdAt: new Date(Date.now()),
         isDraft,
       });
-      console.log("Create Question", question);
-      console.log("context", context);
 
       const result = await question.save();
       const author = await User.findById(context.user._id);
