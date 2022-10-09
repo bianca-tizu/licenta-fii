@@ -1,6 +1,7 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
-import { Badge, Button, Menu, Spin } from "antd";
+import { Badge, Menu, Spin } from "antd";
 import {
   PlusCircleOutlined,
   UserOutlined,
@@ -8,7 +9,6 @@ import {
   SearchOutlined,
   QuestionOutlined,
   LogoutOutlined,
-  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
@@ -16,7 +16,6 @@ import AddQuestion from "./add-question";
 import UserProfile from "./user-profile";
 
 import "./menu.css";
-import { useHistory } from "react-router-dom";
 
 const HorizontalMenu = ({
   isSearchVisible,

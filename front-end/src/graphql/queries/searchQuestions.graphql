@@ -1,0 +1,14 @@
+query SearchQuestions($keyword: String, $isDraft: Boolean) {
+  searchQuestions(keyword: $keyword, isDraft: $isDraft) {
+    title
+    _id
+    author {
+      _id
+      avatarUrl
+    }
+    content
+    votes
+    tags
+    isDraft
+  }
+}

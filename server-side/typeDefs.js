@@ -30,7 +30,7 @@ const typeDefs = gql`
 
     getAllQuestions: [Question]
     getQuestion(id: ID): Question
-    searchQuestions(keyword: String): [Question]
+    searchQuestions(keyword: String, isDraft: Boolean): [Question]
   }
 
   input QuestionInput {

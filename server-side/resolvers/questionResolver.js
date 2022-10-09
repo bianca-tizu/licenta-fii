@@ -27,9 +27,13 @@ const questionResolver = {
     },
 
     searchQuestions: async (parent, args) => {
-      const query = { $text: { $search: args.keyword } };
+      const query = {
+        $text: { $search: args.keyword },
+      };
 
-      return await Question.find(query).populate("author");
+      return await Question.find({
+        $and: [query, { isDraft: args.isDraft }],
+      }).populate("author");
     },
   },
 
@@ -47,7 +51,7 @@ const questionResolver = {
         tags,
         author: context.user._id,
         createdAt: new Date(Date.now()),
-        isDraft,
+        isDraft: isDraft ? isDraft : false,
       });
 
       const result = await question.save();

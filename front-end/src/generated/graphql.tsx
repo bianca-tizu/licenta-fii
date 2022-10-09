@@ -61,16 +61,22 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getAllDraftQuestions?: Maybe<Array<Maybe<Question>>>;
   getAllQuestions?: Maybe<Array<Maybe<Question>>>;
   getCurrentUser?: Maybe<User>;
   getQuestion?: Maybe<Question>;
   hello?: Maybe<Scalars['String']>;
+  searchQuestions?: Maybe<Array<Maybe<Question>>>;
 };
 
 
 export type QueryGetQuestionArgs = {
   id?: Maybe<Scalars['ID']>;
+};
+
+
+export type QuerySearchQuestionsArgs = {
+  isDraft?: Maybe<Scalars['Boolean']>;
+  keyword?: Maybe<Scalars['String']>;
 };
 
 export type Question = {
@@ -211,6 +217,24 @@ export type QuestionsQueryVariables = Exact<{ [key: string]: never; }>;
 export type QuestionsQuery = (
   { __typename?: 'Query' }
   & { getAllQuestions?: Maybe<Array<Maybe<(
+    { __typename?: 'Question' }
+    & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags' | 'isDraft'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'avatarUrl'>
+    )> }
+  )>>> }
+);
+
+export type SearchQuestionsQueryVariables = Exact<{
+  keyword?: Maybe<Scalars['String']>;
+  isDraft?: Maybe<Scalars['Boolean']>;
+}>;
+
+
+export type SearchQuestionsQuery = (
+  { __typename?: 'Query' }
+  & { searchQuestions?: Maybe<Array<Maybe<(
     { __typename?: 'Question' }
     & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags' | 'isDraft'>
     & { author?: Maybe<(
@@ -487,3 +511,48 @@ export function useQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type QuestionsQueryHookResult = ReturnType<typeof useQuestionsQuery>;
 export type QuestionsLazyQueryHookResult = ReturnType<typeof useQuestionsLazyQuery>;
 export type QuestionsQueryResult = Apollo.QueryResult<QuestionsQuery, QuestionsQueryVariables>;
+export const SearchQuestionsDocument = gql`
+    query SearchQuestions($keyword: String, $isDraft: Boolean) {
+  searchQuestions(keyword: $keyword, isDraft: $isDraft) {
+    title
+    _id
+    author {
+      _id
+      avatarUrl
+    }
+    content
+    votes
+    tags
+    isDraft
+  }
+}
+    `;
+
+/**
+ * __useSearchQuestionsQuery__
+ *
+ * To run a query within a React component, call `useSearchQuestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuestionsQuery({
+ *   variables: {
+ *      keyword: // value for 'keyword'
+ *      isDraft: // value for 'isDraft'
+ *   },
+ * });
+ */
+export function useSearchQuestionsQuery(baseOptions?: Apollo.QueryHookOptions<SearchQuestionsQuery, SearchQuestionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchQuestionsQuery, SearchQuestionsQueryVariables>(SearchQuestionsDocument, options);
+      }
+export function useSearchQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuestionsQuery, SearchQuestionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchQuestionsQuery, SearchQuestionsQueryVariables>(SearchQuestionsDocument, options);
+        }
+export type SearchQuestionsQueryHookResult = ReturnType<typeof useSearchQuestionsQuery>;
+export type SearchQuestionsLazyQueryHookResult = ReturnType<typeof useSearchQuestionsLazyQuery>;
+export type SearchQuestionsQueryResult = Apollo.QueryResult<SearchQuestionsQuery, SearchQuestionsQueryVariables>;
