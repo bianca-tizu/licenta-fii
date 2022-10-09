@@ -38,6 +38,12 @@ const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
     }
   };
 
+  const handleChange = event => {
+    if (event.type !== "change") {
+      setSearchResults("");
+    }
+  };
+
   return (
     <>
       <div className="banner-container">
@@ -56,6 +62,7 @@ const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
             style={{ width: "50%" }}
             placeholder="Search here"
             onSearch={handleSearch}
+            onChange={handleChange}
             enterButton
             allowClear
             size="middle"

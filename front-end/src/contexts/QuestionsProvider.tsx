@@ -29,19 +29,22 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     if (data?.getAllQuestions) {
       setAllQuestions(data.getAllQuestions as Question[]);
     }
-  }, [data, allQuestions]);
+  }, [data]);
 
   const addQuestion = (question: Question) => {
     setAllQuestions(prev => [question, ...prev]);
   };
 
   const setSearchResults = results => {
-    setAllQuestions(prev =>
-      prev.filter(question =>
-        results.some(result => result._id === question._id)
-      )
-    );
-    console.log("setAllQuestions", allQuestions);
+    if (results) {
+      setAllQuestions(prev =>
+        prev.filter(question =>
+          results.some(result => result._id === question._id)
+        )
+      );
+    } else {
+      setAllQuestions(data?.getAllQuestions as Question[]);
+    }
   };
 
   const questionsData = {
