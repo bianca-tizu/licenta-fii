@@ -1,18 +1,16 @@
 import React from "react";
 
-import { Form, Input } from "antd";
+import { Input } from "antd";
 
 import {
   Question,
   useSearchQuestionsLazyQuery,
-  useSearchQuestionsQuery,
 } from "../../../generated/graphql";
 
 import HorizontalMenu from "../../header/HorizontalMenu";
 
 import { ReactComponent as PageBannerSVG } from "../../../assets/page_banner.svg";
 import "./page-banner.css";
-import { useLazyQuery } from "@apollo/client";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
 
 const { Search } = Input;

@@ -35,7 +35,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
   const randomColor = () => Math.floor(Math.random() * 16777215).toString(16);
 
   const handleUserChanges = async (values: any) => {
-    Object.keys(values).forEach((value) => {
+    Object.keys(values).forEach(value => {
       if (values[value] === undefined) {
         values[value] = "";
       }
@@ -55,7 +55,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
       if (response.data) {
         setIsUserProfileVisible(false);
         updateUserForm.resetFields();
-        setCurrentUser((prev) => ({
+        setCurrentUser(prev => ({
           ...prev,
           username: response.data?.updateUser?.username || "",
           email: response.data?.updateUser?.email || "",
@@ -186,17 +186,13 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
         }}
       >
-        <Button
-          type="primary"
-          htmlType="submit"
-          disabled={disableSubmit}
-          style={{
-            marginRight: "10px",
-          }}
-        >
+        <Button type="text" style={{ paddingLeft: 0, color: "#139CE4" }}>
+          Delete account
+        </Button>
+        <Button type="primary" htmlType="submit" disabled={disableSubmit}>
           Save
         </Button>
       </div>
