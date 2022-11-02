@@ -31,6 +31,7 @@ export type Mutation = {
   forgetPassword: User;
   loginUser: AuthPayload;
   registerUser: AuthPayload;
+  removeUser?: Maybe<Scalars['ID']>;
   updateUser?: Maybe<User>;
 };
 

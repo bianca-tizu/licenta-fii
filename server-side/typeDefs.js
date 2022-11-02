@@ -68,6 +68,7 @@ const typeDefs = gql`
     loginUser(user: LoginInput): AuthPayload!
     updateUser(user: UserInput): User
     forgetPassword(email: String): User!
+    removeUser: ID
   }
 `;
 

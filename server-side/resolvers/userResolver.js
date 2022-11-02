@@ -14,6 +14,7 @@ import { getResetPassToken } from "../utils/getResetPassToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 import dotenv from "dotenv";
+import { Question } from "../models/Question.model.js";
 
 dotenv.config();
 
@@ -164,6 +165,26 @@ const userResolver = {
         await userToUpdate.save();
         throw new Error("Email could not be sent");
       }
+    },
+
+    removeUser: async (parent, args, { user }) => {
+      const userToBeRemoved = await User.findOne({ _id: user._id });
+      const draftsToBeRemoved = await Question.find({
+        author: user._id,
+        isDraft: true,
+      });
+
+      if (!userToBeRemoved) {
+        throw new UserInputError("No user with this email.");
+      }
+
+      if (draftsToBeRemoved) {
+        draftsToBeRemoved.forEach(
+          async draft => await Question.deleteMany(draft)
+        );
+      }
+      await User.deleteOne(userToBeRemoved);
+      return userToBeRemoved._id;
     },
   },
 };
