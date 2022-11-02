@@ -1,5 +1,13 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Form, Input, Image, Button, notification } from "antd";
+import {
+  Avatar,
+  Form,
+  Input,
+  Image,
+  Button,
+  notification,
+  Popconfirm,
+} from "antd";
 import React from "react";
 import {
   useGetCurrentUserQuery,
@@ -13,6 +21,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
   const [updateUser] = useUpdateUserMutation();
   const [updateUserForm] = Form.useForm();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
   const [currentUser, setCurrentUser] = React.useState({
     _id: data?.getCurrentUser?._id || "",
@@ -73,6 +82,12 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
         placement: "bottomRight",
       });
     }
+  };
+
+  const removeUser = () => {};
+
+  const handleCancel = () => {
+    setIsDeleteModalOpen(false);
   };
 
   return (
@@ -189,9 +204,20 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
           justifyContent: "space-between",
         }}
       >
-        <Button type="text" style={{ paddingLeft: 0, color: "#139CE4" }}>
+        <Button
+          type="text"
+          style={{ paddingLeft: 0, color: "#139CE4" }}
+          onClick={() => setIsDeleteModalOpen(true)}
+        >
           Delete account
         </Button>
+        <Popconfirm
+          title="Are you sure you want to delete the account?"
+          placement="bottomLeft"
+          open={isDeleteModalOpen}
+          onConfirm={removeUser}
+          onCancel={handleCancel}
+        ></Popconfirm>
         <Button type="primary" htmlType="submit" disabled={disableSubmit}>
           Save
         </Button>

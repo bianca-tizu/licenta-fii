@@ -113,7 +113,7 @@ const LoginForm = () => {
         <Modal
           title="Reset your password"
           centered
-          visible={showResetPasswordModal}
+          open={showResetPasswordModal}
           okText="Send"
           onOk={resetPassword}
           onCancel={() => {

@@ -106,7 +106,7 @@ const HorizontalMenu = ({
         />
         <Modal
           title="Add a question"
-          visible={isQuestionDialogVisible}
+          open={isQuestionDialogVisible}
           keyboard
           maskClosable
           onCancel={() => setIsQuestionDialogVisible(false)}
@@ -141,7 +141,7 @@ const HorizontalMenu = ({
           title="User profile"
         />
         <Modal
-          visible={isUserProfileVisible}
+          open={isUserProfileVisible}
           keyboard
           maskClosable
           onCancel={() => setIsUserProfileVisible(false)}
@@ -156,7 +156,7 @@ const HorizontalMenu = ({
           title="Logout"
         />
         <Modal
-          visible={isLogoutDialogVisible}
+          open={isLogoutDialogVisible}
           keyboard
           maskClosable
           onCancel={() => setIsLogoutDialogVisible(false)}
