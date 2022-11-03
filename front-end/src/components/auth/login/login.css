@@ -14,6 +14,12 @@
 
 .ant-form-item {
   margin: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-form-item .username-input{
+  margin-bottom: 15px;
 }
 
 /* small phone */

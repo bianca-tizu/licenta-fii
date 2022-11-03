@@ -5,9 +5,9 @@ import { onError } from "@apollo/client/link/error";
 
 import {
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
   createHttpLink,
-  from,
   InMemoryCache,
 } from "@apollo/client";
 
@@ -63,7 +63,7 @@ const errorLink = onError(
 );
 
 const client = new ApolloClient({
-  link: from([authLink.concat(httpLink), errorLink]),
+  link: ApolloLink.from([errorLink, authLink, httpLink]),
   cache: new InMemoryCache(),
 });
 

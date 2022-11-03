@@ -68,6 +68,33 @@ const HorizontalMenu = ({
     }
   };
 
+  const items = [
+    {
+      key: "questions",
+      icon: <QuestionOutlined className="menu-item-icon" />,
+    },
+    {
+      key: "search",
+      icon: <SearchOutlined className="menu-item-icon" />,
+    },
+    {
+      key: "newQuestion",
+      icon: <PlusCircleOutlined className="menu-item-icon" />,
+    },
+    {
+      key: "drafts",
+      icon: <RadiusSettingOutlined className="menu-item-icon" />,
+    },
+    {
+      key: "profile",
+      icon: <UserOutlined className="menu-item-icon" />,
+    },
+    {
+      key: "logout",
+      icon: <LogoutOutlined className="menu-item-icon" />,
+    },
+  ];
+
   return (
     <div
       style={{
@@ -83,90 +110,51 @@ const HorizontalMenu = ({
           background: "inherit",
           color: "#fff",
         }}
+        defaultSelectedKeys={["questions"]}
+        items={items}
+      />
+
+      {/* add a question */}
+      <Modal
+        title="Add a question"
+        open={isQuestionDialogVisible}
+        keyboard
+        maskClosable
+        onCancel={() => setIsQuestionDialogVisible(false)}
+        footer={null}
       >
-        {/* questions */}
-        <Menu.Item
-          key="questions"
-          icon={<QuestionOutlined className="menu-item-icon" />}
-          title="See questions"
-        />
-
-        {/* search  */}
-        <Menu.Item
-          key="search"
-          title="Search"
-          icon={<SearchOutlined className="menu-item-icon" />}
-        />
-
-        {/* add a question */}
-        <Menu.Item
-          key="newQuestion"
-          title="Add a question"
-          icon={<PlusCircleOutlined className="menu-item-icon" />}
-        />
-        <Modal
-          title="Add a question"
-          open={isQuestionDialogVisible}
-          keyboard
-          maskClosable
-          onCancel={() => setIsQuestionDialogVisible(false)}
-          footer={null}
-        >
-          <Spin spinning={createQuestionLoading}>
-            <AddQuestion
-              setIsDraftVisible={setIsDraftVisible}
-              setIsQuestionDialogVisible={setIsQuestionDialogVisible}
-              setCreateQuestionLoading={setCreateQuestionLoading}
-            />
-          </Spin>
-        </Modal>
-
-        {/* see drafts */}
-        <>
-          <Menu.Item
-            key="drafts"
-            icon={<RadiusSettingOutlined className="menu-item-icon" />}
-            title="Draft questions"
+        <Spin spinning={createQuestionLoading}>
+          <AddQuestion
+            setIsDraftVisible={setIsDraftVisible}
+            setIsQuestionDialogVisible={setIsQuestionDialogVisible}
+            setCreateQuestionLoading={setCreateQuestionLoading}
           />
-          <Badge
-            dot
-            style={{ position: "absolute", right: "20px", bottom: "5px" }}
-          ></Badge>
-        </>
+        </Spin>
+      </Modal>
 
-        {/* user profile */}
-        <Menu.Item
-          key="profile"
-          icon={<UserOutlined className="menu-item-icon" />}
-          title="User profile"
-        />
-        <Modal
-          open={isUserProfileVisible}
-          keyboard
-          maskClosable
-          onCancel={() => setIsUserProfileVisible(false)}
-          footer={null}
-        >
-          <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
-        </Modal>
+      {/* user profile */}
+      <Modal
+        open={isUserProfileVisible}
+        keyboard
+        maskClosable
+        onCancel={() => setIsUserProfileVisible(false)}
+        footer={null}
+      >
+        <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
+      </Modal>
 
-        <Menu.Item
-          key="logout"
-          icon={<LogoutOutlined className="menu-item-icon" />}
-          title="Logout"
-        />
-        <Modal
-          open={isLogoutDialogVisible}
-          keyboard
-          maskClosable
-          onCancel={() => setIsLogoutDialogVisible(false)}
-          okText="Yes"
-          cancelText="No"
-          onOk={handleLogout}
-        >
-          Are you sure you want to log out?
-        </Modal>
-      </Menu>
+      {/* Logout dialog */}
+      <Modal
+        open={isLogoutDialogVisible}
+        keyboard
+        maskClosable
+        onCancel={() => setIsLogoutDialogVisible(false)}
+        okText="Yes"
+        cancelText="No"
+        onOk={handleLogout}
+      >
+        Are you sure you want to log out?
+      </Modal>
     </div>
   );
 };

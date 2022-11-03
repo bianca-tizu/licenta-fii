@@ -11,7 +11,14 @@ const questionResolver = {
       if (!context.user) {
         throw new Error("You're not allowed to get all questions");
       }
-      const questions = await Question.find().populate("author");
+      const questions = await Question.find({ isDraft: false }).populate(
+        "author"
+      );
+      const drafts = await Question.find({
+        $and: [{ _id: context.user._id }, { isDraft: true }],
+      });
+
+      console.log(questions);
 
       return questions.reverse();
     },

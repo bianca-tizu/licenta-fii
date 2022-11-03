@@ -1,16 +1,10 @@
 import { UserOutlined } from "@ant-design/icons";
-import {
-  Avatar,
-  Form,
-  Input,
-  Image,
-  Button,
-  notification,
-  Popconfirm,
-} from "antd";
+import { Avatar, Form, Input, Image, Button, notification, Modal } from "antd";
 import React from "react";
+import { useHistory } from "react-router";
 import {
   useGetCurrentUserQuery,
+  useRemoveUserMutation,
   useUpdateUserMutation,
 } from "../../../generated/graphql";
 
@@ -19,6 +13,7 @@ import "./user-profile.css";
 const UserProfile = ({ setIsUserProfileVisible }: any) => {
   const { data } = useGetCurrentUserQuery();
   const [updateUser] = useUpdateUserMutation();
+  const [removeUserMutation] = useRemoveUserMutation();
   const [updateUserForm] = Form.useForm();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
@@ -42,6 +37,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
   }, [data?.getCurrentUser]);
 
   const randomColor = () => Math.floor(Math.random() * 16777215).toString(16);
+  let history = useHistory();
 
   const handleUserChanges = async (values: any) => {
     Object.keys(values).forEach(value => {
@@ -84,7 +80,11 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
     }
   };
 
-  const removeUser = () => {};
+  const removeUser = async () => {
+    await removeUserMutation();
+    await sessionStorage.removeItem("token");
+    history.push("/");
+  };
 
   const handleCancel = () => {
     setIsDeleteModalOpen(false);
@@ -207,17 +207,21 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
         <Button
           type="text"
           style={{ paddingLeft: 0, color: "#139CE4" }}
-          onClick={() => setIsDeleteModalOpen(true)}
+          onClick={() => {
+            Modal.confirm({
+              content: "Are you sure you want to delete the account?",
+              onOk: removeUser,
+              okText: "Yes",
+              centered: true,
+              onCancel: handleCancel,
+              cancelText: "No",
+              width: 450,
+            });
+          }}
         >
           Delete account
         </Button>
-        <Popconfirm
-          title="Are you sure you want to delete the account?"
-          placement="bottomLeft"
-          open={isDeleteModalOpen}
-          onConfirm={removeUser}
-          onCancel={handleCancel}
-        ></Popconfirm>
+
         <Button type="primary" htmlType="submit" disabled={disableSubmit}>
           Save
         </Button>
