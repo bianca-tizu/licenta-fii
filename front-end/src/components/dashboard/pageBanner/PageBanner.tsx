@@ -31,7 +31,7 @@ const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
   const handleSearch = (keyword: string) => {
     if (keyword) {
       searchQuestions({
-        variables: { keyword: keyword, isDraft: isDraftVisible },
+        variables: { keyword: keyword },
       });
     }
   };

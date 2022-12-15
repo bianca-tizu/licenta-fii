@@ -57,7 +57,7 @@ const AddQuestion = ({
           title: title,
           content: content,
           tags: tags,
-          isDraft: isDraft,
+          isDraft: false,
         },
       });
 
@@ -117,7 +117,6 @@ const AddQuestion = ({
       {/* Description of the question */}
       <Form.Item
         name="content"
-        valuePropName="data"
         getValueFromEvent={(event: Event, editor: any) => {
           const data = editor.getData();
           return data;
@@ -137,15 +136,20 @@ const AddQuestion = ({
               "EasyImage",
             ],
           }}
-          data="<p>Hello from CKEditor 5!</p>"
+          data=""
           onReady={(editor: any) => {
-            // You can store the "editor" and use when it is needed.
-            console.log("Editor is ready to use!", editor);
+            editor.ui
+              .getEditableElement()
+              .parentElement.insertBefore(
+                editor.ui.view.toolbar.element,
+                editor.ui.getEditableElement()
+              );
           }}
           onChange={(event: Event, editor: any) => {
             const data = editor.getData();
-            console.log({ event, editor, data });
+            return data;
           }}
+          error="Oh no"
         />
       </Form.Item>
 

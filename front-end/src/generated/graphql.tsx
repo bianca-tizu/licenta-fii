@@ -76,7 +76,6 @@ export type QueryGetQuestionArgs = {
 
 
 export type QuerySearchQuestionsArgs = {
-  isDraft?: Maybe<Scalars['Boolean']>;
   keyword?: Maybe<Scalars['String']>;
 };
 
@@ -237,7 +236,6 @@ export type QuestionsQuery = (
 
 export type SearchQuestionsQueryVariables = Exact<{
   keyword?: Maybe<Scalars['String']>;
-  isDraft?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -551,8 +549,8 @@ export type QuestionsQueryHookResult = ReturnType<typeof useQuestionsQuery>;
 export type QuestionsLazyQueryHookResult = ReturnType<typeof useQuestionsLazyQuery>;
 export type QuestionsQueryResult = Apollo.QueryResult<QuestionsQuery, QuestionsQueryVariables>;
 export const SearchQuestionsDocument = gql`
-    query SearchQuestions($keyword: String, $isDraft: Boolean) {
-  searchQuestions(keyword: $keyword, isDraft: $isDraft) {
+    query SearchQuestions($keyword: String) {
+  searchQuestions(keyword: $keyword) {
     title
     _id
     author {
@@ -580,7 +578,6 @@ export const SearchQuestionsDocument = gql`
  * const { data, loading, error } = useSearchQuestionsQuery({
  *   variables: {
  *      keyword: // value for 'keyword'
- *      isDraft: // value for 'isDraft'
  *   },
  * });
  */
