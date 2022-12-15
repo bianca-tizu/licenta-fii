@@ -1,5 +1,5 @@
-query SearchQuestions($keyword: String, $isDraft: Boolean) {
-  searchQuestions(keyword: $keyword, isDraft: $isDraft) {
+query SearchQuestions($keyword: String) {
+  searchQuestions(keyword: $keyword) {
     title
     _id
     author {

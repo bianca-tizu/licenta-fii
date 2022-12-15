@@ -47,6 +47,7 @@ const HorizontalMenu = ({
         setIsDraftVisible(false);
         break;
       case "search":
+        setIsDraftVisible(false);
         setIsSearchVisible(!isSearchVisible);
         break;
       case "newQuestion":
