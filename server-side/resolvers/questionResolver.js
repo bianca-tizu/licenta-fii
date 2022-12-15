@@ -11,9 +11,15 @@ const questionResolver = {
       if (!context.user) {
         throw new Error("You're not allowed to get all questions");
       }
-      const questions = await Question.find().populate("author");
+      const questions = await Question.find();
 
-      return questions.reverse();
+      return questions
+        .filter(
+          question =>
+            (question.isDraft && question.author === context.user._id) ||
+            !question.isDraft
+        )
+        .reverse();
     },
 
     getQuestion: async (parent, args, context) => {

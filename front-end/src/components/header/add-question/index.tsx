@@ -57,7 +57,7 @@ const AddQuestion = ({
           title: title,
           content: content,
           tags: tags,
-          isDraft: false,
+          isDraft: isDraft,
         },
       });
 
