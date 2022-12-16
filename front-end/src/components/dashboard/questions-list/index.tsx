@@ -22,10 +22,10 @@ const QuestionsList = ({ isDraftVisible }) => {
         <div className="row">
           <div className="column" style={{ marginLeft: "105px" }}>
             {allQuestions
-              .filter((question) =>
+              .filter(question =>
                 isDraftVisible ? question.isDraft : !question.isDraft
               )
-              .map((question) => (
+              .map(question => (
                 <Card
                   key={question._id}
                   style={{ width: 300, marginBottom: 30 }}

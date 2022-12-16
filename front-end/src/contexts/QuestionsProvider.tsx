@@ -40,11 +40,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
 
   const setSearchResults = results => {
     if (results) {
-      setAllQuestions(prev =>
-        prev.filter(question =>
-          results.some(result => result._id === question._id)
-        )
-      );
+      setAllQuestions(results);
     } else {
       setAllQuestions(data?.getAllQuestions as Question[]);
     }

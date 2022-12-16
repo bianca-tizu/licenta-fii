@@ -34,7 +34,11 @@ const questionResolver = {
 
     searchQuestions: async (parent, args) => {
       const query = {
-        $text: { $search: args.keyword },
+        $or: [
+          { title: { $regex: args.keyword } },
+          { content: { $regex: args.keyword } },
+          { tags: { $regex: args.keyword } },
+        ],
       };
 
       return await Question.find({
