@@ -65,6 +65,9 @@ const QuestionsList = ({ isDraftVisible }) => {
       ) : (
         <p>Oops, there was a problem</p>
       )}
+      {allQuestions.filter(question => question.isDraft).length < 1 && (
+        <p>Sorry, but there is no draft to show.</p>
+      )}
     </>
   );
 };
