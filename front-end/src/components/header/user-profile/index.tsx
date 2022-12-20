@@ -3,6 +3,7 @@ import { Avatar, Form, Input, Image, Button, notification, Modal } from "antd";
 import React from "react";
 import { useHistory } from "react-router";
 import {
+  useGetCurrentUserLazyQuery,
   useGetCurrentUserQuery,
   useRemoveUserMutation,
   useUpdateUserMutation,
@@ -11,7 +12,7 @@ import {
 import "./user-profile.css";
 
 const UserProfile = ({ setIsUserProfileVisible }: any) => {
-  const { data } = useGetCurrentUserQuery();
+  const { data, refetch } = useGetCurrentUserQuery();
   const [updateUser] = useUpdateUserMutation();
   const [removeUserMutation] = useRemoveUserMutation();
   const [updateUserForm] = Form.useForm();
@@ -27,6 +28,8 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
   });
 
   React.useEffect(() => {
+    refetch();
+
     setCurrentUser({
       _id: data?.getCurrentUser?._id || "",
       username: data?.getCurrentUser?.username || "",

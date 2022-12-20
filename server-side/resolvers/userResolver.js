@@ -20,10 +20,11 @@ dotenv.config();
 
 const userResolver = {
   Query: {
-    getCurrentUser: (_parent, _args, { user }) => {
+    getCurrentUser: async (_parent, _args, { user }) => {
       if (!user) {
         throw new AuthenticationError("You are not authentificated");
       }
+
       return User.find({ _id: user._id }).then(res => res[0]);
     },
   },
