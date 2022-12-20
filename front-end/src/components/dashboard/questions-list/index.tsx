@@ -16,6 +16,8 @@ const QuestionsList = ({ isDraftVisible }) => {
   const [selectedItem, setSelectedItem] = React.useState<Question>();
   const [countComments, setCountComments] = React.useState(0);
 
+  const drafts = allQuestions.filter(question => question.isDraft);
+
   return (
     <>
       {allQuestions?.length ? (
@@ -65,7 +67,7 @@ const QuestionsList = ({ isDraftVisible }) => {
       ) : (
         <p>Oops, there was a problem</p>
       )}
-      {allQuestions.filter(question => question.isDraft).length < 1 && (
+      {drafts.length < 1 && isDraftVisible && (
         <p>Sorry, but there is no draft to show.</p>
       )}
     </>
