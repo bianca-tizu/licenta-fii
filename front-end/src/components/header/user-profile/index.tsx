@@ -3,7 +3,6 @@ import { Avatar, Form, Input, Image, Button, notification, Modal } from "antd";
 import React from "react";
 import { useHistory } from "react-router";
 import {
-  useGetCurrentUserLazyQuery,
   useGetCurrentUserQuery,
   useRemoveUserMutation,
   useUpdateUserMutation,

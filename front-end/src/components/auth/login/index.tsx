@@ -89,7 +89,7 @@ const LoginForm = () => {
       >
         <Input
           prefix={<UserOutlined className="site-form-item-icon" />}
-          placeholder="Username"
+          placeholder="E-mail address"
         />
       </Form.Item>
       <Form.Item
