@@ -40,7 +40,15 @@ const QuestionsList = ({ isDraftVisible }) => {
                   ]}
                 >
                   <Meta
-                    avatar={<Avatar src={question.author?.avatarUrl} />}
+                    avatar={
+                      <Avatar
+                        src={
+                          question.author?.avatarUrl
+                            ? question.author.avatarUrl
+                            : "https://gravatar.com/avatar/1da2c054325d6908ceb9f454af161c3a?s=400&d=retro&r=x"
+                        }
+                      />
+                    }
                     title={question.title}
                   />
                   {question.content && (
