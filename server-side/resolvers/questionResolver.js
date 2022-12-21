@@ -11,7 +11,7 @@ const questionResolver = {
       if (!context.user) {
         throw new Error("You're not allowed to get all questions");
       }
-      const questions = await Question.find();
+      const questions = await Question.find().populate("author");
 
       return questions
         .filter(
