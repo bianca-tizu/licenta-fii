@@ -74,7 +74,7 @@ const userResolver = {
     loginUser: async (_parent, args) => {
       const { email, password } = args.user;
 
-      const user = await User.findOne({ where: { email: email } });
+      const user = await User.findOne({ email: email });
 
       if (!user) {
         throw new UserInputError("No user with this email.");
