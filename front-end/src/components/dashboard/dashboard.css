@@ -9,3 +9,9 @@
   margin-top: 1rem;
   color: rgba(0, 0, 0, 0.45);
 }
+
+.disabled-delete {
+  cursor: not-allowed;
+  color: rgb(210, 206, 206) !important;
+}
+
