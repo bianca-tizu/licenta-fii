@@ -31,9 +31,6 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     if (data?.getAllQuestions) {
       setAllQuestions(data.getAllQuestions as Question[]);
     }
-    return () => {
-      setAllQuestions([]);
-    };
   }, [data]);
 
   const addQuestion = (question: Question) => {

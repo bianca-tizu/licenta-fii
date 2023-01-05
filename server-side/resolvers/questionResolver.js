@@ -13,13 +13,7 @@ const questionResolver = {
       }
       const questions = await Question.find().populate("author");
 
-      return questions
-        .filter(
-          question =>
-            (question.isDraft && question.author === context.user._id) ||
-            !question.isDraft
-        )
-        .reverse();
+      return questions.reverse();
     },
 
     getQuestion: async (parent, args, context) => {

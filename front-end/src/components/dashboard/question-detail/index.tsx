@@ -44,7 +44,15 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
     >
       <div className="question-header">
         <Meta
-          avatar={<Avatar src={selectedItem.author?.avatarUrl} />}
+          avatar={
+            <Avatar
+              src={
+                selectedItem.author?.avatarUrl
+                  ? selectedItem.author.avatarUrl
+                  : "https://gravatar.com/avatar/1da2c054325d6908ceb9f454af161c3a?s=400&d=retro&r=x"
+              }
+            />
+          }
           title={selectedItem.title}
         />
         <div>
@@ -64,7 +72,7 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
           </div>
         )}
       </Paragraph>
-      {selectedItem.tags?.map((tag) => (
+      {selectedItem.tags?.map(tag => (
         <Tag key={selectedItem._id}>{tag}</Tag>
       ))}
       <Divider />
