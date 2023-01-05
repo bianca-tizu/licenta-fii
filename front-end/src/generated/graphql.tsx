@@ -28,6 +28,7 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createQuestion?: Maybe<Question>;
+  deleteQuestion?: Maybe<Scalars['ID']>;
   forgetPassword: User;
   loginUser: AuthPayload;
   registerUser: AuthPayload;
@@ -38,6 +39,11 @@ export type Mutation = {
 
 export type MutationCreateQuestionArgs = {
   question?: Maybe<QuestionInput>;
+};
+
+
+export type MutationDeleteQuestionArgs = {
+  id?: Maybe<Scalars['ID']>;
 };
 
 
@@ -141,6 +147,16 @@ export type CreateQuestionMutation = (
       & Pick<User, '_id' | 'avatarUrl'>
     )> }
   )> }
+);
+
+export type DeleteQuestionMutationVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type DeleteQuestionMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteQuestion'>
 );
 
 export type ForgetPasswordMutationVariables = Exact<{
@@ -299,6 +315,37 @@ export function useCreateQuestionMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateQuestionMutationHookResult = ReturnType<typeof useCreateQuestionMutation>;
 export type CreateQuestionMutationResult = Apollo.MutationResult<CreateQuestionMutation>;
 export type CreateQuestionMutationOptions = Apollo.BaseMutationOptions<CreateQuestionMutation, CreateQuestionMutationVariables>;
+export const DeleteQuestionDocument = gql`
+    mutation DeleteQuestion($id: ID) {
+  deleteQuestion(id: $id)
+}
+    `;
+export type DeleteQuestionMutationFn = Apollo.MutationFunction<DeleteQuestionMutation, DeleteQuestionMutationVariables>;
+
+/**
+ * __useDeleteQuestionMutation__
+ *
+ * To run a mutation, you first call `useDeleteQuestionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteQuestionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteQuestionMutation, { data, loading, error }] = useDeleteQuestionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteQuestionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteQuestionMutation, DeleteQuestionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteQuestionMutation, DeleteQuestionMutationVariables>(DeleteQuestionDocument, options);
+      }
+export type DeleteQuestionMutationHookResult = ReturnType<typeof useDeleteQuestionMutation>;
+export type DeleteQuestionMutationResult = Apollo.MutationResult<DeleteQuestionMutation>;
+export type DeleteQuestionMutationOptions = Apollo.BaseMutationOptions<DeleteQuestionMutation, DeleteQuestionMutationVariables>;
 export const ForgetPasswordDocument = gql`
     mutation ForgetPassword($email: String!) {
   forgetPassword(email: $email) {

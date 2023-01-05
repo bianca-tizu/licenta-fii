@@ -69,6 +69,7 @@ const typeDefs = gql`
     updateUser(user: UserInput): User
     forgetPassword(email: String): User!
     removeUser: ID
+    deleteQuestion(id: ID): ID
   }
 `;
 

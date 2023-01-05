@@ -5,6 +5,7 @@ import { useQuestionsQuery, Question } from "../generated/graphql";
 type QuestionsContextData = {
   allQuestions: Question[];
   addQuestion: (question: Question) => void;
+  removeQuestion: (questionId: String) => void;
   setSearchResults: (results) => void;
   error: ApolloError | undefined;
 };
@@ -12,6 +13,7 @@ type QuestionsContextData = {
 const defaultQuestionsContext = {
   allQuestions: [],
   addQuestion: (question: Question) => {},
+  removeQuestion: (questionId: String) => {},
   setSearchResults: results => {},
   error: undefined,
 };
@@ -38,6 +40,10 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     setAllQuestions(prev => [question, ...prev]);
   };
 
+  const removeQuestion = (questionId: String) => {
+    setAllQuestions(prev => prev.filter(q => q._id !== questionId));
+  };
+
   const setSearchResults = results => {
     if (results) {
       setAllQuestions(results);
@@ -49,6 +55,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
   const questionsData = {
     allQuestions,
     addQuestion,
+    removeQuestion,
     setSearchResults,
     error,
   };

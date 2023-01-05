@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Card, Avatar } from "antd";
+import { Card, Avatar, Modal } from "antd";
 import {
   SendOutlined,
   CommentOutlined,
@@ -9,19 +9,33 @@ import {
 
 import "../dashboard.css";
 
-import { Question, useGetCurrentUserQuery } from "../../../generated/graphql";
+import {
+  Question,
+  useDeleteQuestionMutation,
+  useGetCurrentUserQuery,
+} from "../../../generated/graphql";
 import QuestionDetail from "../question-detail";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
 
 const { Meta } = Card;
 
 const QuestionsList = ({ isDraftVisible }) => {
+  const { allQuestions, removeQuestion } = React.useContext(QuestionsContext);
   const { data } = useGetCurrentUserQuery();
-  const { allQuestions } = React.useContext(QuestionsContext);
+  const [deleteQuestionMutation] = useDeleteQuestionMutation();
   const [selectedItem, setSelectedItem] = React.useState<Question>();
-  const [countComments, setCountComments] = React.useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
   const drafts = allQuestions.filter(question => question.isDraft);
+
+  const deleteQuestion = async (questionId: any) => {
+    await deleteQuestionMutation({ variables: { id: questionId } });
+    removeQuestion(questionId);
+  };
+
+  const handleCancel = () => {
+    setIsDeleteModalOpen(false);
+  };
 
   const DeleteIcon = ({ disabled, ...props }) => {
     if (disabled) {
@@ -51,7 +65,20 @@ const QuestionsList = ({ isDraftVisible }) => {
                     actions={[
                       <DeleteIcon
                         disabled={disableDeleteButton}
-                        onClick={() => console.log("Click")}
+                        onClick={() => {
+                          Modal.confirm({
+                            content:
+                              "Are you sure you want to delete this question?",
+                            onOk() {
+                              deleteQuestion(question._id);
+                            },
+                            okText: "Yes",
+                            centered: true,
+                            onCancel: handleCancel,
+                            cancelText: "No",
+                            width: 450,
+                          });
+                        }}
                       />,
                       <SendOutlined
                         key="answer"

@@ -70,12 +70,28 @@ const questionResolver = {
         throw new Error("User not found");
       }
       await User.findByIdAndUpdate(
-        context.user.id,
+        context.user._id,
         { $push: { questions: question._id } },
         { new: true, useFindAndModify: false }
       );
 
       return { ...result._doc, author: { ...author._doc } };
+    },
+
+    deleteQuestion: async (parent, args, context) => {
+      const questionToBeRemoved = await Question.findOne({
+        _id: args.id,
+      });
+
+      if (!context.user) {
+        throw new Error("You're not allowed to delete a question.");
+      }
+
+      await Question.deleteOne(questionToBeRemoved);
+      await User.findByIdAndUpdate(context.user._id, {
+        $pull: { questions: args.id },
+      });
+      return questionToBeRemoved._id;
     },
   },
 };
