@@ -9,12 +9,12 @@ import { useGetCurrentUserQuery } from "../../../generated/graphql";
 const QuestionsList = ({ isDraftVisible }) => {
   const { allQuestions } = React.useContext(QuestionsContext);
   const { data } = useGetCurrentUserQuery();
+
   const drafts = allQuestions.filter(
     question =>
       question.isDraft && question.author?._id === data?.getCurrentUser?._id
   );
   const questions = allQuestions.filter(question => !question.isDraft);
-  console.log(allQuestions);
 
   return (
     <>
@@ -23,6 +23,7 @@ const QuestionsList = ({ isDraftVisible }) => {
           {drafts.length ? (
             <QuestionCard
               questions={drafts}
+              isDraftVisible={isDraftVisible}
               currentUser={data?.getCurrentUser}
             />
           ) : (

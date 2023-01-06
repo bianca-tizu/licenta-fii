@@ -24,6 +24,14 @@ const typeDefs = gql`
     isDraft: Boolean
   }
 
+  type Comment {
+    _id: ID
+    author: User
+    message: String
+    createdAt: String
+    question: Question
+  }
+
   type Query {
     hello: String
     getCurrentUser: User
@@ -31,6 +39,8 @@ const typeDefs = gql`
     getAllQuestions: [Question]
     getQuestion(id: ID): Question
     searchQuestions(keyword: String): [Question]
+
+    getAllComments: [Comment]
   }
 
   input QuestionInput {
@@ -38,6 +48,11 @@ const typeDefs = gql`
     content: String
     tags: [String]
     isDraft: Boolean
+  }
+
+  input CommentInput {
+    message: String
+    questionId: ID
   }
 
   input RegisterInput {
@@ -70,6 +85,7 @@ const typeDefs = gql`
     forgetPassword(email: String): User!
     removeUser: ID
     deleteQuestion(id: ID): ID
+    createComment(comment: CommentInput): Comment
   }
 `;
 

@@ -11,7 +11,7 @@ import {
 import QuestionDetail from "../../question-detail";
 import "../../dashboard.css";
 
-const QuestionCard = ({ questions, currentUser }) => {
+const QuestionCard = props => {
   const { removeQuestion } = React.useContext(QuestionsContext);
 
   const [deleteQuestionMutation] = useDeleteQuestionMutation();
@@ -38,9 +38,9 @@ const QuestionCard = ({ questions, currentUser }) => {
     <>
       <div className="row">
         <div className="column" style={{ marginLeft: "105px" }}>
-          {questions.map(question => {
+          {props.questions.map(question => {
             const disableDeleteButton =
-              question.author?._id !== currentUser?._id ||
+              question.author?._id !== props.currentUser?._id ||
               !question.author?._id;
             return (
               <Card
@@ -66,7 +66,11 @@ const QuestionCard = ({ questions, currentUser }) => {
                   />,
                   <SendOutlined
                     key="answer"
-                    onClick={() => setSelectedItem(question as Question)}
+                    onClick={() =>
+                      question.isDraft
+                        ? setSelectedItem(undefined)
+                        : setSelectedItem(question as Question)
+                    }
                   />,
                 ]}
               >
@@ -96,7 +100,7 @@ const QuestionCard = ({ questions, currentUser }) => {
           })}
         </div>
         <div>
-          {selectedItem && (
+          {selectedItem && !props?.isDraftVisible && (
             <QuestionDetail
               selectedItem={selectedItem}
               setSelectedItem={setSelectedItem}

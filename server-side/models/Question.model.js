@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { User } from "./User.model.js";
+import { Comment } from "./Comment.model.js";
 
 export const QuestionSchema = new mongoose.Schema({
   author: {
@@ -25,6 +26,12 @@ export const QuestionSchema = new mongoose.Schema({
   isDraft: {
     type: Boolean,
   },
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
 });
 
 QuestionSchema.index({ title: "text", content: "text" });
