@@ -1,6 +1,4 @@
-import gql from "graphql-tag";
-
-const typeDefs = gql`
+const typeDefs = `
   type User {
     _id: ID
     email: String
@@ -86,6 +84,10 @@ const typeDefs = gql`
     removeUser: ID
     deleteQuestion(id: ID): ID
     createComment(comment: CommentInput): Comment
+  }
+
+  type Subscription {
+    commentAdded: Comment
   }
 `;
 

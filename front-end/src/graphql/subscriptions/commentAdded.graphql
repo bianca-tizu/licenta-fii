@@ -1,0 +1,11 @@
+subscription CommentAdded {
+  commentAdded {
+    _id
+    author {
+      _id
+    }
+    question {
+      _id
+    }
+  }
+}

@@ -131,6 +131,11 @@ export type RegisterInput = {
   studentId?: Maybe<Scalars['String']>;
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  commentAdded?: Maybe<Comment>;
+};
+
 export type User = {
   __typename?: 'User';
   _id?: Maybe<Scalars['ID']>;
@@ -307,6 +312,24 @@ export type SearchQuestionsQuery = (
       & Pick<User, '_id' | 'avatarUrl'>
     )> }
   )>>> }
+);
+
+export type CommentAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CommentAddedSubscription = (
+  { __typename?: 'Subscription' }
+  & { commentAdded?: Maybe<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, '_id'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id'>
+    )>, question?: Maybe<(
+      { __typename?: 'Question' }
+      & Pick<Question, '_id'>
+    )> }
+  )> }
 );
 
 
@@ -724,3 +747,38 @@ export function useSearchQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type SearchQuestionsQueryHookResult = ReturnType<typeof useSearchQuestionsQuery>;
 export type SearchQuestionsLazyQueryHookResult = ReturnType<typeof useSearchQuestionsLazyQuery>;
 export type SearchQuestionsQueryResult = Apollo.QueryResult<SearchQuestionsQuery, SearchQuestionsQueryVariables>;
+export const CommentAddedDocument = gql`
+    subscription CommentAdded {
+  commentAdded {
+    _id
+    author {
+      _id
+    }
+    question {
+      _id
+    }
+  }
+}
+    `;
+
+/**
+ * __useCommentAddedSubscription__
+ *
+ * To run a query within a React component, call `useCommentAddedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommentAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentAddedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCommentAddedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<CommentAddedSubscription, CommentAddedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<CommentAddedSubscription, CommentAddedSubscriptionVariables>(CommentAddedDocument, options);
+      }
+export type CommentAddedSubscriptionHookResult = ReturnType<typeof useCommentAddedSubscription>;
+export type CommentAddedSubscriptionResult = Apollo.SubscriptionResult<CommentAddedSubscription>;

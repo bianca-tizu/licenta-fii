@@ -1,6 +1,7 @@
 import { Question } from "../models/Question.model.js";
 import { User } from "../models/User.model.js";
 import { Comment } from "../models/Comment.model.js";
+import { pubsub } from "../index.js";
 
 const commentsResolver = {
   Query: {
@@ -36,11 +37,23 @@ const commentsResolver = {
         { new: true, useFindAndModify: false }
       );
 
+      await pubsub.publish("NEW_COMMENT", {
+        commentAdded: comment,
+      });
+
       return {
         ...result._doc,
         author: { ...author._doc },
         question: { ...question._doc },
       };
+    },
+  },
+
+  Subscription: {
+    commentAdded: {
+      subscribe: () => {
+        return pubsub.asyncIterator(["NEW_COMMENT"]);
+      },
     },
   },
 };
