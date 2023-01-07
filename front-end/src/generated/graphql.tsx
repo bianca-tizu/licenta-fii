@@ -20,6 +20,20 @@ export type AuthPayload = {
   user: User;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  _id?: Maybe<Scalars['ID']>;
+  author?: Maybe<User>;
+  createdAt?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
+  question?: Maybe<Question>;
+};
+
+export type CommentInput = {
+  message?: Maybe<Scalars['String']>;
+  questionId?: Maybe<Scalars['ID']>;
+};
+
 export type LoginInput = {
   email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
@@ -27,6 +41,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createComment?: Maybe<Comment>;
   createQuestion?: Maybe<Question>;
   deleteQuestion?: Maybe<Scalars['ID']>;
   forgetPassword: User;
@@ -34,6 +49,11 @@ export type Mutation = {
   registerUser: AuthPayload;
   removeUser?: Maybe<Scalars['ID']>;
   updateUser?: Maybe<User>;
+};
+
+
+export type MutationCreateCommentArgs = {
+  comment?: Maybe<CommentInput>;
 };
 
 
@@ -68,6 +88,7 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getAllComments?: Maybe<Array<Maybe<Comment>>>;
   getAllQuestions?: Maybe<Array<Maybe<Question>>>;
   getCurrentUser?: Maybe<User>;
   getQuestion?: Maybe<Question>;
@@ -128,6 +149,27 @@ export type UserInput = {
   password?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
 };
+
+export type CreateCommentMutationVariables = Exact<{
+  questionId?: Maybe<Scalars['ID']>;
+  message?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { createComment?: Maybe<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, '_id' | 'message'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'username' | 'avatarUrl'>
+    )>, question?: Maybe<(
+      { __typename?: 'Question' }
+      & Pick<Question, '_id'>
+    )> }
+  )> }
+);
 
 export type CreateQuestionMutationVariables = Exact<{
   title?: Maybe<Scalars['String']>;
@@ -268,6 +310,49 @@ export type SearchQuestionsQuery = (
 );
 
 
+export const CreateCommentDocument = gql`
+    mutation CreateComment($questionId: ID, $message: String) {
+  createComment(comment: {questionId: $questionId, message: $message}) {
+    _id
+    author {
+      _id
+      username
+      avatarUrl
+    }
+    question {
+      _id
+    }
+    message
+  }
+}
+    `;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      questionId: // value for 'questionId'
+ *      message: // value for 'message'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, options);
+      }
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreateQuestionDocument = gql`
     mutation CreateQuestion($title: String, $content: String, $tags: [String!]!, $isDraft: Boolean) {
   createQuestion(

@@ -1,11 +1,21 @@
 import React from "react";
 
-import { Card, Avatar, Tag, Typography, Badge, Divider } from "antd";
+import {
+  Card,
+  Avatar,
+  Tag,
+  Typography,
+  Badge,
+  Divider,
+  Button,
+  Form,
+} from "antd";
 import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
 
 import "./question-detail.css";
 import Answer from "./Answer";
-import { Question } from "../../../generated/graphql";
+import { Question, useCreateCommentMutation } from "../../../generated/graphql";
+import TextArea from "antd/lib/input/TextArea";
 
 const { Meta } = Card;
 const { Paragraph } = Typography;
@@ -20,7 +30,9 @@ const useCountVotesMutation = () => {
 };
 const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
   const [votes] = useCountVotesMutation();
+  const [createCommentMutation] = useCreateCommentMutation();
   const [countLikes, setCountLikes] = React.useState(selectedItem.votes);
+  const [addCommentForm] = Form.useForm();
 
   const handleVotes = async () => {
     // const { data } = await votes({
@@ -29,6 +41,13 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
     // if (data?.countVotes?.votes) {
     //   setCountLikes(data?.countVotes?.votes);
     // }
+  };
+
+  const handleAddComment = async values => {
+    console.log(selectedItem);
+    const { data } = await createCommentMutation({
+      variables: { questionId: selectedItem._id, message: values.message },
+    });
   };
 
   return (
@@ -76,6 +95,32 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
         <Tag key={selectedItem._id}>{tag}</Tag>
       ))}
       <Divider />
+      <div>
+        <Form
+          name="addComment"
+          form={addCommentForm}
+          onFinish={handleAddComment}
+        >
+          <Form.Item name="message">
+            <TextArea
+              placeholder="Write your answer"
+              autoSize={{ minRows: 2, maxRows: 10 }}
+              allowClear
+            />
+          </Form.Item>
+          <Form.Item style={{ display: "flex", alignItems: "flex-end" }}>
+            <Button
+              type="text"
+              htmlType="submit"
+              style={{
+                color: "#1890FF",
+              }}
+            >
+              Add comment
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
       <Answer>
         <Answer></Answer>
       </Answer>

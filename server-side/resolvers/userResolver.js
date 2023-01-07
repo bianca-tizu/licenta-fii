@@ -1,8 +1,4 @@
-import {
-  UserInputError,
-  ForbiddenError,
-  AuthenticationError,
-} from "apollo-server";
+import { GraphQLError } from "graphql";
 import jsonwebtoken from "jsonwebtoken";
 import argon2 from "argon2";
 
@@ -22,7 +18,11 @@ const userResolver = {
   Query: {
     getCurrentUser: async (_parent, _args, { user }) => {
       if (!user) {
-        throw new AuthenticationError("You are not authentificated");
+        throw new GraphQLError("You are not authentificated", {
+          extensions: {
+            code: "UNAUTHENTICATED",
+          },
+        });
       }
 
       return User.find({ _id: user._id }).then(res => res[0]);
@@ -50,7 +50,11 @@ const userResolver = {
       });
 
       if (userCheck) {
-        throw new ForbiddenError("User already exists");
+        throw new GraphQLError("User already exists", {
+          extensions: {
+            code: "FORBIDDEN",
+          },
+        });
       }
 
       const newUser = new User({
@@ -77,13 +81,21 @@ const userResolver = {
       const user = await User.findOne({ email: email });
 
       if (!user) {
-        throw new UserInputError("No user with this email.");
+        throw new GraphQLError("No user with this email.", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
 
       const checkPassword = await argon2.verify(user.password, password);
 
       if (!checkPassword) {
-        throw new UserInputError("Invalid password");
+        throw new GraphQLError("Invalid password", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
 
       const token = jsonwebtoken.sign(
@@ -126,7 +138,11 @@ const userResolver = {
 
       const user = await User.findOne({ email: email });
       if (!user) {
-        throw new UserInputError("No user with this email.");
+        throw new GraphQLError("No user with this email.", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
 
       const userToUpdate = await User.findOneAndUpdate(
@@ -176,7 +192,11 @@ const userResolver = {
       });
 
       if (!userToBeRemoved) {
-        throw new UserInputError("No user with this email.");
+        throw new GraphQLError("No user with this email.", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
 
       if (draftsToBeRemoved) {

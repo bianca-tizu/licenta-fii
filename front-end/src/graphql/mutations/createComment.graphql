@@ -1,0 +1,14 @@
+mutation CreateComment($questionId: ID, $message: String) {
+  createComment(comment: { questionId: $questionId, message: $message }) {
+    _id
+    author {
+      _id
+      username
+      avatarUrl
+    }
+    question {
+      _id
+    }
+    message
+  }
+}
