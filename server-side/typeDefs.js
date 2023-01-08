@@ -38,7 +38,7 @@ const typeDefs = `
     getQuestion(id: ID): Question
     searchQuestions(keyword: String): [Question]
 
-    getAllComments: [Comment]
+    getCommentsForQuestion(questionId: ID): [Comment]
   }
 
   input QuestionInput {
@@ -84,10 +84,6 @@ const typeDefs = `
     removeUser: ID
     deleteQuestion(id: ID): ID
     createComment(comment: CommentInput): Comment
-  }
-
-  type Subscription {
-    commentAdded: Comment
   }
 `;
 

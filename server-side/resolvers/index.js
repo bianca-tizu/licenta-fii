@@ -13,9 +13,6 @@ const resolvers = {
     ...userResolver.Mutation,
     ...commentsResolver.Mutation,
   },
-  Subscription: {
-    ...commentsResolver.Subscription,
-  },
 };
 
 export default resolvers;

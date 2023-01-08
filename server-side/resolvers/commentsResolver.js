@@ -1,11 +1,21 @@
 import { Question } from "../models/Question.model.js";
 import { User } from "../models/User.model.js";
 import { Comment } from "../models/Comment.model.js";
-import { pubsub } from "../index.js";
 
 const commentsResolver = {
   Query: {
-    getAllComments: async () => {},
+    getCommentsForQuestion: async (_, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to add a comment.");
+      }
+      const comments = await Comment.find({
+        question: { _id: args.questionId },
+      })
+        .populate("author", ["avatarUrl", "username"])
+        .populate("question", "_id");
+
+      return comments;
+    },
   },
 
   Mutation: {
@@ -37,23 +47,11 @@ const commentsResolver = {
         { new: true, useFindAndModify: false }
       );
 
-      await pubsub.publish("NEW_COMMENT", {
-        commentAdded: comment,
-      });
-
       return {
         ...result._doc,
         author: { ...author._doc },
         question: { ...question._doc },
       };
-    },
-  },
-
-  Subscription: {
-    commentAdded: {
-      subscribe: () => {
-        return pubsub.asyncIterator(["NEW_COMMENT"]);
-      },
     },
   },
 };

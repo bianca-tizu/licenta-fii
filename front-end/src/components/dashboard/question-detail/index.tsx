@@ -14,7 +14,11 @@ import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
 
 import "./question-detail.css";
 import Answer from "./Answer";
-import { Question, useCreateCommentMutation } from "../../../generated/graphql";
+import {
+  Question,
+  useCreateCommentMutation,
+  useGetCommentsForQuestionQuery,
+} from "../../../generated/graphql";
 import TextArea from "antd/lib/input/TextArea";
 
 const { Meta } = Card;
@@ -31,8 +35,29 @@ const useCountVotesMutation = () => {
 const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
   const [votes] = useCountVotesMutation();
   const [createCommentMutation] = useCreateCommentMutation();
+  const { data, error } = useGetCommentsForQuestionQuery({
+    variables: { questionId: selectedItem._id },
+  });
+  const [allComments, setAllComments] = React.useState<Comment[]>([]);
+
   const [countLikes, setCountLikes] = React.useState(selectedItem.votes);
   const [addCommentForm] = Form.useForm();
+
+  React.useEffect(() => {
+    if (data?.getCommentsForQuestion) {
+      setAllComments(data.getCommentsForQuestion as Comment[]);
+    }
+  }, [data]);
+
+  // React.useEffect(() => {
+  //   getCommentsForQuestion({ variables: { questionId: selectedItem._id } });
+
+  //   if (result.data?.getCommentsForQuestion) {
+  //     setAllComments(result.data.getCommentsForQuestion as Comment[]);
+  //   }
+
+  //   console.log(allComments);
+  // }, [result.data]);
 
   const handleVotes = async () => {
     // const { data } = await votes({
@@ -44,10 +69,16 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
   };
 
   const handleAddComment = async values => {
-    console.log(selectedItem);
-    const { data } = await createCommentMutation({
+    const newComment = await createCommentMutation({
       variables: { questionId: selectedItem._id, message: values.message },
     });
+
+    if (newComment.data) {
+      setAllComments(prev => [
+        newComment.data?.createComment as Comment,
+        ...prev,
+      ]);
+    }
   };
 
   return (
@@ -101,7 +132,7 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
           form={addCommentForm}
           onFinish={handleAddComment}
         >
-          <Form.Item name="message">
+          <Form.Item name="message" style={{ marginBottom: "0px" }}>
             <TextArea
               placeholder="Write your answer"
               autoSize={{ minRows: 2, maxRows: 10 }}
@@ -121,9 +152,9 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
           </Form.Item>
         </Form>
       </div>
-      <Answer>
-        <Answer></Answer>
-      </Answer>
+      {allComments.map(comment => {
+        <Answer comment={comment}></Answer>;
+      })}
     </Card>
   );
 };

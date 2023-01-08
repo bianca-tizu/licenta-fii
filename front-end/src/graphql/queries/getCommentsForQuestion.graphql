@@ -1,0 +1,15 @@
+query GetCommentsForQuestion($questionId: ID) {
+  getCommentsForQuestion(questionId: $questionId) {
+    _id
+    message
+    author {
+      _id
+      avatarUrl
+      username
+    }
+    question {
+      _id
+    }
+    createdAt
+  }
+}

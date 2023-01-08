@@ -88,12 +88,17 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getAllComments?: Maybe<Array<Maybe<Comment>>>;
   getAllQuestions?: Maybe<Array<Maybe<Question>>>;
+  getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
   getCurrentUser?: Maybe<User>;
   getQuestion?: Maybe<Question>;
   hello?: Maybe<Scalars['String']>;
   searchQuestions?: Maybe<Array<Maybe<Question>>>;
+};
+
+
+export type QueryGetCommentsForQuestionArgs = {
+  questionId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -134,6 +139,11 @@ export type RegisterInput = {
 export type Subscription = {
   __typename?: 'Subscription';
   commentAdded?: Maybe<Comment>;
+};
+
+
+export type SubscriptionCommentAddedArgs = {
+  questionId?: Maybe<Scalars['ID']>;
 };
 
 export type User = {
@@ -271,6 +281,26 @@ export type UpdateUserMutation = (
   )> }
 );
 
+export type GetCommentsForQuestionQueryVariables = Exact<{
+  questionId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type GetCommentsForQuestionQuery = (
+  { __typename?: 'Query' }
+  & { getCommentsForQuestion?: Maybe<Array<Maybe<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, '_id' | 'message' | 'createdAt'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'avatarUrl' | 'username'>
+    )>, question?: Maybe<(
+      { __typename?: 'Question' }
+      & Pick<Question, '_id'>
+    )> }
+  )>>> }
+);
+
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -312,24 +342,6 @@ export type SearchQuestionsQuery = (
       & Pick<User, '_id' | 'avatarUrl'>
     )> }
   )>>> }
-);
-
-export type CommentAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CommentAddedSubscription = (
-  { __typename?: 'Subscription' }
-  & { commentAdded?: Maybe<(
-    { __typename?: 'Comment' }
-    & Pick<Comment, '_id'>
-    & { author?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, '_id'>
-    )>, question?: Maybe<(
-      { __typename?: 'Question' }
-      & Pick<Question, '_id'>
-    )> }
-  )> }
 );
 
 
@@ -622,6 +634,51 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const GetCommentsForQuestionDocument = gql`
+    query GetCommentsForQuestion($questionId: ID) {
+  getCommentsForQuestion(questionId: $questionId) {
+    _id
+    message
+    author {
+      _id
+      avatarUrl
+      username
+    }
+    question {
+      _id
+    }
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetCommentsForQuestionQuery__
+ *
+ * To run a query within a React component, call `useGetCommentsForQuestionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentsForQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommentsForQuestionQuery({
+ *   variables: {
+ *      questionId: // value for 'questionId'
+ *   },
+ * });
+ */
+export function useGetCommentsForQuestionQuery(baseOptions?: Apollo.QueryHookOptions<GetCommentsForQuestionQuery, GetCommentsForQuestionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCommentsForQuestionQuery, GetCommentsForQuestionQueryVariables>(GetCommentsForQuestionDocument, options);
+      }
+export function useGetCommentsForQuestionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentsForQuestionQuery, GetCommentsForQuestionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCommentsForQuestionQuery, GetCommentsForQuestionQueryVariables>(GetCommentsForQuestionDocument, options);
+        }
+export type GetCommentsForQuestionQueryHookResult = ReturnType<typeof useGetCommentsForQuestionQuery>;
+export type GetCommentsForQuestionLazyQueryHookResult = ReturnType<typeof useGetCommentsForQuestionLazyQuery>;
+export type GetCommentsForQuestionQueryResult = Apollo.QueryResult<GetCommentsForQuestionQuery, GetCommentsForQuestionQueryVariables>;
 export const GetCurrentUserDocument = gql`
     query GetCurrentUser {
   getCurrentUser {
@@ -747,38 +804,3 @@ export function useSearchQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type SearchQuestionsQueryHookResult = ReturnType<typeof useSearchQuestionsQuery>;
 export type SearchQuestionsLazyQueryHookResult = ReturnType<typeof useSearchQuestionsLazyQuery>;
 export type SearchQuestionsQueryResult = Apollo.QueryResult<SearchQuestionsQuery, SearchQuestionsQueryVariables>;
-export const CommentAddedDocument = gql`
-    subscription CommentAdded {
-  commentAdded {
-    _id
-    author {
-      _id
-    }
-    question {
-      _id
-    }
-  }
-}
-    `;
-
-/**
- * __useCommentAddedSubscription__
- *
- * To run a query within a React component, call `useCommentAddedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommentAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommentAddedSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useCommentAddedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<CommentAddedSubscription, CommentAddedSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<CommentAddedSubscription, CommentAddedSubscriptionVariables>(CommentAddedDocument, options);
-      }
-export type CommentAddedSubscriptionHookResult = ReturnType<typeof useCommentAddedSubscription>;
-export type CommentAddedSubscriptionResult = Apollo.SubscriptionResult<CommentAddedSubscription>;
