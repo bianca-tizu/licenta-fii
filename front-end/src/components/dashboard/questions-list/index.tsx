@@ -5,6 +5,7 @@ import "../dashboard.css";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
 import QuestionCard from "./question-card";
 import { useGetCurrentUserQuery } from "../../../generated/graphql";
+import { Result } from "antd";
 
 const QuestionsList = ({ isDraftVisible }) => {
   const { allQuestions } = React.useContext(QuestionsContext);
@@ -27,7 +28,11 @@ const QuestionsList = ({ isDraftVisible }) => {
               currentUser={data?.getCurrentUser}
             />
           ) : (
-            <p>Sorry, but there is no draft to show.</p>
+            <Result
+              status="500"
+              title="500"
+              subTitle="Sorry, something went wrong."
+            />
           )}
         </>
       ) : (
@@ -38,7 +43,11 @@ const QuestionsList = ({ isDraftVisible }) => {
               currentUser={data?.getCurrentUser}
             />
           ) : (
-            <p>Oops, there was a problem</p>
+            <Result
+              status="500"
+              title="500"
+              subTitle="Sorry, something went wrong."
+            />
           )}
         </>
       )}

@@ -4,21 +4,27 @@ import { Comment, Avatar, Tooltip } from "antd";
 import moment from "moment";
 
 const Answer = ({ comment }) => {
-  console.log("Comment", comment);
+  const { author, message, createdAt } = comment;
+  const creationDate = moment.unix(createdAt / 1000).format("L");
+  console.log(creationDate);
   return (
     <Comment
       actions={[<span key="comment-nested-reply-to">Reply to</span>]}
-      author={<a>{comment.author.username}</a>}
+      author={<a>{author.username}</a>}
       avatar={
         <Avatar
-          src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-          alt="Han Solo"
+          src={
+            author.avatarUrl
+              ? author.avatarUrl
+              : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+          }
+          alt={author.username}
         />
       }
-      content={<p>{comment.message}</p>}
+      content={<p>{message}</p>}
       datetime={
-        <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-          <span>{moment().fromNow()}</span>
+        <Tooltip title={moment(creationDate).format("YYYY-MM-DD")}>
+          <span>{moment(creationDate).fromNow()}</span>
         </Tooltip>
       }
     >

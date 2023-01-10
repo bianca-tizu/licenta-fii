@@ -9,6 +9,7 @@ import {
   Divider,
   Button,
   Form,
+  message,
 } from "antd";
 import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
 
@@ -39,6 +40,7 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
     variables: { questionId: selectedItem._id },
   });
   const [allComments, setAllComments] = React.useState<Comment[]>([]);
+  const [isCommentEmpty, setIsCommentEmpty] = React.useState<boolean>(true);
 
   const [countLikes, setCountLikes] = React.useState(selectedItem.votes);
   const [addCommentForm] = Form.useForm();
@@ -137,6 +139,9 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
               placeholder="Write your answer"
               autoSize={{ minRows: 2, maxRows: 10 }}
               allowClear
+              onChange={event => {
+                setIsCommentEmpty(event.target.value.length > 0 ? false : true);
+              }}
             />
           </Form.Item>
           <Form.Item style={{ display: "flex", alignItems: "flex-end" }}>
@@ -146,15 +151,18 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
               style={{
                 color: "#1890FF",
               }}
+              disabled={isCommentEmpty}
             >
               Add comment
             </Button>
           </Form.Item>
         </Form>
       </div>
-      {allComments.map(comment => {
-        <Answer comment={comment}></Answer>;
-      })}
+      <div>
+        {allComments.map((comment, index) => {
+          return <Answer key={index} comment={comment}></Answer>;
+        })}
+      </div>
     </Card>
   );
 };
