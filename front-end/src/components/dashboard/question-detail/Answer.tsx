@@ -6,7 +6,6 @@ import moment from "moment";
 const Answer = ({ comment }) => {
   const { author, message, createdAt } = comment;
   const creationDate = moment.unix(createdAt / 1000).format("L");
-  console.log(creationDate);
   return (
     <Comment
       actions={[<span key="comment-nested-reply-to">Reply to</span>]}

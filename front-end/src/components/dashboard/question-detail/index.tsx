@@ -9,7 +9,6 @@ import {
   Divider,
   Button,
   Form,
-  message,
 } from "antd";
 import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
 

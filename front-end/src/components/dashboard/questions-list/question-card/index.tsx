@@ -99,7 +99,7 @@ const QuestionCard = props => {
             );
           })}
         </div>
-        <div>
+        <div style={{ width: "50%" }}>
           {selectedItem && !props?.isDraftVisible && (
             <QuestionDetail
               selectedItem={selectedItem}
