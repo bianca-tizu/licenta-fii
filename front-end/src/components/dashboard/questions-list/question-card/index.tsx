@@ -13,6 +13,7 @@ import "../../dashboard.css";
 
 const QuestionCard = props => {
   const { removeQuestion } = React.useContext(QuestionsContext);
+  const { data } = useGetCurrentUserQuery();
 
   const [deleteQuestionMutation] = useDeleteQuestionMutation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
@@ -40,7 +41,7 @@ const QuestionCard = props => {
         <div className="column" style={{ marginLeft: "105px" }}>
           {props.questions.map(question => {
             const disableDeleteButton =
-              question.author?._id !== props.currentUser?._id ||
+              question.author?._id !== data?.getCurrentUser?._id ||
               !question.author?._id;
             return (
               <Card

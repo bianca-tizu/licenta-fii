@@ -2,13 +2,47 @@ import React from "react";
 import { Comment, Avatar, Tooltip } from "antd";
 
 import moment from "moment";
+import {
+  useDeleteCommentMutation,
+  useGetCurrentUserQuery,
+} from "../../../generated/graphql";
 
-const Answer = ({ comment }) => {
+const Answer = ({ comment, setAllComments }) => {
+  const [deleteCommentMutation] = useDeleteCommentMutation();
+  const currentUser = useGetCurrentUserQuery();
+
   const { author, message, createdAt } = comment;
   const creationDate = moment.unix(createdAt / 1000).format("L");
+
+  const handleRemoveComment = async (commentId: string) => {
+    await deleteCommentMutation({ variables: { id: commentId } });
+    setAllComments(prev => prev.filter(c => c._id !== commentId));
+  };
+
+  const handleEditComment = (commentId: string) => {};
+
+  const getActionsForComment = () => {
+    if (comment.author?._id === currentUser.data?.getCurrentUser?._id) {
+      return [
+        <span
+          key="comment-delete"
+          onClick={() => handleRemoveComment(comment._id)}
+        >
+          Delete
+        </span>,
+
+        <span key="comment-edit" onClick={() => handleEditComment(comment._id)}>
+          Edit
+        </span>,
+      ];
+    } else {
+      return [];
+    }
+  };
+
   return (
     <Comment
-      actions={[<span key="comment-nested-reply-to">Reply to</span>]}
+      actions={getActionsForComment()}
       author={<a>{author.username}</a>}
       avatar={
         <Avatar

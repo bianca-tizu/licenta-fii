@@ -53,6 +53,17 @@ const commentsResolver = {
         question: { ...question._doc },
       };
     },
+
+    deleteComment: async (parent, args, context) => {
+      const commentToBeRemoved = await Comment.findOne({ _id: args._id });
+
+      if (!context.user) {
+        throw new Error("You're not allowed to delete a question.");
+      }
+
+      await Comment.deleteOne(commentToBeRemoved);
+      return commentToBeRemoved._id;
+    },
   },
 };
 

@@ -84,6 +84,7 @@ const typeDefs = `
     removeUser: ID
     deleteQuestion(id: ID): ID
     createComment(comment: CommentInput): Comment
+    deleteComment(id: ID): ID
   }
 `;
 

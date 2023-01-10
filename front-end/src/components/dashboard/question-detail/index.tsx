@@ -159,7 +159,13 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
       </div>
       <div>
         {allComments.map((comment, index) => {
-          return <Answer key={index} comment={comment}></Answer>;
+          return (
+            <Answer
+              key={index}
+              comment={comment}
+              setAllComments={setAllComments}
+            ></Answer>
+          );
         })}
       </div>
     </Card>

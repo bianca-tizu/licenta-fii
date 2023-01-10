@@ -25,7 +25,7 @@ const QuestionsList = ({ isDraftVisible }) => {
             <QuestionCard
               questions={drafts}
               isDraftVisible={isDraftVisible}
-              currentUser={data?.getCurrentUser}
+              // currentUser={data?.getCurrentUser}
             />
           ) : (
             <Result
@@ -40,7 +40,7 @@ const QuestionsList = ({ isDraftVisible }) => {
           {questions.length ? (
             <QuestionCard
               questions={questions}
-              currentUser={data?.getCurrentUser}
+              // currentUser={data?.getCurrentUser}
             />
           ) : (
             <Result
