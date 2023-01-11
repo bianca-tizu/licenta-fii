@@ -16,7 +16,7 @@ const QuestionCard = props => {
   const { data } = useGetCurrentUserQuery();
 
   const [deleteQuestionMutation] = useDeleteQuestionMutation();
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [_, setIsDeleteModalOpen] = React.useState(false);
   const [selectedItem, setSelectedItem] = React.useState<Question>();
 
   const DeleteIcon = ({ disabled, ...props }) => {

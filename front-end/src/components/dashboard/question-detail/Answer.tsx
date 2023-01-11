@@ -1,5 +1,5 @@
 import React from "react";
-import { Comment, Avatar, Tooltip } from "antd";
+import { Comment, Avatar, Tooltip, Modal } from "antd";
 
 import moment from "moment";
 import {
@@ -11,12 +11,18 @@ const Answer = ({ comment, setAllComments }) => {
   const [deleteCommentMutation] = useDeleteCommentMutation();
   const currentUser = useGetCurrentUserQuery();
 
+  const [_, setIsDeleteModalOpen] = React.useState(false);
+
   const { author, message, createdAt } = comment;
   const creationDate = moment.unix(createdAt / 1000).format("L");
 
   const handleRemoveComment = async (commentId: string) => {
     await deleteCommentMutation({ variables: { id: commentId } });
     setAllComments(prev => prev.filter(c => c._id !== commentId));
+  };
+
+  const handleCancel = () => {
+    setIsDeleteModalOpen(false);
   };
 
   const handleEditComment = (commentId: string) => {};
@@ -26,7 +32,19 @@ const Answer = ({ comment, setAllComments }) => {
       return [
         <span
           key="comment-delete"
-          onClick={() => handleRemoveComment(comment._id)}
+          onClick={() => {
+            Modal.confirm({
+              content: "Are you sure you want to delete this comment?",
+              onOk() {
+                handleRemoveComment(comment._id);
+              },
+              okText: "Yes",
+              centered: true,
+              onCancel: handleCancel,
+              cancelText: "No",
+              width: 450,
+            });
+          }}
         >
           Delete
         </span>,

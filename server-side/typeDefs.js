@@ -53,6 +53,11 @@ const typeDefs = `
     questionId: ID
   }
 
+  input EditCommentInput {
+    id: ID
+    message: String
+  }
+
   input RegisterInput {
     email: String
     password: String
@@ -85,6 +90,7 @@ const typeDefs = `
     deleteQuestion(id: ID): ID
     createComment(comment: CommentInput): Comment
     deleteComment(id: ID): ID
+    editComment(comment: EditCommentInput): Comment
   }
 `;
 
