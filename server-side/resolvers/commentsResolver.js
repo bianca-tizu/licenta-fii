@@ -54,8 +54,22 @@ const commentsResolver = {
       };
     },
 
+    editComment: async (parent, args, context) => {
+      const { id, message } = args.comment;
+      const commentToUpdate = await Comment.findById(id);
+
+      if (!context.user) {
+        throw new Error("You're not allowed to delete a question.");
+      }
+
+      commentToUpdate.message = message;
+      const updatedComment = await commentToUpdate.save();
+
+      return updatedComment;
+    },
+
     deleteComment: async (parent, args, context) => {
-      const commentToBeRemoved = await Comment.findOne({ _id: args._id });
+      const commentToBeRemoved = await Comment.findById(args.id);
 
       if (!context.user) {
         throw new Error("You're not allowed to delete a question.");

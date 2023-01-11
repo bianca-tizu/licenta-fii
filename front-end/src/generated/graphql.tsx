@@ -34,6 +34,11 @@ export type CommentInput = {
   questionId?: Maybe<Scalars['ID']>;
 };
 
+export type EditCommentInput = {
+  id?: Maybe<Scalars['ID']>;
+  message?: Maybe<Scalars['String']>;
+};
+
 export type LoginInput = {
   email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
@@ -45,6 +50,7 @@ export type Mutation = {
   createQuestion?: Maybe<Question>;
   deleteComment?: Maybe<Scalars['ID']>;
   deleteQuestion?: Maybe<Scalars['ID']>;
+  editComment?: Maybe<Comment>;
   forgetPassword: User;
   loginUser: AuthPayload;
   registerUser: AuthPayload;
@@ -70,6 +76,11 @@ export type MutationDeleteCommentArgs = {
 
 export type MutationDeleteQuestionArgs = {
   id?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationEditCommentArgs = {
+  comment?: Maybe<EditCommentInput>;
 };
 
 
@@ -220,6 +231,20 @@ export type DeleteQuestionMutationVariables = Exact<{
 export type DeleteQuestionMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deleteQuestion'>
+);
+
+export type EditCommentMutationVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
+  message?: Maybe<Scalars['String']>;
+}>;
+
+
+export type EditCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { editComment?: Maybe<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, '_id' | 'message'>
+  )> }
 );
 
 export type ForgetPasswordMutationVariables = Exact<{
@@ -503,6 +528,41 @@ export function useDeleteQuestionMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteQuestionMutationHookResult = ReturnType<typeof useDeleteQuestionMutation>;
 export type DeleteQuestionMutationResult = Apollo.MutationResult<DeleteQuestionMutation>;
 export type DeleteQuestionMutationOptions = Apollo.BaseMutationOptions<DeleteQuestionMutation, DeleteQuestionMutationVariables>;
+export const EditCommentDocument = gql`
+    mutation EditComment($id: ID, $message: String) {
+  editComment(comment: {id: $id, message: $message}) {
+    _id
+    message
+  }
+}
+    `;
+export type EditCommentMutationFn = Apollo.MutationFunction<EditCommentMutation, EditCommentMutationVariables>;
+
+/**
+ * __useEditCommentMutation__
+ *
+ * To run a mutation, you first call `useEditCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editCommentMutation, { data, loading, error }] = useEditCommentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      message: // value for 'message'
+ *   },
+ * });
+ */
+export function useEditCommentMutation(baseOptions?: Apollo.MutationHookOptions<EditCommentMutation, EditCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditCommentMutation, EditCommentMutationVariables>(EditCommentDocument, options);
+      }
+export type EditCommentMutationHookResult = ReturnType<typeof useEditCommentMutation>;
+export type EditCommentMutationResult = Apollo.MutationResult<EditCommentMutation>;
+export type EditCommentMutationOptions = Apollo.BaseMutationOptions<EditCommentMutation, EditCommentMutationVariables>;
 export const ForgetPasswordDocument = gql`
     mutation ForgetPassword($email: String!) {
   forgetPassword(email: $email) {

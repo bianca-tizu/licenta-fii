@@ -11,7 +11,7 @@ const Answer = ({ comment, setAllComments }) => {
   const [deleteCommentMutation] = useDeleteCommentMutation();
   const currentUser = useGetCurrentUserQuery();
 
-  const [_, setIsDeleteModalOpen] = React.useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
   const { author, message, createdAt } = comment;
   const creationDate = moment.unix(createdAt / 1000).format("L");
@@ -21,7 +21,7 @@ const Answer = ({ comment, setAllComments }) => {
     setAllComments(prev => prev.filter(c => c._id !== commentId));
   };
 
-  const handleCancel = () => {
+  const handleCancelOnDelete = () => {
     setIsDeleteModalOpen(false);
   };
 
@@ -40,7 +40,7 @@ const Answer = ({ comment, setAllComments }) => {
               },
               okText: "Yes",
               centered: true,
-              onCancel: handleCancel,
+              onCancel: handleCancelOnDelete,
               cancelText: "No",
               width: 450,
             });
