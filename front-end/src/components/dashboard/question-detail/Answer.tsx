@@ -1,19 +1,27 @@
 import React from "react";
 import { Comment, Avatar, Tooltip, Modal } from "antd";
+import Paragraph from "antd/lib/typography/Paragraph";
 
 import moment from "moment";
 import {
   useDeleteCommentMutation,
+  useEditCommentMutation,
   useGetCurrentUserQuery,
 } from "../../../generated/graphql";
 
+import "./question-detail.css";
+
 const Answer = ({ comment, setAllComments }) => {
   const [deleteCommentMutation] = useDeleteCommentMutation();
+  const [editCommentMutation] = useEditCommentMutation();
   const currentUser = useGetCurrentUserQuery();
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
-
   const { author, message, createdAt } = comment;
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [isEditable, setIsEditable] = React.useState(false);
+  const [editableMessage, setEditableMessage] = React.useState(message);
+
   const creationDate = moment.unix(createdAt / 1000).format("L");
 
   const handleRemoveComment = async (commentId: string) => {
@@ -25,7 +33,16 @@ const Answer = ({ comment, setAllComments }) => {
     setIsDeleteModalOpen(false);
   };
 
-  const handleEditComment = (commentId: string) => {};
+  React.useEffect(() => {
+    (async () => {
+      if (editableMessage !== message) {
+        setIsEditable(!isEditable);
+        await editCommentMutation({
+          variables: { id: comment._id, message: editableMessage },
+        });
+      }
+    })();
+  }, [editableMessage]);
 
   const getActionsForComment = () => {
     if (comment.author?._id === currentUser.data?.getCurrentUser?._id) {
@@ -49,7 +66,7 @@ const Answer = ({ comment, setAllComments }) => {
           Delete
         </span>,
 
-        <span key="comment-edit" onClick={() => handleEditComment(comment._id)}>
+        <span key="comment-edit" onClick={() => setIsEditable(true)}>
           Edit
         </span>,
       ];
@@ -72,15 +89,25 @@ const Answer = ({ comment, setAllComments }) => {
           alt={author.username}
         />
       }
-      content={<p>{message}</p>}
+      content={
+        <Paragraph
+          editable={{
+            triggerType: ["text"],
+            editing: isEditable,
+            onChange: value => {
+              setEditableMessage(value);
+            },
+          }}
+        >
+          {editableMessage}
+        </Paragraph>
+      }
       datetime={
         <Tooltip title={moment(creationDate).format("YYYY-MM-DD")}>
           <span>{moment(creationDate).fromNow()}</span>
         </Tooltip>
       }
-    >
-      {/* {children} */}
-    </Comment>
+    ></Comment>
   );
 };
 

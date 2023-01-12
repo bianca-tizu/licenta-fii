@@ -14,7 +14,7 @@ const commentsResolver = {
         .populate("author", ["avatarUrl", "username"])
         .populate("question", "_id");
 
-      return comments;
+      return comments.reverse();
     },
   },
 
@@ -60,6 +60,10 @@ const commentsResolver = {
 
       if (!context.user) {
         throw new Error("You're not allowed to delete a question.");
+      }
+
+      if (!commentToUpdate) {
+        throw new Error("Server error");
       }
 
       commentToUpdate.message = message;
