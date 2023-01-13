@@ -70,6 +70,7 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
         ...prev,
       ]);
     }
+    addCommentForm.resetFields();
   };
 
   return (

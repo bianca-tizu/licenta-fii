@@ -21,27 +21,22 @@ const Answer = ({ comment, setAllComments }) => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const [isEditable, setIsEditable] = React.useState(false);
-  const [editableMessage, setEditableMessage] = React.useState(message);
 
   const handleRemoveComment = async (commentId: string) => {
     await deleteCommentMutation({ variables: { id: commentId } });
-    setAllComments(prev => prev.filter(c => c._id !== commentId));
+    setAllComments(prev => prev.filter(c => c._id.toString() !== commentId));
   };
 
   const handleCancelOnDelete = () => {
     setIsDeleteModalOpen(false);
   };
 
-  React.useEffect(() => {
-    (async () => {
-      if (editableMessage !== message) {
-        setIsEditable(!isEditable);
-        await editCommentMutation({
-          variables: { id: comment._id, message: editableMessage },
-        });
-      }
-    })();
-  }, [editableMessage]);
+  const handleChange = async changedMessage => {
+    setIsEditable(!isEditable);
+    await editCommentMutation({
+      variables: { id: comment._id, message: changedMessage },
+    });
+  };
 
   const getActionsForComment = () => {
     if (comment.author?._id === currentUser.data?.getCurrentUser?._id) {
@@ -93,12 +88,10 @@ const Answer = ({ comment, setAllComments }) => {
           editable={{
             triggerType: ["text"],
             editing: isEditable,
-            onChange: value => {
-              setEditableMessage(value);
-            },
+            onChange: handleChange,
           }}
         >
-          {editableMessage}
+          {message}
         </Paragraph>
       }
       datetime={
