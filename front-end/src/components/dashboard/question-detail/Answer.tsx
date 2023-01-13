@@ -2,7 +2,8 @@ import React from "react";
 import { Comment, Avatar, Tooltip, Modal } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 
-import moment from "moment";
+import { format, formatDistanceToNow } from "date-fns";
+
 import {
   useDeleteCommentMutation,
   useEditCommentMutation,
@@ -21,8 +22,6 @@ const Answer = ({ comment, setAllComments }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const [isEditable, setIsEditable] = React.useState(false);
   const [editableMessage, setEditableMessage] = React.useState(message);
-
-  const creationDate = moment.unix(createdAt / 1000).format("L");
 
   const handleRemoveComment = async (commentId: string) => {
     await deleteCommentMutation({ variables: { id: commentId } });
@@ -103,8 +102,8 @@ const Answer = ({ comment, setAllComments }) => {
         </Paragraph>
       }
       datetime={
-        <Tooltip title={moment(creationDate).format("YYYY-MM-DD")}>
-          <span>{moment(creationDate).fromNow()}</span>
+        <Tooltip title={format(parseInt(createdAt, 10), "dd/MM/yyyy")}>
+          <span>{formatDistanceToNow(parseInt(createdAt, 10))}</span>
         </Tooltip>
       }
     ></Comment>

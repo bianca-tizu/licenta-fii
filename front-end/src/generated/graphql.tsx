@@ -182,7 +182,7 @@ export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
   & { createComment?: Maybe<(
     { __typename?: 'Comment' }
-    & Pick<Comment, '_id' | 'message'>
+    & Pick<Comment, '_id' | 'message' | 'createdAt'>
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, '_id' | 'username' | 'avatarUrl'>
@@ -389,6 +389,7 @@ export const CreateCommentDocument = gql`
       _id
     }
     message
+    createdAt
   }
 }
     `;

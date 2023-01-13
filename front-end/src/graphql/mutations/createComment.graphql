@@ -10,5 +10,6 @@ mutation CreateComment($questionId: ID, $message: String) {
       _id
     }
     message
+    createdAt
   }
 }

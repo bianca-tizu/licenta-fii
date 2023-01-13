@@ -50,16 +50,6 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
     }
   }, [data]);
 
-  // React.useEffect(() => {
-  //   getCommentsForQuestion({ variables: { questionId: selectedItem._id } });
-
-  //   if (result.data?.getCommentsForQuestion) {
-  //     setAllComments(result.data.getCommentsForQuestion as Comment[]);
-  //   }
-
-  //   console.log(allComments);
-  // }, [result.data]);
-
   const handleVotes = async () => {
     // const { data } = await votes({
     //   variables: { id: selectedItem._id },
