@@ -19,10 +19,7 @@ const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
   const [isSearchVisible, setIsSearchVisible] = React.useState(false);
   const { setSearchResults } = React.useContext(QuestionsContext);
 
-  const [
-    searchQuestions,
-    { loading, error, data },
-  ] = useSearchQuestionsLazyQuery({
+  const [searchQuestions] = useSearchQuestionsLazyQuery({
     onCompleted(data) {
       setSearchResults(data.searchQuestions as Question[]);
     },

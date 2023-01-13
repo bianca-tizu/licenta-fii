@@ -29,15 +29,17 @@ const questionResolver = {
     searchQuestions: async (parent, args) => {
       const query = {
         $or: [
-          { title: { $regex: args.keyword } },
-          { content: { $regex: args.keyword } },
-          { tags: { $regex: args.keyword } },
+          { title: { $regex: args.keyword.toLowerCase() } },
+          { content: { $regex: args.keyword.toLowerCase() } },
+          { tags: { $regex: args.keyword.toLowerCase() } },
         ],
       };
 
-      return await Question.find({
+      const searchResult = await Question.find({
         $and: [query, { isDraft: false }],
-      }).populate("author");
+      }).populate("author", ["avatarUrl", "_id"]);
+
+      return searchResult.reverse();
     },
   },
 
