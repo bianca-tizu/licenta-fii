@@ -1,4 +1,5 @@
 import React from "react";
+import { ReactComponent as PageBannerSVG } from "../../../assets/page_banner.svg";
 
 import { Input } from "antd";
 
@@ -8,10 +9,9 @@ import {
 } from "../../../generated/graphql";
 
 import HorizontalMenu from "../../header/HorizontalMenu";
-
-import { ReactComponent as PageBannerSVG } from "../../../assets/page_banner.svg";
-import "./page-banner.css";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
+
+import "./page-banner.css";
 
 const { Search } = Input;
 

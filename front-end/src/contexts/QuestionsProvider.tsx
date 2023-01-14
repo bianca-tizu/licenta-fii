@@ -4,6 +4,8 @@ import { useQuestionsQuery, Question } from "../generated/graphql";
 
 type QuestionsContextData = {
   allQuestions: Question[];
+  selectedQuestion: Question | undefined;
+  setSelectedQuestion: (question: Question | undefined) => void;
   addQuestion: (question: Question) => void;
   removeQuestion: (questionId: String) => void;
   setSearchResults: (results) => void;
@@ -12,6 +14,8 @@ type QuestionsContextData = {
 
 const defaultQuestionsContext = {
   allQuestions: [],
+  selectedQuestion: {},
+  setSelectedQuestion: (question: Question | undefined) => {},
   addQuestion: (question: Question) => {},
   removeQuestion: (questionId: String) => {},
   setSearchResults: results => {},
@@ -26,6 +30,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
   const { data, error } = useQuestionsQuery();
 
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
+  const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();
 
   React.useEffect(() => {
     if (data?.getAllQuestions) {
@@ -35,10 +40,12 @@ export const QuestionsProvider: React.FC = ({ children }) => {
 
   const addQuestion = (question: Question) => {
     setAllQuestions(prev => [question, ...prev]);
+    setSelectedQuestion(question);
   };
 
   const removeQuestion = (questionId: String) => {
     setAllQuestions(prev => prev.filter(q => q._id !== questionId));
+    setSelectedQuestion(undefined);
   };
 
   const setSearchResults = results => {
@@ -47,10 +54,13 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     } else {
       setAllQuestions(data?.getAllQuestions as Question[]);
     }
+    setSelectedQuestion(undefined);
   };
 
   const questionsData = {
     allQuestions,
+    selectedQuestion,
+    setSelectedQuestion,
     addQuestion,
     removeQuestion,
     setSearchResults,

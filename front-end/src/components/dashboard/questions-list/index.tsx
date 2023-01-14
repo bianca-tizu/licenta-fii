@@ -4,7 +4,7 @@ import "../dashboard.css";
 
 import QuestionsContext from "../../../contexts/QuestionsProvider";
 import QuestionCard from "./question-card";
-import { useGetCurrentUserQuery } from "../../../generated/graphql";
+import { Question, useGetCurrentUserQuery } from "../../../generated/graphql";
 import { Result } from "antd";
 
 const QuestionsList = ({ isDraftVisible }) => {
@@ -22,11 +22,7 @@ const QuestionsList = ({ isDraftVisible }) => {
       {isDraftVisible ? (
         <>
           {drafts.length ? (
-            <QuestionCard
-              questions={drafts}
-              isDraftVisible={isDraftVisible}
-              // currentUser={data?.getCurrentUser}
-            />
+            <QuestionCard questions={drafts} isDraftVisible={isDraftVisible} />
           ) : (
             <Result
               status="500"
@@ -38,10 +34,7 @@ const QuestionsList = ({ isDraftVisible }) => {
       ) : (
         <>
           {questions.length ? (
-            <QuestionCard
-              questions={questions}
-              // currentUser={data?.getCurrentUser}
-            />
+            <QuestionCard questions={questions} />
           ) : (
             <Result
               status="500"

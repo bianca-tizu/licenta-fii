@@ -20,28 +20,31 @@ import {
   useGetCommentsForQuestionQuery,
 } from "../../../generated/graphql";
 import TextArea from "antd/lib/input/TextArea";
+import QuestionsContext from "../../../contexts/QuestionsProvider";
 
 const { Meta } = Card;
 const { Paragraph } = Typography;
 
 type Props = {
-  selectedItem: Question;
-  setSelectedItem: React.Dispatch<React.SetStateAction<Question | undefined>>;
+  selectedQuestion: Question;
 };
 
 const useCountVotesMutation = () => {
   return [""];
 };
-const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
+const QuestionDetail = ({ selectedQuestion }: Props) => {
   const [votes] = useCountVotesMutation();
   const [createCommentMutation] = useCreateCommentMutation();
   const { data, error } = useGetCommentsForQuestionQuery({
-    variables: { questionId: selectedItem._id },
+    variables: { questionId: selectedQuestion._id },
   });
+
+  const { setSelectedQuestion } = React.useContext(QuestionsContext);
+
   const [allComments, setAllComments] = React.useState<Comment[]>([]);
   const [isCommentEmpty, setIsCommentEmpty] = React.useState<boolean>(true);
+  const [countLikes, setCountLikes] = React.useState(selectedQuestion.votes);
 
-  const [countLikes, setCountLikes] = React.useState(selectedItem.votes);
   const [addCommentForm] = Form.useForm();
 
   React.useEffect(() => {
@@ -52,7 +55,7 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
 
   const handleVotes = async () => {
     // const { data } = await votes({
-    //   variables: { id: selectedItem._id },
+    //   variables: { id: selectedQuestion._id },
     // });
     // if (data?.countVotes?.votes) {
     //   setCountLikes(data?.countVotes?.votes);
@@ -61,7 +64,7 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
 
   const handleAddComment = async values => {
     const newComment = await createCommentMutation({
-      variables: { questionId: selectedItem._id, message: values.message },
+      variables: { questionId: selectedQuestion._id, message: values.message },
     });
 
     if (newComment.data) {
@@ -79,8 +82,8 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
       style={{ width: "90%", marginLeft: "30px" }}
       extra={[
         <CloseCircleOutlined
-          key={selectedItem._id}
-          onClick={() => setSelectedItem(undefined)}
+          key={selectedQuestion._id}
+          onClick={() => setSelectedQuestion(undefined)}
         />,
       ]}
     >
@@ -89,13 +92,13 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
           avatar={
             <Avatar
               src={
-                selectedItem.author?.avatarUrl
-                  ? selectedItem.author.avatarUrl
+                selectedQuestion.author?.avatarUrl
+                  ? selectedQuestion.author.avatarUrl
                   : "https://gravatar.com/avatar/1da2c054325d6908ceb9f454af161c3a?s=400&d=retro&r=x"
               }
             />
           }
-          title={selectedItem.title}
+          title={selectedQuestion.title}
         />
         <div>
           <Badge count={countLikes} style={{ backgroundColor: "#3388CB" }} />
@@ -104,18 +107,18 @@ const QuestionDetail = ({ selectedItem, setSelectedItem }: Props) => {
       </div>
 
       <Paragraph style={{ margin: "10px 0" }}>
-        {selectedItem.content && (
+        {selectedQuestion.content && (
           <div className="additional">
             <div
               dangerouslySetInnerHTML={{
-                __html: selectedItem.content,
+                __html: selectedQuestion.content,
               }}
             ></div>
           </div>
         )}
       </Paragraph>
-      {selectedItem.tags?.map(tag => (
-        <Tag key={selectedItem._id}>{tag}</Tag>
+      {selectedQuestion.tags?.map(tag => (
+        <Tag key={selectedQuestion._id}>{tag}</Tag>
       ))}
       <Divider />
       <div>

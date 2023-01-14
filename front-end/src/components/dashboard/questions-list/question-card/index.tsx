@@ -12,12 +12,15 @@ import QuestionDetail from "../../question-detail";
 import "../../dashboard.css";
 
 const QuestionCard = props => {
-  const { removeQuestion } = React.useContext(QuestionsContext);
+  const {
+    removeQuestion,
+    selectedQuestion,
+    setSelectedQuestion,
+  } = React.useContext(QuestionsContext);
   const { data } = useGetCurrentUserQuery();
 
   const [deleteQuestionMutation] = useDeleteQuestionMutation();
   const [_, setIsDeleteModalOpen] = React.useState(false);
-  const [selectedItem, setSelectedItem] = React.useState<Question>();
 
   const DeleteIcon = ({ disabled, ...props }) => {
     if (disabled) {
@@ -69,8 +72,8 @@ const QuestionCard = props => {
                     key="answer"
                     onClick={() =>
                       question.isDraft
-                        ? setSelectedItem(undefined)
-                        : setSelectedItem(question as Question)
+                        ? setSelectedQuestion(undefined)
+                        : setSelectedQuestion(question as Question)
                     }
                   />,
                 ]}
@@ -101,11 +104,8 @@ const QuestionCard = props => {
           })}
         </div>
         <div style={{ width: "50%" }}>
-          {selectedItem && !props?.isDraftVisible && (
-            <QuestionDetail
-              selectedItem={selectedItem}
-              setSelectedItem={setSelectedItem}
-            />
+          {selectedQuestion && !props?.isDraftVisible && (
+            <QuestionDetail selectedQuestion={selectedQuestion} />
           )}
         </div>
       </div>
