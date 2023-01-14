@@ -10,6 +10,7 @@ type QuestionsContextData = {
   removeQuestion: (questionId: String) => void;
   setSearchResults: (results) => void;
   error: ApolloError | undefined;
+  loading: boolean;
 };
 
 const defaultQuestionsContext = {
@@ -20,6 +21,7 @@ const defaultQuestionsContext = {
   removeQuestion: (questionId: String) => {},
   setSearchResults: results => {},
   error: undefined,
+  loading: false,
 };
 
 const QuestionsContext = React.createContext<QuestionsContextData>(
@@ -27,7 +29,7 @@ const QuestionsContext = React.createContext<QuestionsContextData>(
 );
 
 export const QuestionsProvider: React.FC = ({ children }) => {
-  const { data, error } = useQuestionsQuery();
+  const { data, loading, error } = useQuestionsQuery();
 
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
   const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();
@@ -65,6 +67,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     removeQuestion,
     setSearchResults,
     error,
+    loading,
   };
 
   return (

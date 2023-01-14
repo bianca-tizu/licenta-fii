@@ -15,3 +15,9 @@
   color: rgb(210, 206, 206) !important;
 }
 
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
