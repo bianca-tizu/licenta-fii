@@ -161,6 +161,10 @@ const AddQuestion = ({
           type="primary"
           htmlType="submit"
           style={{ marginRight: "10px" }}
+          disabled={
+            !createQuestionForm.getFieldValue("title") ||
+            !createQuestionForm.getFieldValue("content")
+          }
         >
           Publish
         </Button>
