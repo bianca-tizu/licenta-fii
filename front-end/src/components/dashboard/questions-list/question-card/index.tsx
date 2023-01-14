@@ -1,4 +1,4 @@
-import { DeleteOutlined, SendOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, SendOutlined } from "@ant-design/icons";
 import { Avatar, Card, Modal } from "antd";
 import Meta from "antd/lib/card/Meta";
 import React from "react";
@@ -30,6 +30,57 @@ const QuestionCard = props => {
     }
   };
 
+  const getCardActions = (question, disableDeleteButton) => {
+    if (question.isDraft) {
+      return [
+        <DeleteIcon
+          disabled={disableDeleteButton}
+          onClick={() => {
+            Modal.confirm({
+              content: "Are you sure you want to delete this question?",
+              onOk() {
+                deleteQuestion(question._id);
+              },
+              okText: "Yes",
+              centered: true,
+              onCancel: handleCancel,
+              cancelText: "No",
+              width: 450,
+            });
+          }}
+        />,
+        <EditOutlined />,
+      ];
+    } else {
+      return [
+        <DeleteIcon
+          disabled={disableDeleteButton}
+          onClick={() => {
+            Modal.confirm({
+              content: "Are you sure you want to delete this question?",
+              onOk() {
+                deleteQuestion(question._id);
+              },
+              okText: "Yes",
+              centered: true,
+              onCancel: handleCancel,
+              cancelText: "No",
+              width: 450,
+            });
+          }}
+        />,
+        <SendOutlined
+          key="answer"
+          onClick={() =>
+            question.isDraft
+              ? setSelectedQuestion(undefined)
+              : setSelectedQuestion(question as Question)
+          }
+        />,
+      ];
+    }
+  };
+
   const deleteQuestion = async (questionId: any) => {
     await deleteQuestionMutation({ variables: { id: questionId } });
     removeQuestion(questionId);
@@ -50,33 +101,7 @@ const QuestionCard = props => {
               <Card
                 key={question._id}
                 style={{ width: 300, marginBottom: 30 }}
-                actions={[
-                  <DeleteIcon
-                    disabled={disableDeleteButton}
-                    onClick={() => {
-                      Modal.confirm({
-                        content:
-                          "Are you sure you want to delete this question?",
-                        onOk() {
-                          deleteQuestion(question._id);
-                        },
-                        okText: "Yes",
-                        centered: true,
-                        onCancel: handleCancel,
-                        cancelText: "No",
-                        width: 450,
-                      });
-                    }}
-                  />,
-                  <SendOutlined
-                    key="answer"
-                    onClick={() =>
-                      question.isDraft
-                        ? setSelectedQuestion(undefined)
-                        : setSelectedQuestion(question as Question)
-                    }
-                  />,
-                ]}
+                actions={getCardActions(question, disableDeleteButton)}
               >
                 <Meta
                   avatar={
