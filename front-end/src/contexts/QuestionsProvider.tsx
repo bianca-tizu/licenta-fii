@@ -2,6 +2,11 @@ import * as React from "react";
 import { ApolloError } from "@apollo/client";
 import { useQuestionsQuery, Question } from "../generated/graphql";
 
+type questionDialog = {
+  isVisible: boolean;
+  action: string;
+};
+
 type QuestionsContextData = {
   allQuestions: Question[];
   selectedQuestion: Question | undefined;
@@ -11,6 +16,8 @@ type QuestionsContextData = {
   setSearchResults: (results) => void;
   error: ApolloError | undefined;
   loading: boolean;
+  isQuestionDialogVisible: questionDialog;
+  setIsQuestionDialogVisible: (value) => void;
 };
 
 const defaultQuestionsContext = {
@@ -22,6 +29,10 @@ const defaultQuestionsContext = {
   setSearchResults: results => {},
   error: undefined,
   loading: false,
+  isQuestionDialogVisible: { isVisible: false, action: "" },
+  setIsQuestionDialogVisible: () => {
+    return { isVisible: false, action: "" };
+  },
 };
 
 const QuestionsContext = React.createContext<QuestionsContextData>(
@@ -33,6 +44,10 @@ export const QuestionsProvider: React.FC = ({ children }) => {
 
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
   const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();
+  const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState({
+    isVisible: false,
+    action: "",
+  });
 
   React.useEffect(() => {
     if (data?.getAllQuestions) {
@@ -42,7 +57,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
 
   const addQuestion = (question: Question) => {
     setAllQuestions(prev => [question, ...prev]);
-    setSelectedQuestion(question);
+    setSelectedQuestion(question.isDraft ? undefined : question);
   };
 
   const removeQuestion = (questionId: String) => {
@@ -68,6 +83,8 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     setSearchResults,
     error,
     loading,
+    isQuestionDialogVisible,
+    setIsQuestionDialogVisible,
   };
 
   return (

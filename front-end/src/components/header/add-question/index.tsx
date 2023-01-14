@@ -18,11 +18,7 @@ type CreateQuestionValuesType = {
   content: string;
 };
 
-const AddQuestion = ({
-  setIsQuestionDialogVisible,
-  setCreateQuestionLoading,
-  setIsDraftVisible,
-}: any) => {
+const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
   const [questionValues, setQuestionValues] = React.useState({
     title: "",
     content: "",
@@ -34,7 +30,11 @@ const AddQuestion = ({
 
   const [createQuestionForm] = Form.useForm();
 
-  const { addQuestion } = React.useContext(QuestionsContext);
+  const {
+    addQuestion,
+    setIsQuestionDialogVisible,
+    isQuestionDialogVisible,
+  } = React.useContext(QuestionsContext);
 
   const onChange = (_changedValue, allValues) => {
     setQuestionValues(allValues);
@@ -77,7 +77,10 @@ const AddQuestion = ({
   };
 
   const saveQuestion = () => {
-    setIsQuestionDialogVisible(false);
+    setIsQuestionDialogVisible({
+      ...isQuestionDialogVisible,
+      isVisible: false,
+    });
     setError("");
     createQuestionForm.resetFields();
     setTags([]);
@@ -89,7 +92,10 @@ const AddQuestion = ({
   };
 
   const errorWhenSavingQuestion = () => {
-    setIsQuestionDialogVisible(false);
+    setIsQuestionDialogVisible({
+      ...isQuestionDialogVisible,
+      isVisible: false,
+    });
     createQuestionForm.resetFields();
     setTags([]);
     setCreateQuestionLoading(false);

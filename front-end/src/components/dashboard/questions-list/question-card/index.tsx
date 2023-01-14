@@ -16,6 +16,7 @@ const QuestionCard = props => {
     removeQuestion,
     selectedQuestion,
     setSelectedQuestion,
+    setIsQuestionDialogVisible,
   } = React.useContext(QuestionsContext);
   const { data } = useGetCurrentUserQuery();
 
@@ -49,7 +50,11 @@ const QuestionCard = props => {
             });
           }}
         />,
-        <EditOutlined />,
+        <EditOutlined
+          onClick={() =>
+            setIsQuestionDialogVisible({ isVisible: true, action: "edit" })
+          }
+        />,
       ];
     } else {
       return [

@@ -16,16 +16,13 @@ import AddQuestion from "./add-question";
 import UserProfile from "./user-profile";
 
 import "./menu.css";
+import QuestionsContext from "../../contexts/QuestionsProvider";
 
 const HorizontalMenu = ({
   isSearchVisible,
   setIsSearchVisible,
-  isDraftVisible,
   setIsDraftVisible,
 }: any) => {
-  const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState(
-    false
-  );
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
   const [isLogoutDialogVisible, setIsLogoutDialogVisible] = React.useState(
     false
@@ -33,6 +30,12 @@ const HorizontalMenu = ({
   const [createQuestionLoading, setCreateQuestionLoading] = React.useState(
     false
   );
+
+  const {
+    isQuestionDialogVisible,
+    setIsQuestionDialogVisible,
+    setSelectedQuestion,
+  } = React.useContext(QuestionsContext);
 
   let history = useHistory();
 
@@ -51,12 +54,16 @@ const HorizontalMenu = ({
         setIsSearchVisible(!isSearchVisible);
         break;
       case "newQuestion":
-        setIsQuestionDialogVisible(!isQuestionDialogVisible);
+        setIsQuestionDialogVisible({
+          ...isQuestionDialogVisible,
+          isVisible: !isQuestionDialogVisible.isVisible,
+        });
         setIsSearchVisible(false);
         break;
       case "drafts":
         setIsDraftVisible(true);
         setIsSearchVisible(false);
+        setSelectedQuestion(undefined);
         break;
       case "profile":
         setIsUserProfileVisible(!isUserProfileVisible);
@@ -117,17 +124,22 @@ const HorizontalMenu = ({
 
       {/* add a question */}
       <Modal
-        title="Add a question"
-        open={isQuestionDialogVisible}
+        title={
+          isQuestionDialogVisible.action === "add"
+            ? "Add a question"
+            : "Edit question"
+        }
+        open={isQuestionDialogVisible.isVisible}
         keyboard
         maskClosable
-        onCancel={() => setIsQuestionDialogVisible(false)}
+        onCancel={() =>
+          setIsQuestionDialogVisible({ isVisible: false, action: "add" })
+        }
         footer={null}
       >
         <Spin spinning={createQuestionLoading}>
           <AddQuestion
             setIsDraftVisible={setIsDraftVisible}
-            setIsQuestionDialogVisible={setIsQuestionDialogVisible}
             setCreateQuestionLoading={setCreateQuestionLoading}
           />
         </Spin>
