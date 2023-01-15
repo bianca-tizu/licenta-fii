@@ -10,6 +10,7 @@ import "./add-question.css";
 import {
   Question,
   useCreateQuestionMutation,
+  useUpdateQuestionMutation,
 } from "../../../generated/graphql";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
 
@@ -27,6 +28,7 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
   const [error, setError] = React.useState("");
 
   const [createQuestion] = useCreateQuestionMutation();
+  const [updateQuestion] = useUpdateQuestionMutation();
 
   const [createQuestionForm] = Form.useForm();
 
@@ -34,7 +36,16 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
     addQuestion,
     setIsQuestionDialogVisible,
     isQuestionDialogVisible,
+    selectedDraft,
   } = React.useContext(QuestionsContext);
+
+  React.useEffect(() => {
+    if (selectedDraft) {
+      const { title, content, tags } = selectedDraft;
+      createQuestionForm.setFieldValue("title", title?.replace("[Draft] ", ""));
+      createQuestionForm.setFieldValue("content", content);
+    }
+  }, [selectedDraft]);
 
   const onChange = (_changedValue, allValues) => {
     setQuestionValues(allValues);
@@ -52,17 +63,11 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
 
     try {
       const { title, content } = values;
-      const response = await createQuestion({
-        variables: {
-          title: title,
-          content: content,
-          tags: tags,
-          isDraft: isDraft,
-        },
-      });
+
+      const response = await createOrUpdateQuestion(title, content, isDraft);
 
       if (response.data) {
-        addQuestion(response.data.createQuestion as Question);
+        addQuestion(response.data as Question);
         saveQuestion();
         setIsDraftVisible(isDraft);
       }
@@ -72,6 +77,29 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
         message: "Error",
         description: "Oops, there was a problem while saving the question",
         placement: "bottomRight",
+      });
+    }
+  };
+
+  const createOrUpdateQuestion = async (title, content, isDraft) => {
+    if (selectedDraft) {
+      return await updateQuestion({
+        variables: {
+          id: selectedDraft._id,
+          title: title,
+          content: content,
+          tags: tags,
+          isDraft: isDraft,
+        },
+      });
+    } else {
+      return await createQuestion({
+        variables: {
+          title: title,
+          content: content,
+          tags: tags,
+          isDraft: isDraft,
+        },
       });
     }
   };
@@ -142,7 +170,7 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
               "EasyImage",
             ],
           }}
-          data=""
+          data={selectedDraft ? selectedDraft.content : ""}
           onReady={(editor: any) => {
             editor.ui
               .getEditableElement()

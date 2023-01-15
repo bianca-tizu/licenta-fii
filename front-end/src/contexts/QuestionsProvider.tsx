@@ -18,6 +18,8 @@ type QuestionsContextData = {
   loading: boolean;
   isQuestionDialogVisible: questionDialog;
   setIsQuestionDialogVisible: (value) => void;
+  selectedDraft: Question | undefined;
+  setSelectedDraft: (question: Question | undefined) => void;
 };
 
 const defaultQuestionsContext = {
@@ -33,6 +35,8 @@ const defaultQuestionsContext = {
   setIsQuestionDialogVisible: () => {
     return { isVisible: false, action: "" };
   },
+  selectedDraft: {},
+  setSelectedDraft: (question: Question | undefined) => {},
 };
 
 const QuestionsContext = React.createContext<QuestionsContextData>(
@@ -44,6 +48,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
 
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
   const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();
+  const [selectedDraft, setSelectedDraft] = React.useState<Question>();
   const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState({
     isVisible: false,
     action: "",
@@ -55,9 +60,24 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     }
   }, [data]);
 
-  const addQuestion = (question: Question) => {
-    setAllQuestions(prev => [question, ...prev]);
-    setSelectedQuestion(question.isDraft ? undefined : question);
+  const addQuestion = question => {
+    if (question.createQuestion) {
+      setAllQuestions(prev => [question, ...prev]);
+      setSelectedQuestion(question.isDraft ? undefined : question);
+    } else {
+      if (question.updateQuestion) {
+        setAllQuestions(prev => {
+          return prev.filter(q => {
+            if (q._id === question.id) {
+              return [question, ...prev];
+            }
+            return prev;
+          });
+        });
+
+        setSelectedDraft(undefined);
+      }
+    }
   };
 
   const removeQuestion = (questionId: String) => {
@@ -85,6 +105,8 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     loading,
     isQuestionDialogVisible,
     setIsQuestionDialogVisible,
+    selectedDraft,
+    setSelectedDraft,
   };
 
   return (

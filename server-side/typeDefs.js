@@ -48,6 +48,14 @@ const typeDefs = `
     isDraft: Boolean
   }
 
+  input UpdateQuestionInput {
+    id: ID
+    title: String
+    content: String
+    tags: [String]
+    isDraft: Boolean
+  }
+
   input CommentInput {
     message: String
     questionId: ID
@@ -82,12 +90,13 @@ const typeDefs = `
 
   type Mutation {
     createQuestion(question: QuestionInput): Question
+    deleteQuestion(id: ID): ID
+    updateQuestion(question: UpdateQuestionInput): Question
     registerUser(user: RegisterInput): AuthPayload!
     loginUser(user: LoginInput): AuthPayload!
     updateUser(user: UserInput): User
     forgetPassword(email: String): User!
     removeUser: ID
-    deleteQuestion(id: ID): ID
     createComment(comment: CommentInput): Comment
     deleteComment(id: ID): ID
     editComment(comment: EditCommentInput): Comment

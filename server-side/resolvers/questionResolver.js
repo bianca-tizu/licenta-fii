@@ -89,6 +89,36 @@ const questionResolver = {
       });
       return questionToBeRemoved._id;
     },
+
+    updateQuestion: async (parent, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to view the questions");
+      }
+
+      const questionToBeUpdated = await Question.findById({
+        _id: args.question.id,
+      });
+
+      if (args.question.title && args.question.isDraft) {
+        args.question.title = "[Draft] " + args.question.title;
+      }
+
+      args.question.isDraft = args.question.isDraft ? true : false;
+
+      Object.keys(args.question).forEach(value => {
+        if (args.question[value] !== questionToBeUpdated[value]) {
+          questionToBeUpdated[value] = args.question[value];
+        }
+      });
+
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        { _id: args.question.id },
+        { $set: questionToBeUpdated },
+        { upsert: true, new: true }
+      ).populate("author");
+
+      return updatedQuestion;
+    },
   },
 };
 

@@ -2,13 +2,16 @@ import { DeleteOutlined, EditOutlined, SendOutlined } from "@ant-design/icons";
 import { Avatar, Card, Modal } from "antd";
 import Meta from "antd/lib/card/Meta";
 import React from "react";
-import QuestionsContext from "../../../../contexts/QuestionsProvider";
+
 import {
   Question,
   useDeleteQuestionMutation,
   useGetCurrentUserQuery,
 } from "../../../../generated/graphql";
+
+import QuestionsContext from "../../../../contexts/QuestionsProvider";
 import QuestionDetail from "../../question-detail";
+
 import "../../dashboard.css";
 
 const QuestionCard = props => {
@@ -17,6 +20,7 @@ const QuestionCard = props => {
     selectedQuestion,
     setSelectedQuestion,
     setIsQuestionDialogVisible,
+    setSelectedDraft,
   } = React.useContext(QuestionsContext);
   const { data } = useGetCurrentUserQuery();
 
@@ -51,9 +55,10 @@ const QuestionCard = props => {
           }}
         />,
         <EditOutlined
-          onClick={() =>
-            setIsQuestionDialogVisible({ isVisible: true, action: "edit" })
-          }
+          onClick={() => {
+            setIsQuestionDialogVisible({ isVisible: true, action: "edit" });
+            setSelectedDraft(question);
+          }}
         />,
       ];
     } else {

@@ -55,6 +55,7 @@ export type Mutation = {
   loginUser: AuthPayload;
   registerUser: AuthPayload;
   removeUser?: Maybe<Scalars['ID']>;
+  updateQuestion?: Maybe<Question>;
   updateUser?: Maybe<User>;
 };
 
@@ -96,6 +97,11 @@ export type MutationLoginUserArgs = {
 
 export type MutationRegisterUserArgs = {
   user?: Maybe<RegisterInput>;
+};
+
+
+export type MutationUpdateQuestionArgs = {
+  question?: Maybe<UpdateQuestionInput>;
 };
 
 
@@ -151,6 +157,14 @@ export type RegisterInput = {
   email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   studentId?: Maybe<Scalars['String']>;
+};
+
+export type UpdateQuestionInput = {
+  content?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']>;
+  isDraft?: Maybe<Scalars['Boolean']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  title?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -295,6 +309,27 @@ export type RemoveUserMutationVariables = Exact<{ [key: string]: never; }>;
 export type RemoveUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'removeUser'>
+);
+
+export type UpdateQuestionMutationVariables = Exact<{
+  id?: Maybe<Scalars['ID']>;
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  tags: Array<Scalars['String']> | Scalars['String'];
+  isDraft?: Maybe<Scalars['Boolean']>;
+}>;
+
+
+export type UpdateQuestionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateQuestion?: Maybe<(
+    { __typename?: 'Question' }
+    & Pick<Question, '_id' | 'title' | 'content' | 'votes' | 'tags' | 'isDraft'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'avatarUrl'>
+    )> }
+  )> }
 );
 
 export type UpdateUserMutationVariables = Exact<{
@@ -696,6 +731,54 @@ export function useRemoveUserMutation(baseOptions?: Apollo.MutationHookOptions<R
 export type RemoveUserMutationHookResult = ReturnType<typeof useRemoveUserMutation>;
 export type RemoveUserMutationResult = Apollo.MutationResult<RemoveUserMutation>;
 export type RemoveUserMutationOptions = Apollo.BaseMutationOptions<RemoveUserMutation, RemoveUserMutationVariables>;
+export const UpdateQuestionDocument = gql`
+    mutation UpdateQuestion($id: ID, $title: String, $content: String, $tags: [String!]!, $isDraft: Boolean) {
+  updateQuestion(
+    question: {id: $id, title: $title, content: $content, tags: $tags, isDraft: $isDraft}
+  ) {
+    _id
+    title
+    content
+    author {
+      _id
+      avatarUrl
+    }
+    votes
+    tags
+    isDraft
+  }
+}
+    `;
+export type UpdateQuestionMutationFn = Apollo.MutationFunction<UpdateQuestionMutation, UpdateQuestionMutationVariables>;
+
+/**
+ * __useUpdateQuestionMutation__
+ *
+ * To run a mutation, you first call `useUpdateQuestionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateQuestionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateQuestionMutation, { data, loading, error }] = useUpdateQuestionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      content: // value for 'content'
+ *      tags: // value for 'tags'
+ *      isDraft: // value for 'isDraft'
+ *   },
+ * });
+ */
+export function useUpdateQuestionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateQuestionMutation, UpdateQuestionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateQuestionMutation, UpdateQuestionMutationVariables>(UpdateQuestionDocument, options);
+      }
+export type UpdateQuestionMutationHookResult = ReturnType<typeof useUpdateQuestionMutation>;
+export type UpdateQuestionMutationResult = Apollo.MutationResult<UpdateQuestionMutation>;
+export type UpdateQuestionMutationOptions = Apollo.BaseMutationOptions<UpdateQuestionMutation, UpdateQuestionMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($email: String, $username: String, $password: String) {
   updateUser(user: {email: $email, username: $username, password: $password}) {

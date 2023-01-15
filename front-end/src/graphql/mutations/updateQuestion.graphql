@@ -1,0 +1,28 @@
+mutation UpdateQuestion(
+  $id: ID
+  $title: String
+  $content: String
+  $tags: [String!]!
+  $isDraft: Boolean
+) {
+  updateQuestion(
+    question: {
+      id: $id
+      title: $title
+      content: $content
+      tags: $tags
+      isDraft: $isDraft
+    }
+  ) {
+    _id
+    title
+    content
+    author {
+      _id
+      avatarUrl
+    }
+    votes
+    tags
+    isDraft
+  }
+}
