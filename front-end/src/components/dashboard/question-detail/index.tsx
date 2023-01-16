@@ -18,6 +18,7 @@ import {
   Question,
   useCreateCommentMutation,
   useGetCommentsForQuestionQuery,
+  useGetCurrentUserQuery,
 } from "../../../generated/graphql";
 import TextArea from "antd/lib/input/TextArea";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
@@ -38,6 +39,7 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
   const { data, error } = useGetCommentsForQuestionQuery({
     variables: { questionId: selectedQuestion._id },
   });
+  const currentUser = useGetCurrentUserQuery();
 
   const { setSelectedQuestion } = React.useContext(QuestionsContext);
 
@@ -53,7 +55,18 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
     }
   }, [data]);
 
+  const LikeIcon = ({ disabled, ...props }) => {
+    if (
+      currentUser.data?.getCurrentUser?._id === selectedQuestion.author?._id
+    ) {
+      return <LikeOutlined className={disabled && "disabled-delete"} />;
+    } else {
+      return <LikeOutlined {...props} />;
+    }
+  };
+
   const handleVotes = async () => {
+    console.log("Vote");
     // const { data } = await votes({
     //   variables: { id: selectedQuestion._id },
     // });
@@ -102,7 +115,14 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
         />
         <div>
           <Badge count={countLikes} style={{ backgroundColor: "#3388CB" }} />
-          <LikeOutlined key="vote" onClick={handleVotes} />
+          <LikeIcon
+            key="vote"
+            onClick={handleVotes}
+            disabled={
+              currentUser.data?.getCurrentUser?._id ===
+              selectedQuestion.author?._id
+            }
+          />
         </div>
       </div>
 
