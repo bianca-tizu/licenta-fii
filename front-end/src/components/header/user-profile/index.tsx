@@ -11,7 +11,9 @@ import {
 import "./user-profile.css";
 
 const UserProfile = ({ setIsUserProfileVisible }: any) => {
-  const { data, refetch } = useGetCurrentUserQuery();
+  const { data, refetch } = useGetCurrentUserQuery({
+    fetchPolicy: "cache-and-network",
+  });
   const [updateUser] = useUpdateUserMutation();
   const [removeUserMutation] = useRemoveUserMutation();
   const [updateUserForm] = Form.useForm();

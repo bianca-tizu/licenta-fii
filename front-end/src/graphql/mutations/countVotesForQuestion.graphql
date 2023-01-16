@@ -1,0 +1,8 @@
+mutation CountVotesForQuestion($questionId: ID, $voteNumber: Int) {
+  countVotesForQuestion(
+    vote: { questionId: $questionId, voteNumber: $voteNumber }
+  ) {
+    _id
+    votes
+  }
+}

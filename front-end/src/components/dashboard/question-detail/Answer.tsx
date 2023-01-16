@@ -15,7 +15,7 @@ import "./question-detail.css";
 const Answer = ({ comment, setAllComments }) => {
   const [deleteCommentMutation] = useDeleteCommentMutation();
   const [editCommentMutation] = useEditCommentMutation();
-  const currentUser = useGetCurrentUserQuery();
+  const currentUser = useGetCurrentUserQuery({ fetchPolicy: "network-only" });
 
   const { author, message, createdAt } = comment;
 

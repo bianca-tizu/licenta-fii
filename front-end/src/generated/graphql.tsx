@@ -46,6 +46,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  countVotesForQuestion?: Maybe<Question>;
   createComment?: Maybe<Comment>;
   createQuestion?: Maybe<Question>;
   deleteComment?: Maybe<Scalars['ID']>;
@@ -57,6 +58,11 @@ export type Mutation = {
   removeUser?: Maybe<Scalars['ID']>;
   updateQuestion?: Maybe<Question>;
   updateUser?: Maybe<User>;
+};
+
+
+export type MutationCountVotesForQuestionArgs = {
+  vote?: Maybe<VoteInput>;
 };
 
 
@@ -185,6 +191,25 @@ export type UserInput = {
   password?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
 };
+
+export type VoteInput = {
+  questionId?: Maybe<Scalars['ID']>;
+  voteNumber?: Maybe<Scalars['Int']>;
+};
+
+export type CountVotesForQuestionMutationVariables = Exact<{
+  questionId?: Maybe<Scalars['ID']>;
+  voteNumber?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type CountVotesForQuestionMutation = (
+  { __typename?: 'Mutation' }
+  & { countVotesForQuestion?: Maybe<(
+    { __typename?: 'Question' }
+    & Pick<Question, '_id' | 'votes'>
+  )> }
+);
 
 export type CreateCommentMutationVariables = Exact<{
   questionId?: Maybe<Scalars['ID']>;
@@ -411,6 +436,41 @@ export type SearchQuestionsQuery = (
 );
 
 
+export const CountVotesForQuestionDocument = gql`
+    mutation CountVotesForQuestion($questionId: ID, $voteNumber: Int) {
+  countVotesForQuestion(vote: {questionId: $questionId, voteNumber: $voteNumber}) {
+    _id
+    votes
+  }
+}
+    `;
+export type CountVotesForQuestionMutationFn = Apollo.MutationFunction<CountVotesForQuestionMutation, CountVotesForQuestionMutationVariables>;
+
+/**
+ * __useCountVotesForQuestionMutation__
+ *
+ * To run a mutation, you first call `useCountVotesForQuestionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCountVotesForQuestionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [countVotesForQuestionMutation, { data, loading, error }] = useCountVotesForQuestionMutation({
+ *   variables: {
+ *      questionId: // value for 'questionId'
+ *      voteNumber: // value for 'voteNumber'
+ *   },
+ * });
+ */
+export function useCountVotesForQuestionMutation(baseOptions?: Apollo.MutationHookOptions<CountVotesForQuestionMutation, CountVotesForQuestionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CountVotesForQuestionMutation, CountVotesForQuestionMutationVariables>(CountVotesForQuestionDocument, options);
+      }
+export type CountVotesForQuestionMutationHookResult = ReturnType<typeof useCountVotesForQuestionMutation>;
+export type CountVotesForQuestionMutationResult = Apollo.MutationResult<CountVotesForQuestionMutation>;
+export type CountVotesForQuestionMutationOptions = Apollo.BaseMutationOptions<CountVotesForQuestionMutation, CountVotesForQuestionMutationVariables>;
 export const CreateCommentDocument = gql`
     mutation CreateComment($questionId: ID, $message: String) {
   createComment(comment: {questionId: $questionId, message: $message}) {

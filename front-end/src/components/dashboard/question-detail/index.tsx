@@ -16,12 +16,14 @@ import "./question-detail.css";
 import Answer from "./Answer";
 import {
   Question,
+  useCountVotesForQuestionMutation,
   useCreateCommentMutation,
   useGetCommentsForQuestionQuery,
   useGetCurrentUserQuery,
 } from "../../../generated/graphql";
 import TextArea from "antd/lib/input/TextArea";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
+import ErrorHandler from "../../ErrorHandler";
 
 const { Meta } = Card;
 const { Paragraph } = Typography;
@@ -30,22 +32,25 @@ type Props = {
   selectedQuestion: Question;
 };
 
-const useCountVotesMutation = () => {
-  return [""];
-};
 const QuestionDetail = ({ selectedQuestion }: Props) => {
-  const [votes] = useCountVotesMutation();
+  const [countVotesForQuestionMutation] = useCountVotesForQuestionMutation();
   const [createCommentMutation] = useCreateCommentMutation();
   const { data, error } = useGetCommentsForQuestionQuery({
     variables: { questionId: selectedQuestion._id },
+    fetchPolicy: "network-only",
   });
-  const currentUser = useGetCurrentUserQuery();
+  const currentUser = useGetCurrentUserQuery({
+    fetchPolicy: "network-only",
+  });
 
   const { setSelectedQuestion } = React.useContext(QuestionsContext);
 
   const [allComments, setAllComments] = React.useState<Comment[]>([]);
   const [isCommentEmpty, setIsCommentEmpty] = React.useState<boolean>(true);
-  const [countLikes, setCountLikes] = React.useState(selectedQuestion.votes);
+  const [countLikes, setCountLikes] = React.useState(
+    selectedQuestion.votes || 0
+  );
+  const [isLiked, setIsLiked] = React.useState(false);
 
   const [addCommentForm] = Form.useForm();
 
@@ -54,6 +59,10 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
       setAllComments(data.getCommentsForQuestion as Comment[]);
     }
   }, [data]);
+
+  React.useEffect(() => {
+    setCountLikes(selectedQuestion.votes || 0);
+  }, [selectedQuestion]);
 
   const LikeIcon = ({ disabled, ...props }) => {
     if (
@@ -66,13 +75,11 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
   };
 
   const handleVotes = async () => {
-    console.log("Vote");
-    // const { data } = await votes({
-    //   variables: { id: selectedQuestion._id },
-    // });
-    // if (data?.countVotes?.votes) {
-    //   setCountLikes(data?.countVotes?.votes);
-    // }
+    setCountLikes(prev => prev + (isLiked ? -1 : 1));
+    setIsLiked(!isLiked);
+    await countVotesForQuestionMutation({
+      variables: { questionId: selectedQuestion._id, voteNumber: countLikes },
+    });
   };
 
   const handleAddComment = async values => {
@@ -182,6 +189,8 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
           );
         })}
       </div>
+
+      {error && <ErrorHandler error={error} />}
     </Card>
   );
 };

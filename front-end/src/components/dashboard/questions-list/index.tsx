@@ -1,15 +1,19 @@
 import React from "react";
+import { Result, Spin } from "antd";
 
 import "../dashboard.css";
 
+import { useGetCurrentUserQuery } from "../../../generated/graphql";
+
 import QuestionsContext from "../../../contexts/QuestionsProvider";
 import QuestionCard from "./question-card";
-import { Question, useGetCurrentUserQuery } from "../../../generated/graphql";
-import { Result, Spin } from "antd";
+import ErrorHandler from "../../ErrorHandler";
 
 const QuestionsList = ({ isDraftVisible }) => {
   const { allQuestions, loading } = React.useContext(QuestionsContext);
-  const { data } = useGetCurrentUserQuery();
+  const { data, error } = useGetCurrentUserQuery({
+    fetchPolicy: "network-only",
+  });
 
   const drafts = allQuestions.filter(
     question =>
@@ -59,6 +63,8 @@ const QuestionsList = ({ isDraftVisible }) => {
           )}
         </>
       )}
+
+      {error && <ErrorHandler error={error}></ErrorHandler>}
     </div>
   );
 };

@@ -44,7 +44,9 @@ const QuestionsContext = React.createContext<QuestionsContextData>(
 );
 
 export const QuestionsProvider: React.FC = ({ children }) => {
-  const { data, loading, error } = useQuestionsQuery();
+  const { data, loading, error } = useQuestionsQuery({
+    fetchPolicy: "network-only",
+  });
 
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
   const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();

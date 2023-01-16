@@ -83,6 +83,11 @@ const typeDefs = `
     password: String
   }
 
+  input VoteInput {
+    questionId: ID
+    voteNumber: Int
+  }
+
   type AuthPayload {
     token: String!
     user: User!
@@ -92,14 +97,18 @@ const typeDefs = `
     createQuestion(question: QuestionInput): Question
     deleteQuestion(id: ID): ID
     updateQuestion(question: UpdateQuestionInput): Question
+    
     registerUser(user: RegisterInput): AuthPayload!
     loginUser(user: LoginInput): AuthPayload!
     updateUser(user: UserInput): User
     forgetPassword(email: String): User!
     removeUser: ID
+    
     createComment(comment: CommentInput): Comment
     deleteComment(id: ID): ID
     editComment(comment: EditCommentInput): Comment
+
+    countVotesForQuestion(vote: VoteInput): Question
   }
 `;
 

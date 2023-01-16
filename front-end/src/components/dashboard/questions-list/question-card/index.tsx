@@ -11,6 +11,7 @@ import {
 
 import QuestionsContext from "../../../../contexts/QuestionsProvider";
 import QuestionDetail from "../../question-detail";
+import ErrorHandler from "../../../ErrorHandler";
 
 import "../../dashboard.css";
 
@@ -22,9 +23,9 @@ const QuestionCard = props => {
     setIsQuestionDialogVisible,
     setSelectedDraft,
   } = React.useContext(QuestionsContext);
-  const { data } = useGetCurrentUserQuery();
+  const { data } = useGetCurrentUserQuery({ fetchPolicy: "network-only" });
 
-  const [deleteQuestionMutation] = useDeleteQuestionMutation();
+  const [deleteQuestionMutation, deleteResult] = useDeleteQuestionMutation();
   const [_, setIsDeleteModalOpen] = React.useState(false);
 
   const DeleteIcon = ({ disabled, ...props }) => {
@@ -81,11 +82,15 @@ const QuestionCard = props => {
         />,
         <SendOutlined
           key="answer"
-          onClick={() =>
+          onClick={() => {
             question.isDraft
               ? setSelectedQuestion(undefined)
-              : setSelectedQuestion(question as Question)
-          }
+              : setSelectedQuestion(question as Question);
+            document.body.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
         />,
       ];
     }
@@ -144,6 +149,10 @@ const QuestionCard = props => {
           )}
         </div>
       </div>
+
+      {deleteResult.error && (
+        <ErrorHandler error={deleteResult.error}></ErrorHandler>
+      )}
     </>
   );
 };

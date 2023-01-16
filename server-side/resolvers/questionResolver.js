@@ -119,6 +119,22 @@ const questionResolver = {
 
       return updatedQuestion;
     },
+
+    countVotesForQuestion: async (parent, args, context) => {
+      const { questionId, voteNumber } = args.vote;
+
+      if (!context.user) {
+        throw new Error("You're not allowed to vote this question");
+      }
+
+      const votedQuestion = await Question.findByIdAndUpdate(
+        { _id: questionId },
+        { $set: { votes: voteNumber } },
+        { upsert: true, new: true }
+      );
+
+      return votedQuestion;
+    },
   },
 };
 
