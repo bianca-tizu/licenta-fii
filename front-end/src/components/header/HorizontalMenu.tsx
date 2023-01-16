@@ -35,6 +35,7 @@ const HorizontalMenu = ({
     isQuestionDialogVisible,
     setIsQuestionDialogVisible,
     setSelectedQuestion,
+    setSelectedDraft,
   } = React.useContext(QuestionsContext);
 
   let history = useHistory();
@@ -125,16 +126,17 @@ const HorizontalMenu = ({
       {/* add a question */}
       <Modal
         title={
-          isQuestionDialogVisible.action === "add"
-            ? "Add a question"
-            : "Edit question"
+          isQuestionDialogVisible.action === "edit"
+            ? "Edit question"
+            : "Add question"
         }
         open={isQuestionDialogVisible.isVisible}
         keyboard
         maskClosable
-        onCancel={() =>
-          setIsQuestionDialogVisible({ isVisible: false, action: "add" })
-        }
+        onCancel={() => {
+          setIsQuestionDialogVisible({ isVisible: false, action: "add" });
+          setSelectedDraft(undefined);
+        }}
         footer={null}
       >
         <Spin spinning={createQuestionLoading}>

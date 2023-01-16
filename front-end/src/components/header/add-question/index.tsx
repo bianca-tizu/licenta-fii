@@ -44,6 +44,8 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
       const { title, content, tags } = selectedDraft;
       createQuestionForm.setFieldValue("title", title?.replace("[Draft] ", ""));
       createQuestionForm.setFieldValue("content", content);
+    } else {
+      createQuestionForm.resetFields();
     }
   }, [selectedDraft]);
 
