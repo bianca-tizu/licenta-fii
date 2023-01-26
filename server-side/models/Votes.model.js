@@ -11,8 +11,8 @@ export const VotesSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  voteNumber: {
-    type: Number,
+  voted: {
+    type: Boolean,
   },
 });
 export const Votes = mongoose.model("Votes", VotesSchema);

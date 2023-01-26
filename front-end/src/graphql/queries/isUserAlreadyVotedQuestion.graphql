@@ -1,0 +1,5 @@
+query IsUserAlreadyVotedQuestion($questionId: ID) {
+  isUserAlreadyVotedQuestion(questionId: $questionId) {
+    voted
+  }
+}

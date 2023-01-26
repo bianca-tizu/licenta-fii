@@ -122,6 +122,7 @@ export type Query = {
   getCurrentUser?: Maybe<User>;
   getQuestion?: Maybe<Question>;
   hello?: Maybe<Scalars['String']>;
+  isUserAlreadyVotedQuestion?: Maybe<Array<Maybe<Votes>>>;
   searchQuestions?: Maybe<Array<Maybe<Question>>>;
 };
 
@@ -133,6 +134,11 @@ export type QueryGetCommentsForQuestionArgs = {
 
 export type QueryGetQuestionArgs = {
   id?: Maybe<Scalars['ID']>;
+};
+
+
+export type QueryIsUserAlreadyVotedQuestionArgs = {
+  questionId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -194,12 +200,20 @@ export type UserInput = {
 
 export type VoteInput = {
   questionId?: Maybe<Scalars['ID']>;
-  voteNumber?: Maybe<Scalars['Int']>;
+  voted?: Maybe<Scalars['Boolean']>;
+};
+
+export type Votes = {
+  __typename?: 'Votes';
+  _id?: Maybe<Scalars['ID']>;
+  questionId?: Maybe<Scalars['ID']>;
+  userId?: Maybe<Scalars['ID']>;
+  voted?: Maybe<Scalars['Boolean']>;
 };
 
 export type CountVotesForQuestionMutationVariables = Exact<{
   questionId?: Maybe<Scalars['ID']>;
-  voteNumber?: Maybe<Scalars['Int']>;
+  voted?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -403,6 +417,19 @@ export type GetCurrentUserQuery = (
   )> }
 );
 
+export type IsUserAlreadyVotedQuestionQueryVariables = Exact<{
+  questionId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type IsUserAlreadyVotedQuestionQuery = (
+  { __typename?: 'Query' }
+  & { isUserAlreadyVotedQuestion?: Maybe<Array<Maybe<(
+    { __typename?: 'Votes' }
+    & Pick<Votes, 'voted'>
+  )>>> }
+);
+
 export type QuestionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -437,8 +464,8 @@ export type SearchQuestionsQuery = (
 
 
 export const CountVotesForQuestionDocument = gql`
-    mutation CountVotesForQuestion($questionId: ID, $voteNumber: Int) {
-  countVotesForQuestion(vote: {questionId: $questionId, voteNumber: $voteNumber}) {
+    mutation CountVotesForQuestion($questionId: ID, $voted: Boolean) {
+  countVotesForQuestion(vote: {questionId: $questionId, voted: $voted}) {
     _id
     votes
   }
@@ -460,7 +487,7 @@ export type CountVotesForQuestionMutationFn = Apollo.MutationFunction<CountVotes
  * const [countVotesForQuestionMutation, { data, loading, error }] = useCountVotesForQuestionMutation({
  *   variables: {
  *      questionId: // value for 'questionId'
- *      voteNumber: // value for 'voteNumber'
+ *      voted: // value for 'voted'
  *   },
  * });
  */
@@ -958,6 +985,41 @@ export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
 export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
 export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
+export const IsUserAlreadyVotedQuestionDocument = gql`
+    query IsUserAlreadyVotedQuestion($questionId: ID) {
+  isUserAlreadyVotedQuestion(questionId: $questionId) {
+    voted
+  }
+}
+    `;
+
+/**
+ * __useIsUserAlreadyVotedQuestionQuery__
+ *
+ * To run a query within a React component, call `useIsUserAlreadyVotedQuestionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsUserAlreadyVotedQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsUserAlreadyVotedQuestionQuery({
+ *   variables: {
+ *      questionId: // value for 'questionId'
+ *   },
+ * });
+ */
+export function useIsUserAlreadyVotedQuestionQuery(baseOptions?: Apollo.QueryHookOptions<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>(IsUserAlreadyVotedQuestionDocument, options);
+      }
+export function useIsUserAlreadyVotedQuestionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>(IsUserAlreadyVotedQuestionDocument, options);
+        }
+export type IsUserAlreadyVotedQuestionQueryHookResult = ReturnType<typeof useIsUserAlreadyVotedQuestionQuery>;
+export type IsUserAlreadyVotedQuestionLazyQueryHookResult = ReturnType<typeof useIsUserAlreadyVotedQuestionLazyQuery>;
+export type IsUserAlreadyVotedQuestionQueryResult = Apollo.QueryResult<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>;
 export const QuestionsDocument = gql`
     query Questions {
   getAllQuestions {

@@ -30,6 +30,13 @@ const typeDefs = `
     question: Question
   }
 
+  type Votes {
+    _id: ID
+    userId: ID
+    questionId: ID
+    voted: Boolean
+  }
+
   type Query {
     hello: String
     getCurrentUser: User
@@ -39,6 +46,8 @@ const typeDefs = `
     searchQuestions(keyword: String): [Question]
 
     getCommentsForQuestion(questionId: ID): [Comment]
+
+    isUserAlreadyVotedQuestion(questionId: ID): [Votes]
   }
 
   input QuestionInput {
@@ -85,7 +94,7 @@ const typeDefs = `
 
   input VoteInput {
     questionId: ID
-    voteNumber: Int
+    voted: Boolean
   }
 
   type AuthPayload {

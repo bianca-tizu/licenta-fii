@@ -20,6 +20,7 @@ import {
   useCreateCommentMutation,
   useGetCommentsForQuestionQuery,
   useGetCurrentUserQuery,
+  useIsUserAlreadyVotedQuestionQuery,
 } from "../../../generated/graphql";
 import TextArea from "antd/lib/input/TextArea";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
@@ -39,6 +40,10 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
     variables: { questionId: selectedQuestion._id },
     fetchPolicy: "network-only",
   });
+  const isUserAlreadyVotedQuestion = useIsUserAlreadyVotedQuestionQuery({
+    variables: { questionId: selectedQuestion._id },
+    fetchPolicy: "network-only",
+  });
   const currentUser = useGetCurrentUserQuery({
     fetchPolicy: "network-only",
   });
@@ -50,7 +55,11 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
   const [countLikes, setCountLikes] = React.useState(
     selectedQuestion.votes || 0
   );
-  const [isLiked, setIsLiked] = React.useState(false);
+  const [isLiked, setIsLiked] = React.useState(
+    isUserAlreadyVotedQuestion.data?.isUserAlreadyVotedQuestion?.length
+      ? true
+      : false
+  );
 
   const [addCommentForm] = Form.useForm();
 
@@ -75,11 +84,12 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
   };
 
   const handleVotes = async () => {
-    setCountLikes(prev => prev + (isLiked ? -1 : 1));
-    setIsLiked(!isLiked);
-    await countVotesForQuestionMutation({
-      variables: { questionId: selectedQuestion._id, voteNumber: countLikes },
+    const votes = await countVotesForQuestionMutation({
+      variables: { questionId: selectedQuestion._id, voted: !isLiked },
     });
+
+    setIsLiked(!isLiked);
+    setCountLikes((await votes.data?.countVotesForQuestion?.votes) as number);
   };
 
   const handleAddComment = async values => {

@@ -55,6 +55,7 @@ const questionResolver = {
         title: isDraft ? `[Draft] ${title}` : title,
         content,
         tags,
+        votes: 0,
         author: context.user._id,
         createdAt: new Date(Date.now()),
         isDraft: isDraft ? isDraft : false,

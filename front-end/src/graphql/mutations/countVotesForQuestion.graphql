@@ -1,7 +1,5 @@
-mutation CountVotesForQuestion($questionId: ID, $voteNumber: Int) {
-  countVotesForQuestion(
-    vote: { questionId: $questionId, voteNumber: $voteNumber }
-  ) {
+mutation CountVotesForQuestion($questionId: ID, $voted: Boolean) {
+  countVotesForQuestion(vote: { questionId: $questionId, voted: $voted }) {
     _id
     votes
   }
