@@ -17,44 +17,34 @@ const votesResolver = {
   },
   Mutation: {
     countVotesForQuestion: async (parent, args, context) => {
-      const { questionId, voted } = args.vote;
+      const { questionId } = args;
 
       if (!context.user) {
         throw new Error("You're not allowed to vote this question");
       }
 
       const userAlreadyVoted = await Votes.find({
-        $and: [
-          { questionId: questionId },
-          { userId: context.user._id },
-          { voted: true },
-        ],
+        $and: [{ questionId: questionId }, { userId: context.user._id }],
       });
 
-      await Votes.findOneAndUpdate(
-        { $and: [{ questionId: questionId }, { userId: context.user._id }] },
-        { $set: { voted: voted, userId: context.user._id } },
-        { upsert: true, new: true }
+      if (userAlreadyVoted.length > 0) {
+        await Votes.findOneAndDelete({
+          $and: [{ questionId: questionId }, { userId: context.user._id }],
+        });
+      } else {
+        await Votes.create({
+          questionId: questionId,
+          userId: context.user._id,
+        });
+      }
+
+      const numberOfVotes = await Votes.find({ questionId: questionId });
+      await Question.findByIdAndUpdate(
+        { _id: questionId },
+        { $set: { votes: numberOfVotes.length } }
       );
 
-      const questionVotes =
-        (await Question.find({ questionId: questionId }).votes) ?? 0;
-
-      if (userAlreadyVoted.length) {
-        return Question.findByIdAndUpdate(
-          {
-            _id: questionId,
-          },
-          { $set: { votes: questionVotes < 1 ? 0 : questionVotes - 1 } }
-        );
-      } else {
-        return Question.findByIdAndUpdate(
-          {
-            _id: questionId,
-          },
-          { $set: { votes: questionVotes + 1 } }
-        );
-      }
+      return numberOfVotes.length;
     },
   },
 };

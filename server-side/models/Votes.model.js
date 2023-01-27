@@ -11,8 +11,5 @@ export const VotesSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  voted: {
-    type: Boolean,
-  },
 });
 export const Votes = mongoose.model("Votes", VotesSchema);

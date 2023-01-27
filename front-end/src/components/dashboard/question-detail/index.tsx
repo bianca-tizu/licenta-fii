@@ -11,9 +11,9 @@ import {
   Form,
 } from "antd";
 import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
+import TextArea from "antd/lib/input/TextArea";
 
 import "./question-detail.css";
-import Answer from "./Answer";
 import {
   Question,
   useCountVotesForQuestionMutation,
@@ -22,8 +22,9 @@ import {
   useGetCurrentUserQuery,
   useIsUserAlreadyVotedQuestionQuery,
 } from "../../../generated/graphql";
-import TextArea from "antd/lib/input/TextArea";
+
 import QuestionsContext from "../../../contexts/QuestionsProvider";
+import Answer from "./Answer";
 import ErrorHandler from "../../ErrorHandler";
 
 const { Meta } = Card;
@@ -85,11 +86,12 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
 
   const handleVotes = async () => {
     const votes = await countVotesForQuestionMutation({
-      variables: { questionId: selectedQuestion._id, voted: !isLiked },
+      variables: { questionId: selectedQuestion._id },
     });
+    console.log(votes);
 
     setIsLiked(!isLiked);
-    setCountLikes((await votes.data?.countVotesForQuestion?.votes) as number);
+    setCountLikes(votes.data?.countVotesForQuestion as number);
   };
 
   const handleAddComment = async values => {

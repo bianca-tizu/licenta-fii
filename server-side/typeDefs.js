@@ -92,11 +92,6 @@ const typeDefs = `
     password: String
   }
 
-  input VoteInput {
-    questionId: ID
-    voted: Boolean
-  }
-
   type AuthPayload {
     token: String!
     user: User!
@@ -117,7 +112,7 @@ const typeDefs = `
     deleteComment(id: ID): ID
     editComment(comment: EditCommentInput): Comment
 
-    countVotesForQuestion(vote: VoteInput): Question
+    countVotesForQuestion(questionId: ID): Int
   }
 `;
 

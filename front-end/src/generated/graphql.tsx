@@ -46,7 +46,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  countVotesForQuestion?: Maybe<Question>;
+  countVotesForQuestion?: Maybe<Scalars['Int']>;
   createComment?: Maybe<Comment>;
   createQuestion?: Maybe<Question>;
   deleteComment?: Maybe<Scalars['ID']>;
@@ -62,7 +62,7 @@ export type Mutation = {
 
 
 export type MutationCountVotesForQuestionArgs = {
-  vote?: Maybe<VoteInput>;
+  questionId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -198,11 +198,6 @@ export type UserInput = {
   username?: Maybe<Scalars['String']>;
 };
 
-export type VoteInput = {
-  questionId?: Maybe<Scalars['ID']>;
-  voted?: Maybe<Scalars['Boolean']>;
-};
-
 export type Votes = {
   __typename?: 'Votes';
   _id?: Maybe<Scalars['ID']>;
@@ -213,16 +208,12 @@ export type Votes = {
 
 export type CountVotesForQuestionMutationVariables = Exact<{
   questionId?: Maybe<Scalars['ID']>;
-  voted?: Maybe<Scalars['Boolean']>;
 }>;
 
 
 export type CountVotesForQuestionMutation = (
   { __typename?: 'Mutation' }
-  & { countVotesForQuestion?: Maybe<(
-    { __typename?: 'Question' }
-    & Pick<Question, '_id' | 'votes'>
-  )> }
+  & Pick<Mutation, 'countVotesForQuestion'>
 );
 
 export type CreateCommentMutationVariables = Exact<{
@@ -464,11 +455,8 @@ export type SearchQuestionsQuery = (
 
 
 export const CountVotesForQuestionDocument = gql`
-    mutation CountVotesForQuestion($questionId: ID, $voted: Boolean) {
-  countVotesForQuestion(vote: {questionId: $questionId, voted: $voted}) {
-    _id
-    votes
-  }
+    mutation CountVotesForQuestion($questionId: ID) {
+  countVotesForQuestion(questionId: $questionId)
 }
     `;
 export type CountVotesForQuestionMutationFn = Apollo.MutationFunction<CountVotesForQuestionMutation, CountVotesForQuestionMutationVariables>;
@@ -487,7 +475,6 @@ export type CountVotesForQuestionMutationFn = Apollo.MutationFunction<CountVotes
  * const [countVotesForQuestionMutation, { data, loading, error }] = useCountVotesForQuestionMutation({
  *   variables: {
  *      questionId: // value for 'questionId'
- *      voted: // value for 'voted'
  *   },
  * });
  */
