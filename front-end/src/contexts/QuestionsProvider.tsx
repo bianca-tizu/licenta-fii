@@ -9,9 +9,11 @@ type questionDialog = {
 
 type QuestionsContextData = {
   allQuestions: Question[];
+  allQuestionsLength: number;
   selectedQuestion: Question | undefined;
   setSelectedQuestion: (question: Question | undefined) => void;
   addQuestion: (question: Question) => void;
+  loadMoreQuestions: (questionsLength: Number) => any;
   removeQuestion: (questionId: String) => void;
   setSearchResults: (results) => void;
   error: ApolloError | undefined;
@@ -24,9 +26,11 @@ type QuestionsContextData = {
 
 const defaultQuestionsContext = {
   allQuestions: [],
+  allQuestionsLength: 0,
   selectedQuestion: {},
   setSelectedQuestion: (question: Question | undefined) => {},
   addQuestion: (question: Question) => {},
+  loadMoreQuestions: (questionsLength: Number) => {},
   removeQuestion: (questionId: String) => {},
   setSearchResults: results => {},
   error: undefined,
@@ -44,11 +48,13 @@ const QuestionsContext = React.createContext<QuestionsContextData>(
 );
 
 export const QuestionsProvider: React.FC = ({ children }) => {
-  const { data, loading, error } = useQuestionsQuery({
+  const { data, loading, error, fetchMore } = useQuestionsQuery({
+    variables: { offset: 0, limit: 5 },
     fetchPolicy: "network-only",
   });
 
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
+  const [allQuestionsLength, setAllQuestionsLength] = React.useState<number>(0);
   const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();
   const [selectedDraft, setSelectedDraft] = React.useState<Question>();
   const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState({
@@ -57,8 +63,9 @@ export const QuestionsProvider: React.FC = ({ children }) => {
   });
 
   React.useEffect(() => {
-    if (data?.getAllQuestions) {
-      setAllQuestions(data.getAllQuestions as Question[]);
+    if (data?.getAllQuestions && !allQuestionsLength) {
+      setAllQuestions(data.getAllQuestions.questions as Question[]);
+      setAllQuestionsLength(data.getAllQuestions.questionsNo as number);
     }
   }, [data]);
 
@@ -84,6 +91,20 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     }
   };
 
+  const loadMoreQuestions = async questionsLength => {
+    const currentLength = questionsLength || 0;
+
+    if (currentLength < allQuestionsLength) {
+      const fetchedQuestions = await fetchMore({
+        variables: { offset: currentLength, limit: 5 },
+      });
+      setAllQuestions(prev => [
+        ...prev,
+        ...(fetchedQuestions.data.getAllQuestions?.questions as Question[]),
+      ]);
+    }
+  };
+
   const removeQuestion = (questionId: String) => {
     setAllQuestions(prev => prev.filter(q => q._id !== questionId));
     setSelectedQuestion(undefined);
@@ -93,16 +114,18 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     if (results) {
       setAllQuestions(results);
     } else {
-      setAllQuestions(data?.getAllQuestions as Question[]);
+      setAllQuestions(data?.getAllQuestions?.questions as Question[]);
     }
     setSelectedQuestion(undefined);
   };
 
   const questionsData = {
     allQuestions,
+    allQuestionsLength,
     selectedQuestion,
     setSelectedQuestion,
     addQuestion,
+    loadMoreQuestions,
     removeQuestion,
     setSearchResults,
     error,

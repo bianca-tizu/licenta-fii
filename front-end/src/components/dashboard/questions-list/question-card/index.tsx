@@ -1,5 +1,10 @@
-import { DeleteOutlined, EditOutlined, SendOutlined } from "@ant-design/icons";
-import { Avatar, Card, Modal } from "antd";
+import {
+  DeleteOutlined,
+  DownCircleOutlined,
+  EditOutlined,
+  SendOutlined,
+} from "@ant-design/icons";
+import { Avatar, Button, Card, Modal } from "antd";
 import Meta from "antd/lib/card/Meta";
 import React from "react";
 
@@ -14,10 +19,15 @@ import QuestionDetail from "../../question-detail";
 import ErrorHandler from "../../../ErrorHandler";
 
 import "../../dashboard.css";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const QuestionCard = props => {
   const {
     removeQuestion,
+    allQuestions,
+    allQuestionsLength,
+    loading,
+    loadMoreQuestions,
     selectedQuestion,
     setSelectedQuestion,
     setIsQuestionDialogVisible,
@@ -116,8 +126,7 @@ const QuestionCard = props => {
               <Card
                 key={question._id}
                 style={{ width: 300, marginBottom: 30 }}
-                actions={getCardActions(question, disableDeleteButton)}
-              >
+                actions={getCardActions(question, disableDeleteButton)}>
                 <Meta
                   avatar={
                     <Avatar
@@ -135,13 +144,32 @@ const QuestionCard = props => {
                     <div
                       dangerouslySetInnerHTML={{
                         __html: question.content.split(".")[0],
-                      }}
-                    ></div>
+                      }}></div>
                   </div>
                 )}
               </Card>
             );
           })}
+
+          {props.questions.length < allQuestionsLength ? (
+            <Button
+              type="primary"
+              icon={<DownCircleOutlined />}
+              shape="round"
+              style={{ margin: "10px" }}
+              onClick={() => loadMoreQuestions(props.questions.length)}>
+              Load more
+            </Button>
+          ) : (
+            <p
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around",
+              }}>
+              🏁 You've reached the end of the page! 🎉🎉🎉
+            </p>
+          )}
         </div>
         <div style={{ width: "50%" }}>
           {selectedQuestion && !props?.isDraftVisible && (

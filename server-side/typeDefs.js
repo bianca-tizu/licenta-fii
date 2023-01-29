@@ -37,11 +37,16 @@ const typeDefs = `
     voted: Boolean
   }
 
+  type Questions {
+    questions: [Question]
+    questionsNo: Int
+  }
+
   type Query {
     hello: String
     getCurrentUser: User
 
-    getAllQuestions: [Question]
+    getAllQuestions(limit: Int, offset: Int): Questions
     getQuestion(id: ID): Question
     searchQuestions(keyword: String): [Question]
 

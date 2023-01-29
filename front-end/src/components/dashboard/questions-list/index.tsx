@@ -26,10 +26,9 @@ const QuestionsList = ({ isDraftVisible }) => {
       {loading ? (
         <div className="spinner-wrapper">
           <Spin
-            spinning={allQuestions.length < 0 || loading}
+            spinning={questions.length < 0 || loading}
             size="large"
-            tip="Loading..."
-          ></Spin>
+            tip="Loading..."></Spin>
         </div>
       ) : (
         <>

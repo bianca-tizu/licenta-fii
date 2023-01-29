@@ -1,14 +1,17 @@
-query Questions {
-  getAllQuestions {
-    title
-    _id
-    author {
+query Questions($offset: Int, $limit: Int) {
+  getAllQuestions(offset: $offset, limit: $limit) {
+    questions {
+      title
       _id
-      avatarUrl
+      author {
+        _id
+        avatarUrl
+      }
+      content
+      votes
+      tags
+      isDraft
     }
-    content
-    votes
-    tags
-    isDraft
+    questionsNo
   }
 }

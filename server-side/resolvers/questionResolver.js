@@ -8,12 +8,24 @@ const questionResolver = {
     },
 
     getAllQuestions: async (parent, args, context) => {
+      const { offset, limit } = args;
+
       if (!context.user) {
         throw new Error("You're not allowed to get all questions");
       }
       const questions = await Question.find().populate("author");
 
-      return questions.reverse();
+      if (limit) {
+        return {
+          questions: questions.reverse().slice(offset, offset + limit),
+          questionsNo: questions.filter(question => !question.isDraft).length,
+        };
+      } else {
+        return {
+          questions: questions.reverse(),
+          questionsNo: questions.filter(question => !question.isDraft).length,
+        };
+      }
     },
 
     getQuestion: async (parent, args, context) => {

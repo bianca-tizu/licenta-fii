@@ -117,13 +117,19 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getAllQuestions?: Maybe<Array<Maybe<Question>>>;
+  getAllQuestions?: Maybe<Questions>;
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
   getCurrentUser?: Maybe<User>;
   getQuestion?: Maybe<Question>;
   hello?: Maybe<Scalars['String']>;
   isUserAlreadyVotedQuestion?: Maybe<Array<Maybe<Votes>>>;
   searchQuestions?: Maybe<Array<Maybe<Question>>>;
+};
+
+
+export type QueryGetAllQuestionsArgs = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
 };
 
 
@@ -163,6 +169,12 @@ export type QuestionInput = {
   isDraft?: Maybe<Scalars['Boolean']>;
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
   title?: Maybe<Scalars['String']>;
+};
+
+export type Questions = {
+  __typename?: 'Questions';
+  questions?: Maybe<Array<Maybe<Question>>>;
+  questionsNo?: Maybe<Scalars['Int']>;
 };
 
 export type RegisterInput = {
@@ -421,19 +433,26 @@ export type IsUserAlreadyVotedQuestionQuery = (
   )>>> }
 );
 
-export type QuestionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type QuestionsQueryVariables = Exact<{
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+}>;
 
 
 export type QuestionsQuery = (
   { __typename?: 'Query' }
-  & { getAllQuestions?: Maybe<Array<Maybe<(
-    { __typename?: 'Question' }
-    & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags' | 'isDraft'>
-    & { author?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, '_id' | 'avatarUrl'>
-    )> }
-  )>>> }
+  & { getAllQuestions?: Maybe<(
+    { __typename?: 'Questions' }
+    & Pick<Questions, 'questionsNo'>
+    & { questions?: Maybe<Array<Maybe<(
+      { __typename?: 'Question' }
+      & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags' | 'isDraft'>
+      & { author?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, '_id' | 'avatarUrl'>
+      )> }
+    )>>> }
+  )> }
 );
 
 export type SearchQuestionsQueryVariables = Exact<{
@@ -1008,18 +1027,21 @@ export type IsUserAlreadyVotedQuestionQueryHookResult = ReturnType<typeof useIsU
 export type IsUserAlreadyVotedQuestionLazyQueryHookResult = ReturnType<typeof useIsUserAlreadyVotedQuestionLazyQuery>;
 export type IsUserAlreadyVotedQuestionQueryResult = Apollo.QueryResult<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>;
 export const QuestionsDocument = gql`
-    query Questions {
-  getAllQuestions {
-    title
-    _id
-    author {
+    query Questions($offset: Int, $limit: Int) {
+  getAllQuestions(offset: $offset, limit: $limit) {
+    questions {
+      title
       _id
-      avatarUrl
+      author {
+        _id
+        avatarUrl
+      }
+      content
+      votes
+      tags
+      isDraft
     }
-    content
-    votes
-    tags
-    isDraft
+    questionsNo
   }
 }
     `;
@@ -1036,6 +1058,8 @@ export const QuestionsDocument = gql`
  * @example
  * const { data, loading, error } = useQuestionsQuery({
  *   variables: {
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
