@@ -13,7 +13,9 @@ const questionResolver = {
       if (!context.user) {
         throw new Error("You're not allowed to get all questions");
       }
-      const questions = await Question.find().populate("author");
+      const questions = await Question.find({ isDraft: false }).populate(
+        "author"
+      );
 
       if (limit) {
         return {
@@ -26,6 +28,16 @@ const questionResolver = {
           questionsNo: questions.filter(question => !question.isDraft).length,
         };
       }
+    },
+
+    getAllDraftsQuestions: async (parent, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to get all questions");
+      }
+
+      return await Question.find({
+        $and: [{ author: context.user._id }, { isDraft: true }],
+      }).populate("author");
     },
 
     getQuestion: async (parent, args, context) => {

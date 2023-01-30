@@ -1,0 +1,14 @@
+query GetAllDraftsQuestions {
+  getAllDraftsQuestions {
+    title
+    _id
+    author {
+      _id
+      avatarUrl
+    }
+    content
+    votes
+    tags
+    isDraft
+  }
+}

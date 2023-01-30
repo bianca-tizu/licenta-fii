@@ -19,20 +19,19 @@ import QuestionDetail from "../../question-detail";
 import ErrorHandler from "../../../ErrorHandler";
 
 import "../../dashboard.css";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 const QuestionCard = props => {
   const {
     removeQuestion,
-    allQuestions,
     allQuestionsLength,
-    loading,
     loadMoreQuestions,
+    isLoadMore,
     selectedQuestion,
     setSelectedQuestion,
     setIsQuestionDialogVisible,
     setSelectedDraft,
   } = React.useContext(QuestionsContext);
+
   const { data } = useGetCurrentUserQuery({ fetchPolicy: "network-only" });
 
   const [deleteQuestionMutation, deleteResult] = useDeleteQuestionMutation();
@@ -150,25 +149,36 @@ const QuestionCard = props => {
               </Card>
             );
           })}
-
-          {props.questions.length < allQuestionsLength ? (
-            <Button
-              type="primary"
-              icon={<DownCircleOutlined />}
-              shape="round"
-              style={{ margin: "10px" }}
-              onClick={() => loadMoreQuestions(props.questions.length)}>
-              Load more
-            </Button>
+          {!props.isDraftVisible ? (
+            <>
+              {props.questions.length < allQuestionsLength ? (
+                <>
+                  {isLoadMore ? (
+                    <Button
+                      type="primary"
+                      icon={<DownCircleOutlined />}
+                      shape="round"
+                      style={{ margin: "10px" }}
+                      onClick={() => loadMoreQuestions(props.questions.length)}>
+                      Load more
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ) : (
+                <p
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                  }}>
+                  🏁 You've reached the end of the page! 🎉🎉🎉
+                </p>
+              )}
+            </>
           ) : (
-            <p
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}>
-              🏁 You've reached the end of the page! 🎉🎉🎉
-            </p>
+            <></>
           )}
         </div>
         <div style={{ width: "50%" }}>

@@ -10,23 +10,18 @@ import QuestionCard from "./question-card";
 import ErrorHandler from "../../ErrorHandler";
 
 const QuestionsList = ({ isDraftVisible }) => {
-  const { allQuestions, loading } = React.useContext(QuestionsContext);
+  const { allQuestions, loading, allDrafts } =
+    React.useContext(QuestionsContext);
   const { data, error } = useGetCurrentUserQuery({
     fetchPolicy: "network-only",
   });
-
-  const drafts = allQuestions.filter(
-    question =>
-      question.isDraft && question.author?._id === data?.getCurrentUser?._id
-  );
-  const questions = allQuestions.filter(question => !question.isDraft);
 
   return (
     <div style={{ height: "calc(100vh - 150px - 48px)" }}>
       {loading ? (
         <div className="spinner-wrapper">
           <Spin
-            spinning={questions.length < 0 || loading}
+            spinning={allQuestions.length < 0 || loading}
             size="large"
             tip="Loading..."></Spin>
         </div>
@@ -34,9 +29,9 @@ const QuestionsList = ({ isDraftVisible }) => {
         <>
           {isDraftVisible ? (
             <>
-              {drafts.length ? (
+              {allDrafts.length ? (
                 <QuestionCard
-                  questions={drafts}
+                  questions={allDrafts}
                   isDraftVisible={isDraftVisible}
                 />
               ) : (
@@ -49,8 +44,8 @@ const QuestionsList = ({ isDraftVisible }) => {
             </>
           ) : (
             <>
-              {questions.length ? (
-                <QuestionCard questions={questions} />
+              {allQuestions.length ? (
+                <QuestionCard questions={allQuestions} />
               ) : (
                 <Result
                   status="500"

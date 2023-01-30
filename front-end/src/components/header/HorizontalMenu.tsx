@@ -24,18 +24,17 @@ const HorizontalMenu = ({
   setIsDraftVisible,
 }: any) => {
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
-  const [isLogoutDialogVisible, setIsLogoutDialogVisible] = React.useState(
-    false
-  );
-  const [createQuestionLoading, setCreateQuestionLoading] = React.useState(
-    false
-  );
+  const [isLogoutDialogVisible, setIsLogoutDialogVisible] =
+    React.useState(false);
+  const [createQuestionLoading, setCreateQuestionLoading] =
+    React.useState(false);
 
   const {
     isQuestionDialogVisible,
     setIsQuestionDialogVisible,
     setSelectedQuestion,
     setSelectedDraft,
+    setSearchResults,
   } = React.useContext(QuestionsContext);
 
   let history = useHistory();
@@ -60,19 +59,23 @@ const HorizontalMenu = ({
           isVisible: !isQuestionDialogVisible.isVisible,
         });
         setIsSearchVisible(false);
+        setSearchResults("");
         break;
       case "drafts":
         setIsDraftVisible(true);
         setIsSearchVisible(false);
         setSelectedQuestion(undefined);
+        setSearchResults("");
         break;
       case "profile":
         setIsUserProfileVisible(!isUserProfileVisible);
         setIsSearchVisible(false);
+        setSearchResults("");
         break;
       case "logout":
         setIsLogoutDialogVisible(!isLogoutDialogVisible);
         setIsSearchVisible(false);
+        setSearchResults("");
         break;
     }
   };
@@ -109,8 +112,7 @@ const HorizontalMenu = ({
       style={{
         display: "flex",
         alignItems: "center",
-      }}
-    >
+      }}>
       <Menu
         onClick={handleClick}
         mode="horizontal"
@@ -137,8 +139,7 @@ const HorizontalMenu = ({
           setIsQuestionDialogVisible({ isVisible: false, action: "add" });
           setSelectedDraft(undefined);
         }}
-        footer={null}
-      >
+        footer={null}>
         <Spin spinning={createQuestionLoading}>
           <AddQuestion
             setIsDraftVisible={setIsDraftVisible}
@@ -153,8 +154,7 @@ const HorizontalMenu = ({
         keyboard
         maskClosable
         onCancel={() => setIsUserProfileVisible(false)}
-        footer={null}
-      >
+        footer={null}>
         <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
       </Modal>
 
@@ -166,8 +166,7 @@ const HorizontalMenu = ({
         onCancel={() => setIsLogoutDialogVisible(false)}
         okText="Yes"
         cancelText="No"
-        onOk={handleLogout}
-      >
+        onOk={handleLogout}>
         Are you sure you want to log out?
       </Modal>
     </div>

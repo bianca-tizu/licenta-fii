@@ -117,6 +117,7 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getAllDraftsQuestions?: Maybe<Array<Maybe<Question>>>;
   getAllQuestions?: Maybe<Questions>;
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
   getCurrentUser?: Maybe<User>;
@@ -387,6 +388,21 @@ export type UpdateUserMutation = (
     { __typename?: 'User' }
     & Pick<User, 'email' | 'username'>
   )> }
+);
+
+export type GetAllDraftsQuestionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllDraftsQuestionsQuery = (
+  { __typename?: 'Query' }
+  & { getAllDraftsQuestions?: Maybe<Array<Maybe<(
+    { __typename?: 'Question' }
+    & Pick<Question, 'title' | '_id' | 'content' | 'votes' | 'tags' | 'isDraft'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'avatarUrl'>
+    )> }
+  )>>> }
 );
 
 export type GetCommentsForQuestionQueryVariables = Exact<{
@@ -908,6 +924,49 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const GetAllDraftsQuestionsDocument = gql`
+    query GetAllDraftsQuestions {
+  getAllDraftsQuestions {
+    title
+    _id
+    author {
+      _id
+      avatarUrl
+    }
+    content
+    votes
+    tags
+    isDraft
+  }
+}
+    `;
+
+/**
+ * __useGetAllDraftsQuestionsQuery__
+ *
+ * To run a query within a React component, call `useGetAllDraftsQuestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllDraftsQuestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllDraftsQuestionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllDraftsQuestionsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllDraftsQuestionsQuery, GetAllDraftsQuestionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllDraftsQuestionsQuery, GetAllDraftsQuestionsQueryVariables>(GetAllDraftsQuestionsDocument, options);
+      }
+export function useGetAllDraftsQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllDraftsQuestionsQuery, GetAllDraftsQuestionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllDraftsQuestionsQuery, GetAllDraftsQuestionsQueryVariables>(GetAllDraftsQuestionsDocument, options);
+        }
+export type GetAllDraftsQuestionsQueryHookResult = ReturnType<typeof useGetAllDraftsQuestionsQuery>;
+export type GetAllDraftsQuestionsLazyQueryHookResult = ReturnType<typeof useGetAllDraftsQuestionsLazyQuery>;
+export type GetAllDraftsQuestionsQueryResult = Apollo.QueryResult<GetAllDraftsQuestionsQuery, GetAllDraftsQuestionsQueryVariables>;
 export const GetCommentsForQuestionDocument = gql`
     query GetCommentsForQuestion($questionId: ID) {
   getCommentsForQuestion(questionId: $questionId) {

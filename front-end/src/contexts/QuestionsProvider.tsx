@@ -1,6 +1,10 @@
 import * as React from "react";
 import { ApolloError } from "@apollo/client";
-import { useQuestionsQuery, Question } from "../generated/graphql";
+import {
+  useQuestionsQuery,
+  Question,
+  useGetAllDraftsQuestionsQuery,
+} from "../generated/graphql";
 
 type questionDialog = {
   isVisible: boolean;
@@ -9,7 +13,9 @@ type questionDialog = {
 
 type QuestionsContextData = {
   allQuestions: Question[];
+  allDrafts: Question[];
   allQuestionsLength: number;
+  isLoadMore: boolean;
   selectedQuestion: Question | undefined;
   setSelectedQuestion: (question: Question | undefined) => void;
   addQuestion: (question: Question) => void;
@@ -26,7 +32,9 @@ type QuestionsContextData = {
 
 const defaultQuestionsContext = {
   allQuestions: [],
+  allDrafts: [],
   allQuestionsLength: 0,
+  isLoadMore: true,
   selectedQuestion: {},
   setSelectedQuestion: (question: Question | undefined) => {},
   addQuestion: (question: Question) => {},
@@ -52,11 +60,16 @@ export const QuestionsProvider: React.FC = ({ children }) => {
     variables: { offset: 0, limit: 5 },
     fetchPolicy: "network-only",
   });
+  const drafts = useGetAllDraftsQuestionsQuery({
+    fetchPolicy: "network-only",
+  });
 
   const [allQuestions, setAllQuestions] = React.useState<Question[]>([]);
+  const [allDrafts, setAllDrafts] = React.useState<Question[]>([]);
   const [allQuestionsLength, setAllQuestionsLength] = React.useState<number>(0);
   const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();
   const [selectedDraft, setSelectedDraft] = React.useState<Question>();
+  const [isLoadMore, setIsLoadMore] = React.useState<boolean>(false);
   const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState({
     isVisible: false,
     action: "",
@@ -67,16 +80,32 @@ export const QuestionsProvider: React.FC = ({ children }) => {
       setAllQuestions(data.getAllQuestions.questions as Question[]);
       setAllQuestionsLength(data.getAllQuestions.questionsNo as number);
     }
-  }, [data]);
+    if (drafts.data?.getAllDraftsQuestions) {
+      setAllDrafts(drafts.data.getAllDraftsQuestions as Question[]);
+    }
+  }, [data, drafts]);
 
   const addQuestion = question => {
     if (question.createQuestion) {
-      setAllQuestions(prev => [question.createQuestion, ...prev]);
-      setSelectedQuestion(
-        question.createQuestion.isDraft ? undefined : question.createQuestion
-      );
-    } else {
-      if (question.updateQuestion) {
+      if (question.createQuestion.isDraft) {
+        setAllDrafts(prev => [question.createQuestion, ...prev]);
+        setSelectedQuestion(undefined);
+      } else {
+        setAllQuestions(prev => [question.createQuestion, ...prev]);
+        setSelectedQuestion(question.createQuestion);
+      }
+    }
+    if (question.updateQuestion) {
+      if (question.updateQuestion.isDraft) {
+        setAllDrafts(prev => {
+          return prev.filter(q => {
+            if (q._id === question.id) {
+              return [question, ...prev];
+            }
+            return prev;
+          });
+        });
+      } else {
         setAllQuestions(prev => {
           return prev.filter(q => {
             if (q._id === question.id) {
@@ -86,8 +115,14 @@ export const QuestionsProvider: React.FC = ({ children }) => {
           });
         });
 
-        setSelectedDraft(undefined);
+        setAllDrafts(prev => {
+          return prev.filter(q => {
+            return q._id !== question.id;
+          });
+        });
       }
+
+      setSelectedDraft(undefined);
     }
   };
 
@@ -107,20 +142,25 @@ export const QuestionsProvider: React.FC = ({ children }) => {
 
   const removeQuestion = (questionId: String) => {
     setAllQuestions(prev => prev.filter(q => q._id !== questionId));
+    setAllDrafts(prev => prev.filter(q => q._id !== questionId));
     setSelectedQuestion(undefined);
   };
 
   const setSearchResults = results => {
     if (results) {
       setAllQuestions(results);
+      setIsLoadMore(false);
     } else {
       setAllQuestions(data?.getAllQuestions?.questions as Question[]);
+      setIsLoadMore(true);
     }
     setSelectedQuestion(undefined);
   };
 
   const questionsData = {
     allQuestions,
+    allDrafts,
+    isLoadMore,
     allQuestionsLength,
     selectedQuestion,
     setSelectedQuestion,

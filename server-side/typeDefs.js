@@ -47,6 +47,7 @@ const typeDefs = `
     getCurrentUser: User
 
     getAllQuestions(limit: Int, offset: Int): Questions
+    getAllDraftsQuestions: [Question]
     getQuestion(id: ID): Question
     searchQuestions(keyword: String): [Question]
 

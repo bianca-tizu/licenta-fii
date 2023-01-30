@@ -41,11 +41,14 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
 
   React.useEffect(() => {
     if (selectedDraft) {
-      const { title, content, tags } = selectedDraft;
-      createQuestionForm.setFieldValue("title", title?.replace("[Draft] ", ""));
-      createQuestionForm.setFieldValue("content", content);
+      createQuestionForm.setFieldValue(
+        "title",
+        selectedDraft.title ? selectedDraft.title?.replace("[Draft] ", "") : ""
+      );
+      createQuestionForm.setFieldValue("content", selectedDraft?.content);
     } else {
-      createQuestionForm.resetFields();
+      createQuestionForm.setFieldValue("title", "");
+      createQuestionForm.setFieldValue("content", "");
     }
   }, [selectedDraft]);
 
@@ -64,9 +67,11 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
     setCreateQuestionLoading(true);
 
     try {
-      const { title, content } = values;
-
-      const response = await createOrUpdateQuestion(title, content, isDraft);
+      const response = await createOrUpdateQuestion(
+        values.title,
+        values.content,
+        isDraft
+      );
 
       if (response.data) {
         addQuestion(response.data as Question);
@@ -140,13 +145,11 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
       form={createQuestionForm}
       name="createQuestion"
       onFinish={handlePostQuestion}
-      onValuesChange={onChange}
-    >
+      onValuesChange={onChange}>
       {/* Title of the question */}
       <Form.Item
         name="title"
-        rules={[{ required: true, message: "Please add a title" }]}
-      >
+        rules={[{ required: true, message: "Please add a title" }]}>
         <Input placeholder="Insert your title" />
       </Form.Item>
 
@@ -157,8 +160,7 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
           const data = editor.getData();
           return data;
         }}
-        rules={[{ required: true, message: "Please add some context" }]}
-      >
+        rules={[{ required: true, message: "Please add some context" }]}>
         <CKEditor
           editor={ClassicEditor}
           config={{
@@ -200,8 +202,7 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
           disabled={
             !createQuestionForm.getFieldValue("title") ||
             !createQuestionForm.getFieldValue("content")
-          }
-        >
+          }>
           Publish
         </Button>
         <Button type="dashed" htmlType="button" onClick={handleDraftQuestion}>
