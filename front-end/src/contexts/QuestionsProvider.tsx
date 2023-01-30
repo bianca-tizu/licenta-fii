@@ -87,43 +87,50 @@ export const QuestionsProvider: React.FC = ({ children }) => {
 
   const addQuestion = question => {
     if (question.createQuestion) {
-      if (question.createQuestion.isDraft) {
-        setAllDrafts(prev => [question.createQuestion, ...prev]);
-        setSelectedQuestion(undefined);
-      } else {
-        setAllQuestions(prev => [question.createQuestion, ...prev]);
-        setSelectedQuestion(question.createQuestion);
-      }
+      createQuestion(question);
     }
     if (question.updateQuestion) {
-      if (question.updateQuestion.isDraft) {
-        setAllDrafts(prev => {
-          return prev.filter(q => {
-            if (q._id === question.id) {
-              return [question, ...prev];
-            }
-            return prev;
-          });
-        });
-      } else {
-        setAllQuestions(prev => {
-          return prev.filter(q => {
-            if (q._id === question.id) {
-              return [question, ...prev];
-            }
-            return prev;
-          });
-        });
-
-        setAllDrafts(prev => {
-          return prev.filter(q => {
-            return q._id !== question.id;
-          });
-        });
-      }
-
-      setSelectedDraft(undefined);
+      updateQuestion(question);
     }
+  };
+
+  const createQuestion = question => {
+    if (question.createQuestion.isDraft) {
+      setAllDrafts(prev => [question.createQuestion, ...prev]);
+      setSelectedQuestion(undefined);
+    } else {
+      setAllQuestions(prev => [question.createQuestion, ...prev]);
+      setSelectedQuestion(question.createQuestion);
+    }
+  };
+
+  const updateQuestion = question => {
+    if (question.updateQuestion.isDraft === false) {
+      setAllQuestions(prev => {
+        return prev.filter(q => {
+          if (q._id === question.id) {
+            return [question, ...prev];
+          }
+          return prev;
+        });
+      });
+
+      setAllDrafts(prev =>
+        prev.filter(q => {
+          return q._id !== question.id;
+        })
+      );
+    } else {
+      setAllDrafts(prev => {
+        return prev.filter(q => {
+          if (q._id === question.id) {
+            return [question, ...prev];
+          }
+          return prev;
+        });
+      });
+    }
+    setSelectedDraft(undefined);
   };
 
   const loadMoreQuestions = async questionsLength => {

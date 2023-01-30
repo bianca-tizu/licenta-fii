@@ -9,6 +9,7 @@ import "./add-question.css";
 
 import {
   Question,
+  QuestionsDocument,
   useCreateQuestionMutation,
   useUpdateQuestionMutation,
 } from "../../../generated/graphql";
@@ -28,7 +29,13 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
   const [error, setError] = React.useState("");
 
   const [createQuestion] = useCreateQuestionMutation();
-  const [updateQuestion] = useUpdateQuestionMutation();
+  const [updateQuestion] = useUpdateQuestionMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: QuestionsDocument }],
+    onCompleted() {
+      window.location.reload(); // temp solution to cause app to re-render
+    },
+  });
 
   const [createQuestionForm] = Form.useForm();
 
