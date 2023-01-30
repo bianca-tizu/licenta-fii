@@ -97,11 +97,10 @@ export const QuestionsProvider: React.FC = ({ children }) => {
   const createQuestion = question => {
     if (question.createQuestion.isDraft) {
       setAllDrafts(prev => [question.createQuestion, ...prev]);
-      setSelectedQuestion(undefined);
     } else {
       setAllQuestions(prev => [question.createQuestion, ...prev]);
-      setSelectedQuestion(question.createQuestion);
     }
+    setSelectedQuestion(undefined);
   };
 
   const updateQuestion = question => {

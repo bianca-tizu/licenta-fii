@@ -28,12 +28,26 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
   const [tags, setTags] = React.useState([]);
   const [error, setError] = React.useState("");
 
-  const [createQuestion] = useCreateQuestionMutation();
+  const [createQuestion] = useCreateQuestionMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: QuestionsDocument }],
+    onCompleted(data) {
+      if (!data.createQuestion?.isDraft) {
+        window.location.reload(); // temp solution to cause app to re-render
+      } else {
+        setIsDraftVisible(true);
+      }
+    },
+  });
   const [updateQuestion] = useUpdateQuestionMutation({
     awaitRefetchQueries: true,
     refetchQueries: [{ query: QuestionsDocument }],
-    onCompleted() {
-      window.location.reload(); // temp solution to cause app to re-render
+    onCompleted(data) {
+      if (!data.updateQuestion?.isDraft) {
+        window.location.reload(); // temp solution to cause app to re-render
+      } else {
+        setIsDraftVisible(true);
+      }
     },
   });
 
@@ -44,6 +58,7 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
     setIsQuestionDialogVisible,
     isQuestionDialogVisible,
     selectedDraft,
+    setSelectedQuestion,
   } = React.useContext(QuestionsContext);
 
   React.useEffect(() => {

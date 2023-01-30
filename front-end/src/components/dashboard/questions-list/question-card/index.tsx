@@ -10,6 +10,7 @@ import React from "react";
 
 import {
   Question,
+  QuestionsDocument,
   useDeleteQuestionMutation,
   useGetCurrentUserQuery,
 } from "../../../../generated/graphql";
@@ -34,7 +35,15 @@ const QuestionCard = props => {
 
   const { data } = useGetCurrentUserQuery({ fetchPolicy: "network-only" });
 
-  const [deleteQuestionMutation, deleteResult] = useDeleteQuestionMutation();
+  const [deleteQuestionMutation, deleteResult] = useDeleteQuestionMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: QuestionsDocument }],
+    onCompleted() {
+      if (!props.isDraftVisible) {
+        window.location.reload(); // temp solution to cause app to re-render
+      }
+    },
+  });
   const [_, setIsDeleteModalOpen] = React.useState(false);
 
   const DeleteIcon = ({ disabled, ...props }) => {

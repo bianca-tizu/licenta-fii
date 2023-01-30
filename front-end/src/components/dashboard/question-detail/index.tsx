@@ -88,7 +88,6 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
     const votes = await countVotesForQuestionMutation({
       variables: { questionId: selectedQuestion._id },
     });
-    console.log(votes);
 
     setIsLiked(!isLiked);
     setCountLikes(votes.data?.countVotesForQuestion as number);
@@ -117,8 +116,7 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
           key={selectedQuestion._id}
           onClick={() => setSelectedQuestion(undefined)}
         />,
-      ]}
-    >
+      ]}>
       <div className="question-header">
         <Meta
           avatar={
@@ -151,8 +149,7 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
             <div
               dangerouslySetInnerHTML={{
                 __html: selectedQuestion.content,
-              }}
-            ></div>
+              }}></div>
           </div>
         )}
       </Paragraph>
@@ -164,8 +161,7 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
         <Form
           name="addComment"
           form={addCommentForm}
-          onFinish={handleAddComment}
-        >
+          onFinish={handleAddComment}>
           <Form.Item name="message" style={{ marginBottom: "0px" }}>
             <TextArea
               placeholder="Write your answer"
@@ -183,8 +179,7 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
               style={{
                 color: "#1890FF",
               }}
-              disabled={isCommentEmpty}
-            >
+              disabled={isCommentEmpty}>
               Add comment
             </Button>
           </Form.Item>
@@ -196,8 +191,7 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
             <Answer
               key={index}
               comment={comment}
-              setAllComments={setAllComments}
-            ></Answer>
+              setAllComments={setAllComments}></Answer>
           );
         })}
       </div>

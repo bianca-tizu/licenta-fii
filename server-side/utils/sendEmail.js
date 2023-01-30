@@ -15,5 +15,7 @@ export const sendEmail = async options => {
     to: options.email, // list of receivers
     subject: options.subject, // Subject line
     text: options.message, // plain text body
+    html: options.htmlMessage,
+    priority: "high",
   });
 };

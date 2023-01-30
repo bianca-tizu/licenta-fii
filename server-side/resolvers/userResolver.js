@@ -145,10 +145,14 @@ const userResolver = {
         });
       }
 
+      const newPass = resetPassToken.slice(0, 10);
+      const hashedPassword = await argon2.hash(newPass);
+
       const userToUpdate = await User.findOneAndUpdate(
         { _id: user._id },
         {
           $set: {
+            password: hashedPassword,
             resetPassToken: resetPassToken,
             resetPassExpire: resetPassExpire,
           },
@@ -160,12 +164,27 @@ const userResolver = {
       try {
         await sendEmail({
           email: updatedUser.email,
-          subject: "Password reset token",
+          subject: "Password reset token - FII Talks",
           message:
             "You are receiving this email because you (or someone else) has requested the reset of a password." +
-            "Follow this link: localhost:8000/reset/" +
-            resetPassToken +
-            " and you'll manage to reset the password.",
+            "Here is your new password: " +
+            newPass +
+            "After you login in the app, please change your password.",
+          htmlMessage: `<!doctype html>
+          <html>
+          <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+        <p>Hi, ${updatedUser.username}!</p>
+          <p>You are receiving this email because you (or someone else) has requested password reset.</p> </br>
+            <p>Here is your new password: <strong>${newPass}</strong>. </p></br>
+            <p>After you login in the app, please change your password.</p>
+            </br>
+            <p>Best regards,</p>
+            <p>Fii Talks Admin Team</p>
+            </body>
+            </html>`,
         });
         return updatedUser;
       } catch (err) {
