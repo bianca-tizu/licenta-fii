@@ -3,3 +3,9 @@
   padding: 5px;
   color: rgba(255, 255, 255, 1) !important;
 }
+
+@media screen and (max-width: 425px) {
+  .menu {
+    flex-direction: column;
+  }
+}

@@ -18,6 +18,13 @@
   width: 150px;
 }
 
+@media screen and (max-width: 425px) {
+  .image-banner {
+    width: 115px;
+    right: 40px;
+  }
+}
+
 .title-banner {
   font-family: monospace;
   color: #fff;

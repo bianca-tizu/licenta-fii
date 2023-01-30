@@ -21,3 +21,23 @@
   align-items: center;
   height: 100%;
 }
+
+.questions-list {
+  margin-left: 105px;
+}
+
+.selected-question{
+  width: 50%;
+}
+
+@media screen  and (max-width: 425px){
+  .questions-wrapper {
+    flex-direction: column-reverse;
+  }
+  .questions-list{
+  margin-left: 50px;
+}
+.selected-question{
+  width: 100%;
+}
+}

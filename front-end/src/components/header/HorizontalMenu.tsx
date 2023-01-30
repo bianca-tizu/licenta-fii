@@ -117,6 +117,7 @@ const HorizontalMenu = ({
         onClick={handleClick}
         mode="horizontal"
         theme="dark"
+        className="menu"
         style={{
           background: "inherit",
           color: "#fff",

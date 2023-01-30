@@ -69,7 +69,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
   const [allQuestionsLength, setAllQuestionsLength] = React.useState<number>(0);
   const [selectedQuestion, setSelectedQuestion] = React.useState<Question>();
   const [selectedDraft, setSelectedDraft] = React.useState<Question>();
-  const [isLoadMore, setIsLoadMore] = React.useState<boolean>(false);
+  const [isLoadMore, setIsLoadMore] = React.useState<boolean>(true);
   const [isQuestionDialogVisible, setIsQuestionDialogVisible] = React.useState({
     isVisible: false,
     action: "",
@@ -78,6 +78,7 @@ export const QuestionsProvider: React.FC = ({ children }) => {
   React.useEffect(() => {
     if (data?.getAllQuestions && !allQuestionsLength) {
       setAllQuestions(data.getAllQuestions.questions as Question[]);
+      setSelectedQuestion((data.getAllQuestions.questions as Question[])[0]);
       setAllQuestionsLength(data.getAllQuestions.questionsNo as number);
     }
     if (drafts.data?.getAllDraftsQuestions) {

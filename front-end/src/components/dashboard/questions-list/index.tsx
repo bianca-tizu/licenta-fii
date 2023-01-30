@@ -36,9 +36,9 @@ const QuestionsList = ({ isDraftVisible }) => {
                 />
               ) : (
                 <Result
-                  status="500"
-                  title="500"
-                  subTitle="Sorry, something went wrong."
+                  status="404"
+                  title="No drafts"
+                  subTitle="You currently have no drafts."
                 />
               )}
             </>
@@ -48,9 +48,9 @@ const QuestionsList = ({ isDraftVisible }) => {
                 <QuestionCard questions={allQuestions} />
               ) : (
                 <Result
-                  status="500"
-                  title="500"
-                  subTitle="Sorry, something went wrong."
+                  status="404"
+                  title="No questions"
+                  subTitle="There are no questions added."
                 />
               )}
             </>

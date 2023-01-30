@@ -124,8 +124,8 @@ const QuestionCard = props => {
   };
   return (
     <>
-      <div className="row">
-        <div className="column" style={{ marginLeft: "105px" }}>
+      <div className="row questions-wrapper">
+        <div className="column questions-list">
           {props.questions.map(question => {
             const disableDeleteButton =
               question.author?._id !== data?.getCurrentUser?._id ||
@@ -190,7 +190,7 @@ const QuestionCard = props => {
             <></>
           )}
         </div>
-        <div style={{ width: "50%" }}>
+        <div className="selected-question">
           {selectedQuestion && !props?.isDraftVisible && (
             <QuestionDetail selectedQuestion={selectedQuestion} />
           )}
