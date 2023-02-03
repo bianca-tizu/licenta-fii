@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Button, Input, notification } from "antd";
+import { Form, Button, Input, notification, Upload, UploadFile } from "antd";
 
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -14,6 +14,8 @@ import {
   useUpdateQuestionMutation,
 } from "../../../generated/graphql";
 import QuestionsContext from "../../../contexts/QuestionsProvider";
+import { createWorker } from "tesseract.js";
+import { UploadOutlined } from "@ant-design/icons";
 
 type CreateQuestionValuesType = {
   title: string;
@@ -27,13 +29,15 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
   });
   const [tags, setTags] = React.useState([]);
   const [error, setError] = React.useState("");
+  const [ocr, setOcr] = React.useState("");
+  const [imageData, setImageData] = React.useState<any>();
 
   const [createQuestion] = useCreateQuestionMutation({
     awaitRefetchQueries: true,
     refetchQueries: [{ query: QuestionsDocument }],
     onCompleted(data) {
       if (!data.createQuestion?.isDraft) {
-        window.location.reload(); // temp solution to cause app to re-render
+        window.location.reload();
       } else {
         setIsDraftVisible(true);
       }
@@ -44,7 +48,7 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
     refetchQueries: [{ query: QuestionsDocument }],
     onCompleted(data) {
       if (!data.updateQuestion?.isDraft) {
-        window.location.reload(); // temp solution to cause app to re-render
+        window.location.reload();
       } else {
         setIsDraftVisible(true);
       }
@@ -53,12 +57,13 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
 
   const [createQuestionForm] = Form.useForm();
 
+  let worker: any;
+
   const {
     addQuestion,
     setIsQuestionDialogVisible,
     isQuestionDialogVisible,
     selectedDraft,
-    setSelectedQuestion,
   } = React.useContext(QuestionsContext);
 
   React.useEffect(() => {
@@ -73,6 +78,48 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
       createQuestionForm.setFieldValue("content", "");
     }
   }, [selectedDraft]);
+
+  const convertImageToText = async () => {
+    setCreateQuestionLoading(true);
+    if (!imageData) {
+      return;
+    }
+
+    worker = createWorker({
+      logger: m => {
+        console.log(m);
+      },
+    });
+
+    await (await worker).load();
+    await (await worker).loadLanguage("eng+ron");
+    await (await worker).initialize("eng+ron");
+    const { data } = await (await worker).recognize(imageData);
+    setOcr(data.text);
+    console.log("Text", data.text, "confidence", data.confidence);
+    await (await worker).terminate();
+  };
+
+  const onImageChange = event => {
+    if (!event.fileList[0]) {
+      return;
+    }
+
+    convertImageToText();
+
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      setImageData(fileReader.result);
+      setCreateQuestionLoading(false);
+    };
+    fileReader.readAsDataURL(event.file.originFileObj);
+  };
+
+  const onImageRemove = event => {
+    event.originFileObj = [];
+    setOcr("");
+    setImageData(undefined);
+  };
 
   const onChange = (_changedValue, allValues) => {
     setQuestionValues(allValues);
@@ -133,7 +180,7 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
     }
   };
 
-  const saveQuestion = () => {
+  const saveQuestion = async () => {
     setIsQuestionDialogVisible({
       ...isQuestionDialogVisible,
       isVisible: false,
@@ -146,9 +193,12 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
       title: "",
       content: "",
     });
+    setOcr("");
+    setImageData(undefined);
+    await (await worker).terminate();
   };
 
-  const errorWhenSavingQuestion = () => {
+  const errorWhenSavingQuestion = async () => {
     setIsQuestionDialogVisible({
       ...isQuestionDialogVisible,
       isVisible: false,
@@ -160,6 +210,9 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
       title: "",
       content: "",
     });
+    setOcr("");
+    setImageData(undefined);
+    await (await worker).terminate();
   };
 
   return (
@@ -196,7 +249,15 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
               "EasyImage",
             ],
           }}
-          data={selectedDraft ? selectedDraft.content : ""}
+          data={
+            selectedDraft && ocr
+              ? selectedDraft?.content + ocr
+              : ocr
+              ? ocr
+              : selectedDraft
+              ? selectedDraft?.content
+              : ""
+          }
           onReady={(editor: any) => {
             editor.ui
               .getEditableElement()
@@ -212,6 +273,15 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
           error="Oh no"
         />
       </Form.Item>
+
+      <Upload
+        onChange={onImageChange}
+        onRemove={onImageRemove}
+        accept=".png, .jpg, .jpeg">
+        <Button icon={<UploadOutlined />} disabled={imageData}>
+          Add text from image
+        </Button>
+      </Upload>
 
       {/* Tags */}
       <Tags tags={tags} setTags={setTags} />
