@@ -279,6 +279,10 @@ const AddQuestion = ({
           }}
           onChange={(event: Event, editor: any) => {
             const data = editor.getData();
+            if (!data) {
+              setImageData(undefined);
+              setOcr("");
+            }
             return data;
           }}
           error="Oh no"
