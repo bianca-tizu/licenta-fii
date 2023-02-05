@@ -1,5 +1,8 @@
 import React from "react";
-import { Form, Button, Input, notification, Upload, UploadFile } from "antd";
+import { Form, Button, Input, notification, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+
+import { createWorker } from "tesseract.js";
 
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -13,24 +16,28 @@ import {
   useCreateQuestionMutation,
   useUpdateQuestionMutation,
 } from "../../../generated/graphql";
+
 import QuestionsContext from "../../../contexts/QuestionsProvider";
-import { createWorker } from "tesseract.js";
-import { UploadOutlined } from "@ant-design/icons";
 
 type CreateQuestionValuesType = {
   title: string;
   content: string;
 };
 
-const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
+const AddQuestion = ({
+  setCreateQuestionLoading,
+  setIsDraftVisible,
+  setOcr,
+  ocr,
+  imageData,
+  setImageData,
+}: any) => {
   const [questionValues, setQuestionValues] = React.useState({
     title: "",
     content: "",
   });
   const [tags, setTags] = React.useState([]);
   const [error, setError] = React.useState("");
-  const [ocr, setOcr] = React.useState("");
-  const [imageData, setImageData] = React.useState<any>();
 
   const [createQuestion] = useCreateQuestionMutation({
     awaitRefetchQueries: true,
@@ -85,19 +92,26 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
       return;
     }
 
-    worker = createWorker({
-      logger: m => {
-        console.log(m);
-      },
-    });
+    try {
+      worker = createWorker({
+        logger: m => {
+          console.log(m);
+        },
+      });
 
-    await (await worker).load();
-    await (await worker).loadLanguage("eng+ron");
-    await (await worker).initialize("eng+ron");
-    const { data } = await (await worker).recognize(imageData);
-    setOcr(data.text);
-    console.log("Text", data.text, "confidence", data.confidence);
-    await (await worker).terminate();
+      await (await worker).load();
+      await (await worker).loadLanguage("eng+ron");
+      await (await worker).initialize("eng+ron");
+
+      const { data } = await (await worker).recognize(imageData);
+      setOcr(data.text);
+
+      await (await worker).terminate();
+      setCreateQuestionLoading(false);
+    } catch (err) {
+      console.log(err);
+      throw new Error("Oops, there was a problem");
+    }
   };
 
   const onImageChange = event => {
@@ -107,18 +121,15 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
 
     convertImageToText();
 
+    onFileReader(event.file);
+  };
+
+  const onFileReader = file => {
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
       setImageData(fileReader.result);
-      setCreateQuestionLoading(false);
     };
-    fileReader.readAsDataURL(event.file.originFileObj);
-  };
-
-  const onImageRemove = event => {
-    event.originFileObj = [];
-    setOcr("");
-    setImageData(undefined);
+    fileReader.readAsDataURL(file.originFileObj);
   };
 
   const onChange = (_changedValue, allValues) => {
@@ -276,8 +287,8 @@ const AddQuestion = ({ setCreateQuestionLoading, setIsDraftVisible }: any) => {
 
       <Upload
         onChange={onImageChange}
-        onRemove={onImageRemove}
-        accept=".png, .jpg, .jpeg">
+        accept=".png, .jpg, .jpeg"
+        showUploadList={false}>
         <Button icon={<UploadOutlined />} disabled={imageData}>
           Add text from image
         </Button>

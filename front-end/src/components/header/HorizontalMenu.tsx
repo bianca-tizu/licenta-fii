@@ -28,6 +28,8 @@ const HorizontalMenu = ({
     React.useState(false);
   const [createQuestionLoading, setCreateQuestionLoading] =
     React.useState(false);
+  const [ocr, setOcr] = React.useState("");
+  const [imageData, setImageData] = React.useState<any>();
 
   const {
     isQuestionDialogVisible,
@@ -139,12 +141,18 @@ const HorizontalMenu = ({
         onCancel={() => {
           setIsQuestionDialogVisible({ isVisible: false, action: "add" });
           setSelectedDraft(undefined);
+          setOcr("");
+          setImageData(null);
         }}
         footer={null}>
         <Spin spinning={createQuestionLoading}>
           <AddQuestion
+            imageData={imageData}
+            setImageData={setImageData}
             setIsDraftVisible={setIsDraftVisible}
             setCreateQuestionLoading={setCreateQuestionLoading}
+            setOcr={setOcr}
+            ocr={ocr}
           />
         </Spin>
       </Modal>
