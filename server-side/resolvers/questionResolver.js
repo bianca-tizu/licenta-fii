@@ -55,7 +55,7 @@ const questionResolver = {
         $or: [
           { title: { $regex: args.keyword.toLowerCase() } },
           { content: { $regex: args.keyword.toLowerCase() } },
-          { tags: { $regex: args.keyword.toLowerCase() } },
+          { tags: { $regex: args.keyword.toLowerCase(), $options: "i" } },
         ],
       };
 
