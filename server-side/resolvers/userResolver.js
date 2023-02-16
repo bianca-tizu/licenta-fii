@@ -182,7 +182,7 @@ const userResolver = {
             <p>After you login in the app, please change your password.</p>
             </br>
             <p>Best regards,</p>
-            <p>Fii Talks Admin Team</p>
+            <p>Fii Networking Admin Team</p>
             </body>
             </html>`,
         });

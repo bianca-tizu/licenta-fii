@@ -42,7 +42,7 @@ const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
   return (
     <>
       <div className="banner-container">
-        <p className="title-banner">FII TALKS</p>
+        <p className="title-banner">FII NETWORKING</p>
         <HorizontalMenu
           isSearchVisible={isSearchVisible}
           setIsSearchVisible={setIsSearchVisible}
