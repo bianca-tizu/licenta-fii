@@ -164,7 +164,7 @@ const userResolver = {
       try {
         await sendEmail({
           email: updatedUser.email,
-          subject: "Password reset token - FII Talks",
+          subject: "Password reset token - FII Networking",
           message:
             "You are receiving this email because you (or someone else) has requested the reset of a password." +
             "Here is your new password: " +
