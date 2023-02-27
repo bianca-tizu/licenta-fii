@@ -9,6 +9,7 @@ import {
   SearchOutlined,
   QuestionOutlined,
   LogoutOutlined,
+  GiftOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
@@ -17,6 +18,7 @@ import UserProfile from "./user-profile";
 
 import "./menu.css";
 import QuestionsContext from "../../contexts/QuestionsProvider";
+import RewardSystem from "./reward-system";
 
 const HorizontalMenu = ({
   isSearchVisible,
@@ -24,6 +26,8 @@ const HorizontalMenu = ({
   setIsDraftVisible,
 }: any) => {
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
+  const [isRewardSystemVisible, setIsRewardSystemVisible] =
+    React.useState(false);
   const [isLogoutDialogVisible, setIsLogoutDialogVisible] =
     React.useState(false);
   const [createQuestionLoading, setCreateQuestionLoading] =
@@ -74,6 +78,12 @@ const HorizontalMenu = ({
         setIsSearchVisible(false);
         setSearchResults("");
         break;
+      case "rewards":
+        setIsRewardSystemVisible(!isRewardSystemVisible);
+        setIsSearchVisible(false);
+        setSelectedQuestion(undefined);
+        setSearchResults("");
+        break;
       case "logout":
         setIsLogoutDialogVisible(!isLogoutDialogVisible);
         setIsSearchVisible(false);
@@ -102,6 +112,10 @@ const HorizontalMenu = ({
     {
       key: "profile",
       icon: <UserOutlined className="menu-item-icon" />,
+    },
+    {
+      key: "rewards",
+      icon: <GiftOutlined className="menu-item-icon" />,
     },
     {
       key: "logout",
@@ -165,6 +179,16 @@ const HorizontalMenu = ({
         onCancel={() => setIsUserProfileVisible(false)}
         footer={null}>
         <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
+      </Modal>
+
+      {/* Reward system */}
+      <Modal
+        open={isRewardSystemVisible}
+        keyboard
+        maskClosable
+        onCancel={() => setIsRewardSystemVisible(false)}
+        footer={null}>
+        <RewardSystem />
       </Modal>
 
       {/* Logout dialog */}
