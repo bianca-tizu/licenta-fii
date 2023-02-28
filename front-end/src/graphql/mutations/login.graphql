@@ -1,5 +1,8 @@
 mutation Login($email: String!, $password: String!) {
   loginUser(user: { email: $email, password: $password }) {
     token
+    user {
+      joinedRewardSystem
+    }
   }
 }

@@ -16,6 +16,7 @@ import Auth from "./components/auth/Auth";
 import GuardedRoute from "./components/GuardedRoute";
 
 import "./App.css";
+import { CookiesProvider } from "react-cookie";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:8000/graphql",
@@ -70,16 +71,18 @@ const client = new ApolloClient({
 const App = () => {
   return (
     <ApolloProvider client={client}>
-      <Router>
-        <div className="App">
-          <Switch>
-            <Route exact path="/">
-              <Auth />
-            </Route>
-            <GuardedRoute component={Dashboard} exact path="/dashboard" />
-          </Switch>
-        </div>
-      </Router>
+      <CookiesProvider>
+        <Router>
+          <div className="App">
+            <Switch>
+              <Route exact path="/">
+                <Auth />
+              </Route>
+              <GuardedRoute component={Dashboard} exact path="/dashboard" />
+            </Switch>
+          </div>
+        </Router>
+      </CookiesProvider>
     </ApolloProvider>
   );
 };

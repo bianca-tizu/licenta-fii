@@ -63,6 +63,7 @@ const userResolver = {
         studentId: studentId,
         username: username,
         avatarUrl: avatarUrl,
+        joinedRewardSystem: false,
       });
       await newUser.save();
 
@@ -225,6 +226,22 @@ const userResolver = {
       }
       await User.deleteOne(userToBeRemoved);
       return userToBeRemoved._id;
+    },
+
+    joinRewardSystem: async (_parent, _args, { user }) => {
+      if (!user) {
+        throw new GraphQLError("No user with this email.", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      return User.findByIdAndUpdate(
+        { _id: user._id },
+        { $set: { joinedRewardSystem: true } },
+        { upsert: true, new: true }
+      );
     },
   },
 };

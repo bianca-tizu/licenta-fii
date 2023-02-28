@@ -1,4 +1,4 @@
-.ant-modal-body{
+.reward-system-modal .ant-modal-body {
     background-color: #89C4F9;
 }
 
@@ -26,4 +26,10 @@
 
 .ant-image-img {
     height: 25vh;
+}
+
+.ant-btn-dashed{
+    background: #89C4F9 !important;
+    color: #fff !important;
+    font-weight: bolder !important;
 }

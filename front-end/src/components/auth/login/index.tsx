@@ -10,6 +10,7 @@ import {
 } from "../../../generated/graphql";
 
 import "./login.css";
+import { useCookies } from "react-cookie";
 
 const { Title, Text } = Typography;
 
@@ -18,9 +19,9 @@ const LoginForm = () => {
   const [forgetPassword] = useForgetPasswordMutation();
   const [error, setError] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [showResetPasswordModal, setShowResetPasswordModal] = React.useState(
-    false
-  );
+  const [showResetPasswordModal, setShowResetPasswordModal] =
+    React.useState(false);
+  const [cookies, setCookie] = useCookies();
 
   const history = useHistory();
 
@@ -35,6 +36,9 @@ const LoginForm = () => {
       if (response.data?.loginUser.token) {
         sessionStorage.setItem("token", response.data.loginUser.token);
         history.push("/dashboard");
+        if (response.data.loginUser.user.joinedRewardSystem) {
+          setCookie("reward", response.data.loginUser.user.joinedRewardSystem);
+        }
       } else if (!response.data?.loginUser.token) {
         history.push("/");
       }
@@ -72,8 +76,7 @@ const LoginForm = () => {
       name="normal_login"
       className="login-form"
       initialValues={{ remember: true }}
-      onFinish={onFinish}
-    >
+      onFinish={onFinish}>
       <Title level={3}>Welcome back!</Title>
       {error && (
         <p style={{ color: "red" }}>
@@ -85,8 +88,7 @@ const LoginForm = () => {
       <Form.Item
         name="email"
         className="username-input"
-        rules={[{ required: true, message: "Please enter an email" }]}
-      >
+        rules={[{ required: true, message: "Please enter an email" }]}>
         <Input
           prefix={<UserOutlined className="site-form-item-icon" />}
           placeholder="E-mail address"
@@ -94,8 +96,7 @@ const LoginForm = () => {
       </Form.Item>
       <Form.Item
         name="password"
-        rules={[{ required: true, message: "Please enter a password" }]}
-      >
+        rules={[{ required: true, message: "Please enter a password" }]}>
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
           type="password"
@@ -106,8 +107,7 @@ const LoginForm = () => {
       <Form.Item noStyle>
         <Text
           style={{ color: "#1890FF", cursor: "pointer" }}
-          onClick={() => setShowResetPasswordModal(!showResetPasswordModal)}
-        >
+          onClick={() => setShowResetPasswordModal(!showResetPasswordModal)}>
           Forgot password
         </Text>
         <Modal
@@ -119,8 +119,7 @@ const LoginForm = () => {
           onCancel={() => {
             setShowResetPasswordModal(false);
             setEmail("");
-          }}
-        >
+          }}>
           <Input
             placeholder="E-mail"
             value={email}

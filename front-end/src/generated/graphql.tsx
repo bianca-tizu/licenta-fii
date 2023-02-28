@@ -53,6 +53,7 @@ export type Mutation = {
   deleteQuestion?: Maybe<Scalars['ID']>;
   editComment?: Maybe<Comment>;
   forgetPassword: User;
+  joinRewardSystem?: Maybe<User>;
   loginUser: AuthPayload;
   registerUser: AuthPayload;
   removeUser?: Maybe<Scalars['ID']>;
@@ -197,6 +198,7 @@ export type User = {
   _id?: Maybe<Scalars['ID']>;
   avatarUrl?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  joinedRewardSystem?: Maybe<Scalars['Boolean']>;
   password?: Maybe<Scalars['String']>;
   questions?: Maybe<Array<Maybe<Question>>>;
   resetPassExpire?: Maybe<Scalars['String']>;
@@ -328,6 +330,10 @@ export type LoginMutation = (
   & { loginUser: (
     { __typename?: 'AuthPayload' }
     & Pick<AuthPayload, 'token'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'joinedRewardSystem'>
+    ) }
   ) }
 );
 
@@ -387,6 +393,17 @@ export type UpdateUserMutation = (
   & { updateUser?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'email' | 'username'>
+  )> }
+);
+
+export type JoinRewardSystemMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type JoinRewardSystemMutation = (
+  { __typename?: 'Mutation' }
+  & { joinRewardSystem?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, '_id' | 'joinedRewardSystem'>
   )> }
 );
 
@@ -745,6 +762,9 @@ export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   loginUser(user: {email: $email, password: $password}) {
     token
+    user {
+      joinedRewardSystem
+    }
   }
 }
     `;
@@ -924,6 +944,39 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const JoinRewardSystemDocument = gql`
+    mutation JoinRewardSystem {
+  joinRewardSystem {
+    _id
+    joinedRewardSystem
+  }
+}
+    `;
+export type JoinRewardSystemMutationFn = Apollo.MutationFunction<JoinRewardSystemMutation, JoinRewardSystemMutationVariables>;
+
+/**
+ * __useJoinRewardSystemMutation__
+ *
+ * To run a mutation, you first call `useJoinRewardSystemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinRewardSystemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinRewardSystemMutation, { data, loading, error }] = useJoinRewardSystemMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJoinRewardSystemMutation(baseOptions?: Apollo.MutationHookOptions<JoinRewardSystemMutation, JoinRewardSystemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<JoinRewardSystemMutation, JoinRewardSystemMutationVariables>(JoinRewardSystemDocument, options);
+      }
+export type JoinRewardSystemMutationHookResult = ReturnType<typeof useJoinRewardSystemMutation>;
+export type JoinRewardSystemMutationResult = Apollo.MutationResult<JoinRewardSystemMutation>;
+export type JoinRewardSystemMutationOptions = Apollo.BaseMutationOptions<JoinRewardSystemMutation, JoinRewardSystemMutationVariables>;
 export const GetAllDraftsQuestionsDocument = gql`
     query GetAllDraftsQuestions {
   getAllDraftsQuestions {

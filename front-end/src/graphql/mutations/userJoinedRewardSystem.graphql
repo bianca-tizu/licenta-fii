@@ -1,0 +1,6 @@
+mutation JoinRewardSystem {
+  joinRewardSystem {
+    _id
+    joinedRewardSystem
+  }
+}

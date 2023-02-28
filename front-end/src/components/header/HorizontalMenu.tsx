@@ -183,8 +183,10 @@ const HorizontalMenu = ({
 
       {/* Reward system */}
       <Modal
+        className="reward-system-modal"
         open={isRewardSystemVisible}
         keyboard
+        centered
         maskClosable
         onCancel={() => setIsRewardSystemVisible(false)}
         footer={null}>

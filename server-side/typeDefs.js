@@ -6,6 +6,7 @@ const typeDefs = `
     password: String
     studentId: String
     avatarUrl: String
+    joinedRewardSystem: Boolean
     questions: [Question]
     resetPassToken: String
     resetPassExpire: String
@@ -119,6 +120,8 @@ const typeDefs = `
     editComment(comment: EditCommentInput): Comment
 
     countVotesForQuestion(questionId: ID): Int
+
+    joinRewardSystem: User
   }
 `;
 

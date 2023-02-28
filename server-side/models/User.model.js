@@ -33,6 +33,9 @@ export const UserSchema = new mongoose.Schema({
   resetPassExpire: {
     type: String,
   },
+  joinedRewardSystem: {
+    type: Boolean,
+  },
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
 });
 
