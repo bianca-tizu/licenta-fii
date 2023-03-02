@@ -4,12 +4,14 @@ import PageBanner from "./pageBanner/PageBanner";
 import { QuestionsProvider } from "../../contexts/QuestionsProvider";
 
 import "./dashboard.css";
+import Tour from "../header/reward-system/tour/tour";
 
 const Dashboard = () => {
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
 
   return (
     <QuestionsProvider>
+      <Tour />
       <PageBanner
         isDraftVisible={isDraftVisible}
         setIsDraftVisible={setIsDraftVisible}
