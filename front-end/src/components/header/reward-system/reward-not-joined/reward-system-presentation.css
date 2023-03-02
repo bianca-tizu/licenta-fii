@@ -1,0 +1,30 @@
+.rewards-container {
+    height: 50vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 10px;
+}
+
+.description {
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.title{
+    color: #fff;
+}
+
+.ant-image-img {
+    height: 25vh;
+}
+
+.ant-btn-dashed{
+    background: #89C4F9 !important;
+    color: #fff !important;
+    font-weight: bolder !important;
+}

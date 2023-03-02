@@ -153,8 +153,8 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
           </div>
         )}
       </Paragraph>
-      {selectedQuestion.tags?.map(tag => (
-        <Tag key={selectedQuestion._id}>{tag}</Tag>
+      {selectedQuestion.tags?.map((tag, index) => (
+        <Tag key={index}>{tag}</Tag>
       ))}
       <Divider />
       <div>

@@ -3,18 +3,21 @@ import { useState } from "react";
 
 import HelloRewardGIF from "../../../../assets/hello_reward.gif";
 import { useJoinRewardSystemMutation } from "../../../../generated/graphql";
+import "./reward-system-presentation.css";
 
-const RewardSystemPresentation = ({ setCookie }) => {
+const RewardSystemPresentation = ({ setCookie, setOpenTutorial }) => {
   const [joinedRewardSystem] = useJoinRewardSystemMutation();
   const [errors, setErrors] = useState(false);
 
   const handleJoinReward = async () => {
-    const response = await joinedRewardSystem();
-    if (response.data?.joinRewardSystem?.joinedRewardSystem) {
-      setCookie("reward", response.data?.joinRewardSystem?.joinedRewardSystem);
-    } else if (response.errors) {
-      setErrors(true);
-    }
+    //deschide tutorialul si dupa completarea lui, accepta conditiile
+    setOpenTutorial(true);
+    // const response = await joinedRewardSystem();
+    // if (response.data?.joinRewardSystem?.joinedRewardSystem) {
+    //   setCookie("reward", response.data?.joinRewardSystem?.joinedRewardSystem);
+    // } else if (response.errors) {
+    //   setErrors(true);
+    // }
   };
 
   return (
