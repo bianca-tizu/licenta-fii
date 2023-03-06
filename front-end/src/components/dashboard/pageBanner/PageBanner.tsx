@@ -15,7 +15,7 @@ import "./page-banner.css";
 
 const { Search } = Input;
 
-const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
+const PageBanner = ({ isDraftVisible, setIsDraftVisible, setOpenTutorial }) => {
   const [isSearchVisible, setIsSearchVisible] = React.useState(false);
   const { setSearchResults } = React.useContext(QuestionsContext);
 
@@ -48,6 +48,7 @@ const PageBanner = ({ isDraftVisible, setIsDraftVisible }) => {
           setIsSearchVisible={setIsSearchVisible}
           isDraftVisible={isDraftVisible}
           setIsDraftVisible={setIsDraftVisible}
+          setOpenTutorial={setOpenTutorial}
         />
         <PageBannerSVG className="image-banner" />
       </div>

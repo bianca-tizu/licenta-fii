@@ -8,13 +8,15 @@ import Tour from "../header/reward-system/tour/tour";
 
 const Dashboard = () => {
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
+  const [openTutorial, setOpenTutorial] = React.useState(false);
 
   return (
     <QuestionsProvider>
-      <Tour />
+      {openTutorial && <Tour />}
       <PageBanner
         isDraftVisible={isDraftVisible}
         setIsDraftVisible={setIsDraftVisible}
+        setOpenTutorial={setOpenTutorial}
       />
       <div className="question-list">
         <QuestionsList isDraftVisible={isDraftVisible} />

@@ -4,9 +4,8 @@ import "./reward-system.css";
 import { useCookies } from "react-cookie";
 import RewardSystemPresentation from "./reward-not-joined/reward-system-presentation";
 
-const RewardSystem = () => {
+const RewardSystem = ({ setOpenTutorial, setIsRewardSystemVisible }) => {
   const [cookies, setCookie] = useCookies(["reward"]);
-  const [openTutorial, setOpenTutorial] = useState(false);
 
   return (
     <>
@@ -14,7 +13,7 @@ const RewardSystem = () => {
         <>{/* pagina in care isi vede progresul */}</>
       ) : (
         <RewardSystemPresentation
-          setCookie={setCookie}
+          setIsRewardSystemVisible={setIsRewardSystemVisible}
           setOpenTutorial={setOpenTutorial}
         />
       )}

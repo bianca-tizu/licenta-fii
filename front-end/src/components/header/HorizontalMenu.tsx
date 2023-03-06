@@ -24,6 +24,7 @@ const HorizontalMenu = ({
   isSearchVisible,
   setIsSearchVisible,
   setIsDraftVisible,
+  setOpenTutorial,
 }: any) => {
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
   const [isRewardSystemVisible, setIsRewardSystemVisible] =
@@ -190,7 +191,10 @@ const HorizontalMenu = ({
         maskClosable
         onCancel={() => setIsRewardSystemVisible(false)}
         footer={null}>
-        <RewardSystem />
+        <RewardSystem
+          setOpenTutorial={setOpenTutorial}
+          setIsRewardSystemVisible={setIsRewardSystemVisible}
+        />
       </Modal>
 
       {/* Logout dialog */}

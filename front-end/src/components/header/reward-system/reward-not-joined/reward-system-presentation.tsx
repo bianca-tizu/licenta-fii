@@ -5,19 +5,14 @@ import HelloRewardGIF from "../../../../assets/hello_reward.gif";
 import { useJoinRewardSystemMutation } from "../../../../generated/graphql";
 import "./reward-system-presentation.css";
 
-const RewardSystemPresentation = ({ setCookie, setOpenTutorial }) => {
-  const [joinedRewardSystem] = useJoinRewardSystemMutation();
-  const [errors, setErrors] = useState(false);
-
+const RewardSystemPresentation = ({
+  setOpenTutorial,
+  setIsRewardSystemVisible,
+}) => {
   const handleJoinReward = async () => {
     //deschide tutorialul si dupa completarea lui, accepta conditiile
     setOpenTutorial(true);
-    // const response = await joinedRewardSystem();
-    // if (response.data?.joinRewardSystem?.joinedRewardSystem) {
-    //   setCookie("reward", response.data?.joinRewardSystem?.joinedRewardSystem);
-    // } else if (response.errors) {
-    //   setErrors(true);
-    // }
+    setIsRewardSystemVisible(false);
   };
 
   return (
@@ -47,7 +42,6 @@ const RewardSystemPresentation = ({ setCookie, setOpenTutorial }) => {
           Let's go!
         </Button>
       </div>
-      {errors && <Alert message="Error Text" type="error" />}
     </>
   );
 };
