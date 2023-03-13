@@ -1,5 +1,5 @@
 import { Alert } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useCookies } from "react-cookie";
 import JoyRide from "react-joyride";
 import { useJoinRewardSystemMutation } from "../../../../generated/graphql";
@@ -22,11 +22,15 @@ const TOUR_STEPS = [
     target: ".question-list",
     content: "This points will unlock new challenges and new features for you.",
   },
+  {
+    target: ".anticon-gift",
+    content: "Now check your first challenge here.",
+  },
 ];
 
 const Tour = () => {
   const [joinedRewardSystem] = useJoinRewardSystemMutation();
-  const [_, setCookie] = useCookies(["reward"]);
+  const [, setCookie] = useCookies(["reward"]);
   const [errors, setErrors] = useState(false);
 
   const handleJoyrideCallback = async data => {
@@ -53,7 +57,7 @@ const Tour = () => {
         showProgress={true}
         showSkipButton={true}
       />
-      {errors && <Alert message="Error Text" type="error" />}
+      {errors && <Alert message="Oops, there was a problem." type="error" />}
     </>
   );
 };

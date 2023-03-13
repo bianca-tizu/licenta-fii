@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import { useCookies } from "react-cookie";
+
+import RewardSystemPresentation from "./reward-not-joined/reward-system-presentation";
+import ProgressView from "./progress-view/progress-view";
 
 import "./reward-system.css";
-import { useCookies } from "react-cookie";
-import RewardSystemPresentation from "./reward-not-joined/reward-system-presentation";
 
 const RewardSystem = ({ setOpenTutorial, setIsRewardSystemVisible }) => {
-  const [cookies, setCookie] = useCookies(["reward"]);
+  const [cookies] = useCookies(["reward"]);
 
   return (
     <>
       {cookies.reward ? (
-        <>{/* pagina in care isi vede progresul */}</>
+        <ProgressView />
       ) : (
         <RewardSystemPresentation
           setIsRewardSystemVisible={setIsRewardSystemVisible}

@@ -1,8 +1,6 @@
-import { Alert, Button, Image } from "antd";
-import { useState } from "react";
+import { Button, Image } from "antd";
 
 import HelloRewardGIF from "../../../../assets/hello_reward.gif";
-import { useJoinRewardSystemMutation } from "../../../../generated/graphql";
 import "./reward-system-presentation.css";
 
 const RewardSystemPresentation = ({
@@ -10,7 +8,6 @@ const RewardSystemPresentation = ({
   setIsRewardSystemVisible,
 }) => {
   const handleJoinReward = async () => {
-    //deschide tutorialul si dupa completarea lui, accepta conditiile
     setOpenTutorial(true);
     setIsRewardSystemVisible(false);
   };
@@ -31,6 +28,10 @@ const RewardSystemPresentation = ({
             The Challenging Side is nothing without your involvement. The more
             questions you ask, the more questions you answer, the more
             challenges you will unlock.
+          </p>
+          <p>
+            Challenges are events in which players unlock features by completing
+            a group of related tasks.
           </p>
           <p>So you want to join the dark side?</p>
         </div>

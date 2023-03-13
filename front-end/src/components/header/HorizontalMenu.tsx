@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-import { Badge, Menu, Spin } from "antd";
+import { Menu, Spin } from "antd";
 import {
   PlusCircleOutlined,
   UserOutlined,
@@ -13,12 +13,14 @@ import {
 } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
 
+import QuestionsContext from "../../contexts/QuestionsProvider";
+
 import AddQuestion from "./add-question";
 import UserProfile from "./user-profile";
+import RewardSystem from "./reward-system";
 
 import "./menu.css";
-import QuestionsContext from "../../contexts/QuestionsProvider";
-import RewardSystem from "./reward-system";
+import { useCookies } from "react-cookie";
 
 const HorizontalMenu = ({
   isSearchVisible,
@@ -45,7 +47,7 @@ const HorizontalMenu = ({
   } = React.useContext(QuestionsContext);
 
   let history = useHistory();
-
+  const [cookies] = useCookies(["reward"]);
   const handleLogout = async () => {
     await sessionStorage.removeItem("token");
     history.push("/");
@@ -184,7 +186,7 @@ const HorizontalMenu = ({
 
       {/* Reward system */}
       <Modal
-        className="reward-system-modal"
+        className={cookies.reward ? "" : "reward-system-modal"}
         open={isRewardSystemVisible}
         keyboard
         centered

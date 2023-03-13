@@ -1,5 +1,5 @@
 .rewards-container {
-    height: 50vh;
+    height: 55vh;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -27,4 +27,12 @@
     background: #89C4F9 !important;
     color: #fff !important;
     font-weight: bolder !important;
+}
+
+@media screen and (max-height: 1024px) {
+    .rewards-container {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
 }
