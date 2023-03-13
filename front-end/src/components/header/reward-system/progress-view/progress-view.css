@@ -1,3 +1,13 @@
-.progress-title{
+.title{
     color: #000;
+}
+
+.progress-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.ant-progress-line{
+    margin-left: 10px;
 }
