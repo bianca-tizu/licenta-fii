@@ -64,6 +64,8 @@ const userResolver = {
         username: username,
         avatarUrl: avatarUrl,
         joinedRewardSystem: false,
+        challenges: [],
+        questions: [],
       });
       await newUser.save();
 

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import { Question } from "./Question.model.js";
+import { Challenges } from "./Challenges.model.js";
 
 export const UserSchema = new mongoose.Schema({
   email: {
@@ -36,6 +37,19 @@ export const UserSchema = new mongoose.Schema({
   joinedRewardSystem: {
     type: Boolean,
   },
+  level: {
+    type: Number,
+    default: 1,
+  },
+  life: {
+    type: Number,
+    default: 100,
+  },
+  experience: {
+    type: Number,
+    default: 0,
+  },
+  challenges: [{ type: mongoose.Schema.Types.ObjectId, ref: "Challenges" }],
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
 });
 

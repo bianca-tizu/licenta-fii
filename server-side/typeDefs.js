@@ -7,6 +7,10 @@ const typeDefs = `
     studentId: String
     avatarUrl: String
     joinedRewardSystem: Boolean
+    level: Int
+    life: Int
+    experience: Int
+    challenges: [Challenges]
     questions: [Question]
     resetPassToken: String
     resetPassExpire: String
@@ -38,6 +42,15 @@ const typeDefs = `
     voted: Boolean
   }
 
+  type Challenges {
+    _id: ID
+    title: String
+    content: String
+    status: String
+    isSystemChallenge: Boolean
+    author: User
+  }
+
   type Questions {
     questions: [Question]
     questionsNo: Int
@@ -55,6 +68,8 @@ const typeDefs = `
     getCommentsForQuestion(questionId: ID): [Comment]
 
     isUserAlreadyVotedQuestion(questionId: ID): [Votes]
+
+    getSystemChallenges: [Challenges]
   }
 
   input QuestionInput {
@@ -99,6 +114,12 @@ const typeDefs = `
     password: String
   }
 
+  input ChallengeInput{
+    title: String!
+    isSystemChallenge: Boolean!
+    content: String
+  }
+
   type AuthPayload {
     token: String!
     user: User!
@@ -122,6 +143,8 @@ const typeDefs = `
     countVotesForQuestion(questionId: ID): Int
 
     joinRewardSystem: User
+
+    createChallenge(challenge: ChallengeInput): Challenges
   }
 `;
 
