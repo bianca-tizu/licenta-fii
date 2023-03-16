@@ -1,4 +1,5 @@
 import { Challenges } from "../models/Challenges.model.js";
+import { SystemChallenges } from "../models/SystemChallenges.model.js";
 import { User } from "../models/User.model.js";
 
 const challengesResolver = {
@@ -17,6 +18,29 @@ const challengesResolver = {
     },
   },
   Mutation: {
+    mapSystemChallengesToUser: async (parent, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to see these challenges.");
+      }
+
+      const systemChallenges = await SystemChallenges.find();
+      const challengesCounter = await Challenges.count();
+      const mappedChallenges = systemChallenges.map(challenge => {
+        return {
+          ...challenge,
+          title: challenge.title,
+          author: context.user._id,
+          createdAt: new Date(Date.now()),
+        };
+      });
+      if (challengesCounter === 0) {
+        await Challenges.insertMany(mappedChallenges, {
+          upsert: true,
+        });
+      }
+
+      console.log(systemChallenges);
+    },
     createChallenge: async (parent, args, context) => {
       const { title, content, isSystemChallenge } = args.challenge;
       if (!context.user) {
@@ -34,7 +58,7 @@ const challengesResolver = {
 
       const result = await challenge.save();
       const author = await User.findById(context.user._id);
-      console.log(author);
+
       if (!author) {
         throw new Error("User not found");
       }

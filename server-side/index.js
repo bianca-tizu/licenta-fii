@@ -17,6 +17,7 @@ import typeDefs from "./typeDefs.js";
 import resolvers from "./resolvers/index.js";
 import errorController from "./errorController.js";
 import { getUser } from "./utils/getUser.js";
+import { seedSystemChallenges } from "./utils/seedChallenges.js";
 
 dotenv.config();
 export const pubsub = new PubSub();
@@ -52,6 +53,7 @@ const startServer = async () => {
   await mongoose.connect(
     `mongodb+srv://${process.env.mongoUserName}:${process.env.mongoUserPassword}@fii-talks-cluster.f2y4g.mongodb.net/${process.env.mongoDatabase}?retryWrites=true&w=majority`
   );
+  await seedSystemChallenges();
 
   app.use(
     "/graphql",

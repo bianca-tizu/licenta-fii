@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { User } from "./User.model.js";
 
-export const ChallengesSchema = new mongoose.Schema({
+export const SystemChallengesSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -16,16 +16,14 @@ export const ChallengesSchema = new mongoose.Schema({
   },
   isSystemChallenge: {
     type: Boolean,
-    required: true,
-    default: false,
-  },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    default: true,
   },
   createdAt: {
     type: Date,
   },
 });
 
-export const Challenges = mongoose.model("Challenges", ChallengesSchema);
+export const SystemChallenges = mongoose.model(
+  "SystemChallenges",
+  SystemChallengesSchema
+);

@@ -145,6 +145,7 @@ const typeDefs = `
     joinRewardSystem: User
 
     createChallenge(challenge: ChallengeInput): Challenges
+    mapSystemChallengesToUser: Challenges
   }
 `;
 
