@@ -11,36 +11,38 @@ const challengesResolver = {
 
       const challenges = await Challenges.find({
         isSystemChallenge: true,
-        status: { $ne: "finished" },
       });
 
       return challenges;
     },
-  },
-  Mutation: {
     mapSystemChallengesToUser: async (parent, args, context) => {
       if (!context.user) {
         throw new Error("You're not allowed to see these challenges.");
       }
 
-      const systemChallenges = await SystemChallenges.find();
+      const systemDefinedChallenges = await SystemChallenges.find();
       const challengesCounter = await Challenges.count();
-      const mappedChallenges = systemChallenges.map(challenge => {
+      const mappedChallenges = systemDefinedChallenges.map(challenge => {
         return {
           ...challenge,
+          systemChallengeId: challenge._id,
+          isSystemChallenge: true,
           title: challenge.title,
           author: context.user._id,
           createdAt: new Date(Date.now()),
         };
       });
+
       if (challengesCounter === 0) {
         await Challenges.insertMany(mappedChallenges, {
           upsert: true,
         });
       }
 
-      console.log(systemChallenges);
+      return await Challenges.find();
     },
+  },
+  Mutation: {
     createChallenge: async (parent, args, context) => {
       const { title, content, isSystemChallenge } = args.challenge;
       if (!context.user) {

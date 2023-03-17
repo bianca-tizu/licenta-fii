@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 import { User } from "./User.model.js";
+import { SystemChallenges } from "./SystemChallenges.model.js";
 
 export const ChallengesSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   title: {
     type: String,
     required: true,
@@ -18,6 +22,10 @@ export const ChallengesSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false,
+  },
+  systemChallengeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SystemChallenges",
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,

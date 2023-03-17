@@ -1,0 +1,8 @@
+query GetSystemChallenges {
+  getSystemChallenges {
+    _id
+    title
+    content
+    status
+  }
+}

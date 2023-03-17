@@ -1,0 +1,8 @@
+query MapSystemChallengesToUse {
+  mapSystemChallengesToUser {
+    _id
+    title
+    content
+    status
+  }
+}

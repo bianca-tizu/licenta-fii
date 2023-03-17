@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { HeartTwoTone, StarTwoTone } from "@ant-design/icons";
 import { Progress } from "antd";
@@ -6,11 +6,30 @@ import Card from "antd/lib/card/Card";
 
 import "./progress-view.css";
 import { Button } from "antd/lib/radio";
+import {
+  useGetSystemChallengesLazyQuery,
+  useGetSystemChallengesQuery,
+} from "../../../../generated/graphql";
 
 const ProgressView = () => {
   const [lifePercent, setLifePercent] = useState(100);
   const [experiencePercent, setExperiencePercent] = useState(0);
   const [showNewChallengeForm, setShowNewChallengeForm] = useState(false);
+  const [systemChallenges, setSystemChallenges] = useState();
+
+  const [getSystemChallenges] = useGetSystemChallengesLazyQuery({
+    onCompleted(data) {
+      setSystemChallenges(data.getSystemChallenges as any);
+    },
+  });
+
+  useEffect(() => {
+    getSystemChallenges();
+    // if (data?.getSystemChallenges) {
+    //   setSystemChallenges(data.getSystemChallenges as any);
+    // }
+    console.log(systemChallenges);
+  }, []);
 
   const onNewChallenge = () => {
     setShowNewChallengeForm(!showNewChallengeForm);

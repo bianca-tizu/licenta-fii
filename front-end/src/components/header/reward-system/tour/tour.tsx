@@ -2,7 +2,10 @@ import { Alert } from "antd";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import JoyRide from "react-joyride";
-import { useJoinRewardSystemMutation } from "../../../../generated/graphql";
+import {
+  useJoinRewardSystemMutation,
+  useMapSystemChallengesToUseLazyQuery,
+} from "../../../../generated/graphql";
 
 // Tour steps
 const TOUR_STEPS = [
@@ -30,6 +33,7 @@ const TOUR_STEPS = [
 
 const Tour = () => {
   const [joinedRewardSystem] = useJoinRewardSystemMutation();
+  const [mapSystemChallenges] = useMapSystemChallengesToUseLazyQuery();
   const [, setCookie] = useCookies(["reward"]);
   const [errors, setErrors] = useState(false);
 
@@ -41,6 +45,7 @@ const Tour = () => {
           "reward",
           response.data?.joinRewardSystem?.joinedRewardSystem
         );
+        mapSystemChallenges();
       } else if (response.errors) {
         setErrors(true);
       }

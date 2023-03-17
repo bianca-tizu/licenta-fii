@@ -70,6 +70,8 @@ const typeDefs = `
     isUserAlreadyVotedQuestion(questionId: ID): [Votes]
 
     getSystemChallenges: [Challenges]
+    mapSystemChallengesToUser: [Challenges]
+
   }
 
   input QuestionInput {
@@ -145,7 +147,6 @@ const typeDefs = `
     joinRewardSystem: User
 
     createChallenge(challenge: ChallengeInput): Challenges
-    mapSystemChallengesToUser: Challenges
   }
 `;
 

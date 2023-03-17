@@ -20,6 +20,22 @@ export type AuthPayload = {
   user: User;
 };
 
+export type ChallengeInput = {
+  content?: Maybe<Scalars['String']>;
+  isSystemChallenge: Scalars['Boolean'];
+  title: Scalars['String'];
+};
+
+export type Challenges = {
+  __typename?: 'Challenges';
+  _id?: Maybe<Scalars['ID']>;
+  author?: Maybe<User>;
+  content?: Maybe<Scalars['String']>;
+  isSystemChallenge?: Maybe<Scalars['Boolean']>;
+  status?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+};
+
 export type Comment = {
   __typename?: 'Comment';
   _id?: Maybe<Scalars['ID']>;
@@ -47,6 +63,7 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   countVotesForQuestion?: Maybe<Scalars['Int']>;
+  createChallenge?: Maybe<Challenges>;
   createComment?: Maybe<Comment>;
   createQuestion?: Maybe<Question>;
   deleteComment?: Maybe<Scalars['ID']>;
@@ -64,6 +81,11 @@ export type Mutation = {
 
 export type MutationCountVotesForQuestionArgs = {
   questionId?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationCreateChallengeArgs = {
+  challenge?: Maybe<ChallengeInput>;
 };
 
 
@@ -123,8 +145,10 @@ export type Query = {
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
   getCurrentUser?: Maybe<User>;
   getQuestion?: Maybe<Question>;
+  getSystemChallenges?: Maybe<Array<Maybe<Challenges>>>;
   hello?: Maybe<Scalars['String']>;
   isUserAlreadyVotedQuestion?: Maybe<Array<Maybe<Votes>>>;
+  mapSystemChallengesToUser?: Maybe<Array<Maybe<Challenges>>>;
   searchQuestions?: Maybe<Array<Maybe<Question>>>;
 };
 
@@ -197,8 +221,12 @@ export type User = {
   __typename?: 'User';
   _id?: Maybe<Scalars['ID']>;
   avatarUrl?: Maybe<Scalars['String']>;
+  challenges?: Maybe<Array<Maybe<Challenges>>>;
   email?: Maybe<Scalars['String']>;
+  experience?: Maybe<Scalars['Int']>;
   joinedRewardSystem?: Maybe<Scalars['Boolean']>;
+  level?: Maybe<Scalars['Int']>;
+  life?: Maybe<Scalars['Int']>;
   password?: Maybe<Scalars['String']>;
   questions?: Maybe<Array<Maybe<Question>>>;
   resetPassExpire?: Maybe<Scalars['String']>;
@@ -453,6 +481,17 @@ export type GetCurrentUserQuery = (
   )> }
 );
 
+export type GetSystemChallengesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSystemChallengesQuery = (
+  { __typename?: 'Query' }
+  & { getSystemChallenges?: Maybe<Array<Maybe<(
+    { __typename?: 'Challenges' }
+    & Pick<Challenges, '_id' | 'title' | 'content' | 'status'>
+  )>>> }
+);
+
 export type IsUserAlreadyVotedQuestionQueryVariables = Exact<{
   questionId?: Maybe<Scalars['ID']>;
 }>;
@@ -463,6 +502,17 @@ export type IsUserAlreadyVotedQuestionQuery = (
   & { isUserAlreadyVotedQuestion?: Maybe<Array<Maybe<(
     { __typename?: 'Votes' }
     & Pick<Votes, 'voted'>
+  )>>> }
+);
+
+export type MapSystemChallengesToUseQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MapSystemChallengesToUseQuery = (
+  { __typename?: 'Query' }
+  & { mapSystemChallengesToUser?: Maybe<Array<Maybe<(
+    { __typename?: 'Challenges' }
+    & Pick<Challenges, '_id' | 'title' | 'content' | 'status'>
   )>>> }
 );
 
@@ -1103,6 +1153,43 @@ export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
 export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
 export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
+export const GetSystemChallengesDocument = gql`
+    query GetSystemChallenges {
+  getSystemChallenges {
+    _id
+    title
+    content
+    status
+  }
+}
+    `;
+
+/**
+ * __useGetSystemChallengesQuery__
+ *
+ * To run a query within a React component, call `useGetSystemChallengesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSystemChallengesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSystemChallengesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSystemChallengesQuery(baseOptions?: Apollo.QueryHookOptions<GetSystemChallengesQuery, GetSystemChallengesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSystemChallengesQuery, GetSystemChallengesQueryVariables>(GetSystemChallengesDocument, options);
+      }
+export function useGetSystemChallengesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSystemChallengesQuery, GetSystemChallengesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSystemChallengesQuery, GetSystemChallengesQueryVariables>(GetSystemChallengesDocument, options);
+        }
+export type GetSystemChallengesQueryHookResult = ReturnType<typeof useGetSystemChallengesQuery>;
+export type GetSystemChallengesLazyQueryHookResult = ReturnType<typeof useGetSystemChallengesLazyQuery>;
+export type GetSystemChallengesQueryResult = Apollo.QueryResult<GetSystemChallengesQuery, GetSystemChallengesQueryVariables>;
 export const IsUserAlreadyVotedQuestionDocument = gql`
     query IsUserAlreadyVotedQuestion($questionId: ID) {
   isUserAlreadyVotedQuestion(questionId: $questionId) {
@@ -1138,6 +1225,43 @@ export function useIsUserAlreadyVotedQuestionLazyQuery(baseOptions?: Apollo.Lazy
 export type IsUserAlreadyVotedQuestionQueryHookResult = ReturnType<typeof useIsUserAlreadyVotedQuestionQuery>;
 export type IsUserAlreadyVotedQuestionLazyQueryHookResult = ReturnType<typeof useIsUserAlreadyVotedQuestionLazyQuery>;
 export type IsUserAlreadyVotedQuestionQueryResult = Apollo.QueryResult<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>;
+export const MapSystemChallengesToUseDocument = gql`
+    query MapSystemChallengesToUse {
+  mapSystemChallengesToUser {
+    _id
+    title
+    content
+    status
+  }
+}
+    `;
+
+/**
+ * __useMapSystemChallengesToUseQuery__
+ *
+ * To run a query within a React component, call `useMapSystemChallengesToUseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMapSystemChallengesToUseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMapSystemChallengesToUseQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMapSystemChallengesToUseQuery(baseOptions?: Apollo.QueryHookOptions<MapSystemChallengesToUseQuery, MapSystemChallengesToUseQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MapSystemChallengesToUseQuery, MapSystemChallengesToUseQueryVariables>(MapSystemChallengesToUseDocument, options);
+      }
+export function useMapSystemChallengesToUseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MapSystemChallengesToUseQuery, MapSystemChallengesToUseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MapSystemChallengesToUseQuery, MapSystemChallengesToUseQueryVariables>(MapSystemChallengesToUseDocument, options);
+        }
+export type MapSystemChallengesToUseQueryHookResult = ReturnType<typeof useMapSystemChallengesToUseQuery>;
+export type MapSystemChallengesToUseLazyQueryHookResult = ReturnType<typeof useMapSystemChallengesToUseLazyQuery>;
+export type MapSystemChallengesToUseQueryResult = Apollo.QueryResult<MapSystemChallengesToUseQuery, MapSystemChallengesToUseQueryVariables>;
 export const QuestionsDocument = gql`
     query Questions($offset: Int, $limit: Int) {
   getAllQuestions(offset: $offset, limit: $limit) {

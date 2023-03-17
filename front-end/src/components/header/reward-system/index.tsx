@@ -4,6 +4,7 @@ import RewardSystemPresentation from "./reward-not-joined/reward-system-presenta
 import ProgressView from "./progress-view/progress-view";
 
 import "./reward-system.css";
+import { useState } from "react";
 
 const RewardSystem = ({ setOpenTutorial, setIsRewardSystemVisible }) => {
   const [cookies] = useCookies(["reward"]);

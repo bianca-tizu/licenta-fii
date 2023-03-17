@@ -29,6 +29,11 @@
             "title": "7 days checkin",
             "content": "Check the app for 7 days in a row.",
             "isSystemChallenge": true
+        },
+        {
+            "title": "First answer liked",
+            "content": "You liked your first answer",
+            "isSystemChallenge": true
         }
     ]
 }

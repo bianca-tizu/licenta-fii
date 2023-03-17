@@ -27,6 +27,7 @@ const HorizontalMenu = ({
   setIsSearchVisible,
   setIsDraftVisible,
   setOpenTutorial,
+  systemChallenges,
 }: any) => {
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
   const [isRewardSystemVisible, setIsRewardSystemVisible] =
