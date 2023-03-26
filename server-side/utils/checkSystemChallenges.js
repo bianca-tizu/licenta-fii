@@ -12,19 +12,29 @@ const updateUserLevel = async userId => {
     user.experience += 20;
     if (user.experience >= 50) {
       user.level++;
+      user.life = 100;
       user.experience = user.experience - 50;
     }
   } else if (user.level >= 5 && user.level <= 10 && user.experience < 75) {
     user.experience += 15;
     if (user.experience >= 75) {
       user.level++;
+      user.life = 100;
       user.experience = user.experience - 75;
     }
   } else if (user.level > 10 && user.level < 25 && user.experience < 100) {
     user.experience += 10;
     if (user.experience >= 100) {
       user.level++;
+      user.life = 100;
       user.experience = user.experience - 100;
+    }
+  } else if (user.level >= 25 && user.experience < 150) {
+    user.experience += 5;
+    if (user.experience >= 150) {
+      user.level++;
+      user.life = 100;
+      user.experience = user.experience - 150;
     }
   }
 
