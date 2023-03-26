@@ -1,37 +1,30 @@
 {
     "challenges": [
         {
-            "title": "First question",
             "content": "Create your first question.",
             "isSystemChallenge": true
         },
         {
-            "title": "First answer",
             "content": "Answer to a question.",
             "isSystemChallenge": true
         },
         {
-            "title": "Daily check-ins",
             "content": "Check in the app every day.",
             "isSystemChallenge": true
         },
         {
-            "title": "5 questions marathon",
             "content": "Add 5 consecutive questions.",
             "isSystemChallenge": true
         },
         {
-            "title": "5 questions marathon",
-            "content": "Add 5 consecutive questions.",
+            "content": "Add 5 consecutive answers.",
             "isSystemChallenge": true
         },
         {
-            "title": "7 days checkin",
             "content": "Check the app for 7 days in a row.",
             "isSystemChallenge": true
         },
         {
-            "title": "First answer liked",
             "content": "You liked your first answer",
             "isSystemChallenge": true
         }

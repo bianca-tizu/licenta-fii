@@ -1,6 +1,9 @@
 import { Challenges } from "../models/Challenges.model.js";
+import { Question } from "../models/Question.model.js";
 import { SystemChallenges } from "../models/SystemChallenges.model.js";
 import { User } from "../models/User.model.js";
+
+import { checkSystemChallenges } from "../utils/checkSystemChallenges.js";
 
 const challengesResolver = {
   Query: {
@@ -21,13 +24,14 @@ const challengesResolver = {
       }
 
       const systemDefinedChallenges = await SystemChallenges.find();
-      const challengesCounter = await Challenges.count();
+      const challengesCounter = await Challenges.find({
+        author: context.user._id,
+      }).count();
       const mappedChallenges = systemDefinedChallenges.map(challenge => {
         return {
-          ...challenge,
+          content: challenge.content,
           systemChallengeId: challenge._id,
           isSystemChallenge: true,
-          title: challenge.title,
           author: context.user._id,
           createdAt: new Date(Date.now()),
         };
@@ -37,20 +41,51 @@ const challengesResolver = {
         await Challenges.insertMany(mappedChallenges, {
           upsert: true,
         });
+        const currentUserChallenges = await Challenges.find({
+          author: context.user._id,
+        });
+
+        const currentUser = await User.findByIdAndUpdate(
+          context.user._id,
+          {
+            $push: {
+              challenges: currentUserChallenges.filter(
+                challenge => challenge._id
+              ),
+            },
+          },
+          { new: true, useFindAndModify: false }
+        );
+
+        checkSystemChallenges(
+          currentUser.questions,
+          currentUser.challenges,
+          context.user._id
+        );
       }
 
-      return await Challenges.find();
+      return await Challenges.find({ author: context.user._id });
+    },
+    checkAndUpdateSystemChallengesStatus: async (parent, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to see these challenges.");
+      }
+
+      const currentUser = await User.findById(context.user._id).populate(
+        "challenges"
+      );
+      const { questions, challenges } = currentUser;
+      checkSystemChallenges(questions, challenges, context.user._id);
     },
   },
   Mutation: {
     createChallenge: async (parent, args, context) => {
-      const { title, content, isSystemChallenge } = args.challenge;
+      const { content, isSystemChallenge } = args.challenge;
       if (!context.user) {
         throw new Error("You're not allowed to create a challenge.");
       }
 
       const challenge = new Challenges({
-        title: title,
         content: content ?? "",
         status: "started",
         isSystemChallenge: isSystemChallenge,
@@ -66,7 +101,7 @@ const challengesResolver = {
       }
       await User.findByIdAndUpdate(
         context.user._id,
-        { $push: { rewardSystem: { challenges: result._id } } },
+        { $push: { challenges: result._id } },
         { new: true, useFindAndModify: false }
       );
 

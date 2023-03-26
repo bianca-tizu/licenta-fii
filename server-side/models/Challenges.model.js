@@ -6,12 +6,9 @@ export const ChallengesSchema = new mongoose.Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
   },
-  title: {
-    type: String,
-    required: true,
-  },
   content: {
     type: String,
+    required: true,
   },
   status: {
     type: String,

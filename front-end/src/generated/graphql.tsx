@@ -488,7 +488,7 @@ export type GetSystemChallengesQuery = (
   { __typename?: 'Query' }
   & { getSystemChallenges?: Maybe<Array<Maybe<(
     { __typename?: 'Challenges' }
-    & Pick<Challenges, '_id' | 'title' | 'content' | 'status'>
+    & Pick<Challenges, '_id' | 'content' | 'status'>
   )>>> }
 );
 
@@ -512,7 +512,7 @@ export type MapSystemChallengesToUseQuery = (
   { __typename?: 'Query' }
   & { mapSystemChallengesToUser?: Maybe<Array<Maybe<(
     { __typename?: 'Challenges' }
-    & Pick<Challenges, '_id' | 'title' | 'content' | 'status'>
+    & Pick<Challenges, '_id' | 'content' | 'status'>
   )>>> }
 );
 
@@ -1157,7 +1157,6 @@ export const GetSystemChallengesDocument = gql`
     query GetSystemChallenges {
   getSystemChallenges {
     _id
-    title
     content
     status
   }
@@ -1229,7 +1228,6 @@ export const MapSystemChallengesToUseDocument = gql`
     query MapSystemChallengesToUse {
   mapSystemChallengesToUser {
     _id
-    title
     content
     status
   }

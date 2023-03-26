@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { HeartTwoTone, StarTwoTone } from "@ant-design/icons";
-import { Progress } from "antd";
+import { Badge, Progress } from "antd";
 import Card from "antd/lib/card/Card";
 
 import "./progress-view.css";
 import { Button } from "antd/lib/radio";
 import {
-  useGetSystemChallengesLazyQuery,
+  Challenges,
   useGetSystemChallengesQuery,
 } from "../../../../generated/graphql";
 
@@ -15,21 +15,18 @@ const ProgressView = () => {
   const [lifePercent, setLifePercent] = useState(100);
   const [experiencePercent, setExperiencePercent] = useState(0);
   const [showNewChallengeForm, setShowNewChallengeForm] = useState(false);
-  const [systemChallenges, setSystemChallenges] = useState();
+  const [systemChallenges, setSystemChallenges] = useState<Challenges[]>([]);
 
-  const [getSystemChallenges] = useGetSystemChallengesLazyQuery({
-    onCompleted(data) {
-      setSystemChallenges(data.getSystemChallenges as any);
-    },
+  const { data, error } = useGetSystemChallengesQuery({
+    fetchPolicy: "network-only",
   });
 
   useEffect(() => {
-    getSystemChallenges();
-    // if (data?.getSystemChallenges) {
-    //   setSystemChallenges(data.getSystemChallenges as any);
-    // }
-    console.log(systemChallenges);
-  }, []);
+    if (data?.getSystemChallenges) {
+      setSystemChallenges(data.getSystemChallenges as Challenges[]);
+    }
+    console.log(data);
+  }, [data?.getSystemChallenges]);
 
   const onNewChallenge = () => {
     setShowNewChallengeForm(!showNewChallengeForm);
@@ -67,9 +64,26 @@ const ProgressView = () => {
           <>new challenge form</>
         ) : (
           <>
-            <p>Challenge 1</p>
-            <p>Challenge 2</p>
-            <p>Challenge 3</p>
+            {systemChallenges
+              .filter(
+                challenge =>
+                  challenge.status === "started" ||
+                  challenge.status === "progress"
+              )
+              .map((systemChallenge, index) => {
+                const { _id, status, content } = systemChallenge;
+                if (index < 4) {
+                  return (
+                    <p key={_id}>
+                      <Badge
+                        style={{ paddingRight: "10px" }}
+                        status={status === "started" ? "default" : "processing"}
+                      />
+                      {content}
+                    </p>
+                  );
+                }
+              })}
           </>
         )}
       </Card>

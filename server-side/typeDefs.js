@@ -71,6 +71,7 @@ const typeDefs = `
 
     getSystemChallenges: [Challenges]
     mapSystemChallengesToUser: [Challenges]
+    checkAndUpdateSystemChallengesStatus: Challenges
 
   }
 
