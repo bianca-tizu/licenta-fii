@@ -1,6 +1,7 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Form, Input, Image, Button, notification, Modal } from "antd";
 import React from "react";
+import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
 import {
   useGetCurrentUserQuery,
@@ -16,17 +17,21 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
   });
   const [updateUser] = useUpdateUserMutation();
   const [removeUserMutation] = useRemoveUserMutation();
+
   const [updateUserForm] = Form.useForm();
+
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
-
   const [currentUser, setCurrentUser] = React.useState({
     _id: data?.getCurrentUser?._id || "",
     username: data?.getCurrentUser?.username || "",
     avatarUrl: data?.getCurrentUser?.avatarUrl || "",
     studentId: data?.getCurrentUser?.studentId || "",
     email: data?.getCurrentUser?.email || "",
+    level: data?.getCurrentUser?.level || "",
   });
+
+  const [cookies] = useCookies(["reward"]);
 
   React.useEffect(() => {
     refetch();
@@ -37,6 +42,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
       avatarUrl: data?.getCurrentUser?.avatarUrl || "",
       studentId: data?.getCurrentUser?.studentId || "",
       email: data?.getCurrentUser?.email || "",
+      level: data?.getCurrentUser?.level || "",
     });
   }, [data?.getCurrentUser]);
 
@@ -104,8 +110,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
         setDisableSubmit(
           updateUserForm.getFieldsError().some(({ errors }) => errors.length)
         );
-      }}
-    >
+      }}>
       <div className="user-details">
         <div className="user-icon">
           <Avatar
@@ -120,6 +125,13 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
           <div className="fixed-details">
             <p className="username">{currentUser.username}</p>
             <p className="student-id">{currentUser.studentId}</p>
+            {cookies.reward && (
+              <div className="reward-level">
+                <p style={{ fontWeight: "bold", marginRight: "1px" }}>
+                  LEVEL {currentUser.level}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -134,8 +146,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
               return Promise.reject(new Error("Username already in use"));
             },
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="Display name" />
       </Form.Item>
       <Form.Item
@@ -153,8 +164,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
               return Promise.reject(new Error("Email already in use"));
             },
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="E-mail" />
       </Form.Item>
       <hr />
@@ -177,8 +187,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
               );
             },
           },
-        ]}
-      >
+        ]}>
         <Input.Password placeholder="New password" />
       </Form.Item>
       <Form.Item
@@ -196,8 +205,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
               );
             },
           }),
-        ]}
-      >
+        ]}>
         <Input.Password placeholder="Re-enter new password" />
       </Form.Item>
 
@@ -206,8 +214,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-        }}
-      >
+        }}>
         <Button
           type="text"
           style={{ paddingLeft: 0, color: "#139CE4" }}
@@ -221,8 +228,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
               cancelText: "No",
               width: 450,
             });
-          }}
-        >
+          }}>
           Delete account
         </Button>
 

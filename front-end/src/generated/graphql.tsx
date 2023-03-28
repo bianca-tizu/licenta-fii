@@ -140,6 +140,7 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  checkAndUpdateSystemChallengesStatus?: Maybe<Challenges>;
   getAllDraftsQuestions?: Maybe<Array<Maybe<Question>>>;
   getAllQuestions?: Maybe<Questions>;
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
@@ -477,7 +478,7 @@ export type GetCurrentUserQuery = (
   { __typename?: 'Query' }
   & { getCurrentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, '_id' | 'avatarUrl' | 'username' | 'studentId' | 'email'>
+    & Pick<User, '_id' | 'avatarUrl' | 'username' | 'studentId' | 'email' | 'life' | 'level' | 'experience'>
   )> }
 );
 
@@ -1123,6 +1124,9 @@ export const GetCurrentUserDocument = gql`
     username
     studentId
     email
+    life
+    level
+    experience
   }
 }
     `;
