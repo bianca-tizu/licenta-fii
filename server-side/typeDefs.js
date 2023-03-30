@@ -14,6 +14,8 @@ const typeDefs = `
     questions: [Question]
     resetPassToken: String
     resetPassExpire: String
+    loginTimestamp: String!
+    challengesChecked: Boolean!
   }
 
   type Question {
@@ -47,6 +49,7 @@ const typeDefs = `
     title: String
     content: String
     status: String
+    lookupId: Int
     isSystemChallenge: Boolean
     author: User
   }

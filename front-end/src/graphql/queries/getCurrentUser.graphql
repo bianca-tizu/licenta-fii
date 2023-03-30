@@ -8,5 +8,6 @@ query GetCurrentUser {
     life
     level
     experience
+    challengesChecked
   }
 }

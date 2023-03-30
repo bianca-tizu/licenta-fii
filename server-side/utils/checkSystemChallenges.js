@@ -57,10 +57,13 @@ const updateUserLevel = async userId => {
   );
 };
 
+const getCurrentChallenge = (challenges, id) => {
+  return challenges.filter(challenge => challenge.lookupId === id)[0];
+};
+
 const checkAndUpdateFirstQuestion = async (challenges, userId) => {
-  const challengeToUpdate = challenges.filter(challenge =>
-    challenge.content.includes("first question")
-  )[0];
+  const challengeToUpdate = getCurrentChallenge(challenges, 1);
+
   const updatedChallenge = await Challenges.updateOne(
     {
       author: userId,
@@ -76,9 +79,7 @@ const checkAndUpdateFirstQuestion = async (challenges, userId) => {
 
 const checkAndUpdateFirstAnswer = async (challenges, userId) => {
   const comments = await Comment.find({ author: userId });
-  const challengeToUpdate = challenges.filter(challenge =>
-    challenge.content.includes("Answer to a question")
-  )[0];
+  const challengeToUpdate = getCurrentChallenge(challenges, 2);
 
   if (comments.length) {
     const updatedChallenge = await Challenges.updateOne(
@@ -97,9 +98,7 @@ const checkAndUpdateFirstAnswer = async (challenges, userId) => {
 
 const checkAndUpdateFiveAnswers = async (challenges, userId) => {
   const comments = await Comment.find({ author: userId });
-  const challengeToUpdate = challenges.filter(challenge =>
-    challenge.content.includes("5 consecutive answers")
-  )[0];
+  const challengeToUpdate = getCurrentChallenge(challenges, 5);
 
   if (comments.length >= 5) {
     const updatedChallenge = await Challenges.updateOne(
@@ -125,9 +124,7 @@ const checkAndUpdateFiveAnswers = async (challenges, userId) => {
 };
 
 const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
-  const challengeToUpdate = challenges.filter(challenge =>
-    challenge.content.includes("5 consecutive questions")
-  )[0];
+  const challengeToUpdate = getCurrentChallenge(challenges, 4);
   if (questions.length >= 5) {
     const updatedChallenge = await Challenges.updateOne(
       {
@@ -152,12 +149,77 @@ const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
   }
 };
 
-export const checkSystemChallenges = (questions, challenges, userId) => {
-  if (questions.length > 0) {
-    checkAndUpdateFirstQuestion(challenges, userId);
-    checkAndUpdateFiveQuestions(questions, challenges, userId);
-  }
+const dailyAppCheckin = async (challenges, userId) => {
+  const today = new Date();
+  const yesterday = new Date(today.getDate());
 
-  checkAndUpdateFirstAnswer(challenges, userId);
-  checkAndUpdateFiveAnswers(challenges, userId);
+  const { loginTimestamp, challengesChecked } = await User.findById(userId);
+  const yesterdayLoginTimestamp = new Date(loginTimestamp.getDate());
+
+  const challengeToUpdate = getCurrentChallenge(challenges, 3);
+
+  yesterday.setDate(today.getDate() - 1);
+  yesterdayLoginTimestamp.setDate(loginTimestamp.getDate() - 1);
+
+  if (
+    yesterdayLoginTimestamp.getDate() === yesterday.getDate() &&
+    !challengesChecked
+  ) {
+    const updatedChallenge = await Challenges.updateOne(
+      {
+        author: userId,
+        systemChallengeId: challengeToUpdate.systemChallengeId,
+        status: { $ne: "finished" },
+      },
+      { $set: { status: "finished" } }
+    );
+    if (updatedChallenge.matchedCount) {
+      updateUserLevel(userId);
+    }
+  }
+};
+
+const addPersonalChallenge = async (challenges, userId) => {
+  const challengeToUpdate = getCurrentChallenge(challenges, 6);
+  const personalChallenges = challenges.filter(
+    challenge => !challenge.isSystemChallenge
+  );
+
+  if (personalChallenges.length) {
+    const updatedChallenge = await Challenges.updateOne(
+      {
+        author: userId,
+        systemChallengeId: challengeToUpdate.systemChallengeId,
+        status: { $ne: "finished" },
+      },
+      { $set: { status: "progress" } }
+    );
+    if (updatedChallenge.matchedCount) {
+      updateUserLevel(userId);
+    }
+  }
+};
+
+export const checkSystemChallenges = async (questions, challenges, userId) => {
+  try {
+    if (questions.length > 0) {
+      checkAndUpdateFirstQuestion(challenges, userId);
+      checkAndUpdateFiveQuestions(questions, challenges, userId);
+    }
+
+    checkAndUpdateFirstAnswer(challenges, userId);
+    checkAndUpdateFiveAnswers(challenges, userId);
+    dailyAppCheckin(challenges, userId);
+    addPersonalChallenge(challenges, userId);
+
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      { $set: { challengesChecked: true } }
+    );
+  } catch (err) {
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      { $set: { challengesChecked: false } }
+    );
+  }
 };

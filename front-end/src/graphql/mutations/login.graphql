@@ -3,6 +3,8 @@ mutation Login($email: String!, $password: String!) {
     token
     user {
       joinedRewardSystem
+      loginTimestamp
+      challengesChecked
     }
   }
 }

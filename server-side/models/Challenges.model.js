@@ -20,6 +20,9 @@ export const ChallengesSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  lookupId: {
+    type: Number,
+  },
   systemChallengeId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "SystemChallenges",

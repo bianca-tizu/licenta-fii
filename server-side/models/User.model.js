@@ -49,6 +49,14 @@ export const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  loginTimestamp: {
+    type: Date,
+    default: new Date(),
+  },
+  challengesChecked: {
+    type: Boolean,
+    default: false,
+  },
   challenges: [{ type: mongoose.Schema.Types.ObjectId, ref: "Challenges" }],
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
 });

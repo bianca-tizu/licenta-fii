@@ -81,7 +81,7 @@ const userResolver = {
     loginUser: async (_parent, args) => {
       const { email, password } = args.user;
 
-      const user = await User.findOne({ email: email });
+      let user = await User.findOne({ email: email });
 
       if (!user) {
         throw new GraphQLError("No user with this email.", {
@@ -105,6 +105,11 @@ const userResolver = {
         { _id: user._id, email: user.emailAddress },
         process.env.JWT_SECRET,
         { expiresIn: 14400 }
+      );
+
+      user = await User.findOneAndUpdate(
+        { _id: user._id },
+        { $set: { loginTimestamp: new Date() } }
       );
 
       return { token, user };

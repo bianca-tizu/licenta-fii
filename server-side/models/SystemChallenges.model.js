@@ -11,6 +11,9 @@ export const SystemChallengesSchema = new mongoose.Schema({
     enum: ["started", "progress", "finished"],
     default: "started",
   },
+  lookupId: {
+    type: Number,
+  },
   isSystemChallenge: {
     type: Boolean,
     default: true,

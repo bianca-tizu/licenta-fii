@@ -4,7 +4,7 @@ import { useCookies } from "react-cookie";
 import JoyRide from "react-joyride";
 import {
   useJoinRewardSystemMutation,
-  useMapSystemChallengesToUseLazyQuery,
+  useMapSystemChallengesToUserLazyQuery,
 } from "../../../../generated/graphql";
 
 // Tour steps
@@ -33,7 +33,7 @@ const TOUR_STEPS = [
 
 const Tour = () => {
   const [joinedRewardSystem] = useJoinRewardSystemMutation();
-  const [mapSystemChallenges] = useMapSystemChallengesToUseLazyQuery();
+  const [mapSystemChallenges] = useMapSystemChallengesToUserLazyQuery();
   const [, setCookie] = useCookies(["reward"]);
   const [errors, setErrors] = useState(false);
 

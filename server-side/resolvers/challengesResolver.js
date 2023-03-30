@@ -29,6 +29,7 @@ const challengesResolver = {
       }).count();
       const mappedChallenges = systemDefinedChallenges.map(challenge => {
         return {
+          lookupId: challenge.lookupId,
           content: challenge.content,
           systemChallengeId: challenge._id,
           isSystemChallenge: true,
@@ -55,13 +56,15 @@ const challengesResolver = {
             },
           },
           { new: true, useFindAndModify: false }
-        );
+        ).populate("challenges");
 
-        checkSystemChallenges(
-          currentUser.questions,
-          currentUser.challenges,
-          context.user._id
-        );
+        if (currentUser.challenges.length > 0) {
+          checkSystemChallenges(
+            currentUser.questions,
+            currentUser.challenges,
+            context.user._id
+          );
+        }
       }
 
       return await Challenges.find({ author: context.user._id });

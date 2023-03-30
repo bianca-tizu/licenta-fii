@@ -1,4 +1,4 @@
-query MapSystemChallengesToUse {
+query MapSystemChallengesToUser {
   mapSystemChallengesToUser {
     _id
     content
