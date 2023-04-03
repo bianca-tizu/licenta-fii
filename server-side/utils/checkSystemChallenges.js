@@ -74,6 +74,8 @@ const checkAndUpdateFirstQuestion = async (challenges, userId) => {
   );
   if (updatedChallenge.matchedCount) {
     updateUserLevel(userId);
+
+    return "Hooray, you've added your first question";
   }
 };
 
@@ -92,6 +94,8 @@ const checkAndUpdateFirstAnswer = async (challenges, userId) => {
     );
     if (updatedChallenge.matchedCount) {
       updateUserLevel(userId);
+
+      return "Hooray, you've added your first answer";
     }
   }
 };
@@ -111,6 +115,7 @@ const checkAndUpdateFiveAnswers = async (challenges, userId) => {
     );
     if (updatedChallenge.matchedCount) {
       updateUserLevel(userId);
+      return "Wooow, you've made it! You've managed to add 5 answers.";
     }
   } else if (comments.length > 0 && comments.length < 5) {
     await Challenges.updateOne(
@@ -120,6 +125,7 @@ const checkAndUpdateFiveAnswers = async (challenges, userId) => {
       },
       { $set: { status: "progress" } }
     );
+    return "Yay, you've started to work on the 5 answers challenge.";
   }
 };
 
@@ -137,6 +143,8 @@ const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
 
     if (updatedChallenge.matchedCount) {
       updateUserLevel(userId);
+
+      return "Wooow, you've made it! You've managed to add 5 questions.";
     }
   } else if (questions.length > 0 && questions.length < 5) {
     await Challenges.updateOne(
@@ -146,6 +154,7 @@ const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
       },
       { $set: { status: "progress" } }
     );
+    return "Yay, you've started to work on the 5 questions challenge.";
   }
 };
 
@@ -175,6 +184,7 @@ const dailyAppCheckin = async (challenges, userId) => {
     );
     if (updatedChallenge.matchedCount) {
       updateUserLevel(userId);
+      return "Yay, you checked the app daily. Good job!";
     }
   }
 };
@@ -196,26 +206,58 @@ const addPersonalChallenge = async (challenges, userId) => {
     );
     if (updatedChallenge.matchedCount) {
       updateUserLevel(userId);
+
+      return "You did it! You added your first challenge.";
     }
   }
 };
 
 export const checkSystemChallenges = async (questions, challenges, userId) => {
   try {
+    const notifications = [];
     if (questions.length > 0) {
-      checkAndUpdateFirstQuestion(challenges, userId);
-      checkAndUpdateFiveQuestions(questions, challenges, userId);
+      const firstQuestion = await checkAndUpdateFirstQuestion(
+        challenges,
+        userId
+      );
+
+      if (firstQuestion) {
+        notifications.push(firstQuestion);
+      }
+      const fiveQuestions = await checkAndUpdateFiveQuestions(
+        questions,
+        challenges,
+        userId
+      );
+      if (fiveQuestions) {
+        notifications.push(fiveQuestions);
+      }
     }
 
-    checkAndUpdateFirstAnswer(challenges, userId);
-    checkAndUpdateFiveAnswers(challenges, userId);
-    dailyAppCheckin(challenges, userId);
-    addPersonalChallenge(challenges, userId);
+    const firstAnswer = await checkAndUpdateFirstAnswer(challenges, userId);
+    if (firstAnswer) {
+      notifications.push(firstAnswer);
+    }
+    const fiveAnswers = await checkAndUpdateFiveAnswers(challenges, userId);
+    if (fiveAnswers) {
+      notifications.push(fiveAnswers);
+    }
+    const dailyCheckin = await dailyAppCheckin(challenges, userId);
+    if (dailyCheckin) {
+      notifications.push(dailyCheckin);
+    }
+    const personalChallenge = await addPersonalChallenge(challenges, userId);
+    if (personalChallenge) {
+      notifications.push(personalChallenge);
+    }
 
-    await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       { _id: userId },
       { $set: { challengesChecked: true } }
     );
+    if (updatedUser) {
+      return notifications;
+    }
   } catch (err) {
     await User.findByIdAndUpdate(
       { _id: userId },

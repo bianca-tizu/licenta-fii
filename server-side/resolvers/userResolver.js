@@ -11,6 +11,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 import dotenv from "dotenv";
 import { Question } from "../models/Question.model.js";
+import { Challenges } from "../models/Challenges.model.js";
 
 dotenv.config();
 
@@ -217,6 +218,7 @@ const userResolver = {
         author: user._id,
         isDraft: true,
       });
+      const challengesToBeRemoved = await Challenges.find({ author: user._id });
 
       if (!userToBeRemoved) {
         throw new GraphQLError("No user with this email.", {
@@ -229,6 +231,12 @@ const userResolver = {
       if (draftsToBeRemoved) {
         draftsToBeRemoved.forEach(
           async draft => await Question.deleteMany(draft)
+        );
+      }
+
+      if (challengesToBeRemoved) {
+        challengesToBeRemoved.forEach(
+          async challenge => await Challenges.deleteMany(challenge)
         );
       }
       await User.deleteOne(userToBeRemoved);

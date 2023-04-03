@@ -21,7 +21,7 @@ const LoginForm = () => {
   const [email, setEmail] = React.useState("");
   const [showResetPasswordModal, setShowResetPasswordModal] =
     React.useState(false);
-  const [_cookies, setCookie] = useCookies();
+  const [_cookies, setCookie, removeCookie] = useCookies();
 
   const history = useHistory();
 
@@ -46,6 +46,8 @@ const LoginForm = () => {
         history.push("/dashboard");
         if (response.data.loginUser.user.joinedRewardSystem) {
           setCookie("reward", response.data.loginUser.user.joinedRewardSystem);
+        } else {
+          removeCookie("reward");
         }
       } else if (!response.data?.loginUser.token) {
         history.push("/");

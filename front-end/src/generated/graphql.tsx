@@ -61,6 +61,13 @@ export type LoginInput = {
   password?: Maybe<Scalars['String']>;
 };
 
+export type MappedChallenges = {
+  __typename?: 'MappedChallenges';
+  _id?: Maybe<Scalars['ID']>;
+  challenges?: Maybe<Array<Maybe<Challenges>>>;
+  notifications?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   countVotesForQuestion?: Maybe<Scalars['Int']>;
@@ -139,6 +146,11 @@ export type MutationUpdateUserArgs = {
   user?: Maybe<UserInput>;
 };
 
+export type NotificationMessage = {
+  __typename?: 'NotificationMessage';
+  message?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   checkAndUpdateSystemChallengesStatus?: Maybe<Challenges>;
@@ -150,7 +162,7 @@ export type Query = {
   getSystemChallenges?: Maybe<Array<Maybe<Challenges>>>;
   hello?: Maybe<Scalars['String']>;
   isUserAlreadyVotedQuestion?: Maybe<Array<Maybe<Votes>>>;
-  mapSystemChallengesToUser?: Maybe<Array<Maybe<Challenges>>>;
+  mapSystemChallengesToUser?: Maybe<MappedChallenges>;
   searchQuestions?: Maybe<Array<Maybe<Question>>>;
 };
 
@@ -514,10 +526,14 @@ export type MapSystemChallengesToUserQueryVariables = Exact<{ [key: string]: nev
 
 export type MapSystemChallengesToUserQuery = (
   { __typename?: 'Query' }
-  & { mapSystemChallengesToUser?: Maybe<Array<Maybe<(
-    { __typename?: 'Challenges' }
-    & Pick<Challenges, '_id' | 'content' | 'status'>
-  )>>> }
+  & { mapSystemChallengesToUser?: Maybe<(
+    { __typename?: 'MappedChallenges' }
+    & Pick<MappedChallenges, '_id' | 'notifications'>
+    & { challenges?: Maybe<Array<Maybe<(
+      { __typename?: 'Challenges' }
+      & Pick<Challenges, '_id' | 'content' | 'lookupId'>
+    )>>> }
+  )> }
 );
 
 export type QuestionsQueryVariables = Exact<{
@@ -1238,8 +1254,12 @@ export const MapSystemChallengesToUserDocument = gql`
     query MapSystemChallengesToUser {
   mapSystemChallengesToUser {
     _id
-    content
-    status
+    challenges {
+      _id
+      content
+      lookupId
+    }
+    notifications
   }
 }
     `;

@@ -31,7 +31,7 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
     level: data?.getCurrentUser?.level || "",
   });
 
-  const [cookies] = useCookies(["reward"]);
+  const [cookies, removeCookie] = useCookies(["reward"]);
 
   React.useEffect(() => {
     refetch();
@@ -93,6 +93,9 @@ const UserProfile = ({ setIsUserProfileVisible }: any) => {
   const removeUser = async () => {
     await removeUserMutation();
     await sessionStorage.removeItem("token");
+    await sessionStorage.removeItem("challenges");
+    await sessionStorage.removeItem("timestamp");
+    removeCookie("reward", null);
     history.push("/");
   };
 

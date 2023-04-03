@@ -23,6 +23,7 @@ const challengesResolver = {
         throw new Error("You're not allowed to see these challenges.");
       }
 
+      let notifications = [];
       const systemDefinedChallenges = await SystemChallenges.find();
       const challengesCounter = await Challenges.find({
         author: context.user._id,
@@ -46,7 +47,7 @@ const challengesResolver = {
           author: context.user._id,
         });
 
-        const currentUser = await User.findByIdAndUpdate(
+        await User.findByIdAndUpdate(
           context.user._id,
           {
             $push: {
@@ -56,29 +57,46 @@ const challengesResolver = {
             },
           },
           { new: true, useFindAndModify: false }
-        ).populate("challenges");
-
-        if (currentUser.challenges.length > 0) {
-          checkSystemChallenges(
-            currentUser.questions,
-            currentUser.challenges,
-            context.user._id
-          );
-        }
+        );
       }
 
-      return await Challenges.find({ author: context.user._id });
+      const currentUser = await User.findById(context.user._id).populate(
+        "challenges"
+      );
+      if (currentUser.challenges.length > 0) {
+        notifications = checkSystemChallenges(
+          currentUser.questions,
+          currentUser.challenges,
+          context.user._id
+        );
+      }
+
+      const challenges = await Challenges.find({ author: context.user._id });
+
+      return {
+        challenges: challenges,
+        notifications: notifications,
+      };
     },
     checkAndUpdateSystemChallengesStatus: async (parent, args, context) => {
       if (!context.user) {
         throw new Error("You're not allowed to see these challenges.");
       }
 
-      const currentUser = await User.findById(context.user._id).populate(
-        "challenges"
-      );
-      const { questions, challenges } = currentUser;
-      checkSystemChallenges(questions, challenges, context.user._id);
+      try {
+        const currentUser = await User.findById(context.user._id).populate(
+          "challenges"
+        );
+        const { questions, challenges } = currentUser;
+        const notifications = checkSystemChallenges(
+          questions,
+          challenges,
+          context.user._id
+        );
+        return notifications;
+      } catch (err) {
+        throw new Error("Oops, there was a problem.");
+      }
     },
   },
   Mutation: {

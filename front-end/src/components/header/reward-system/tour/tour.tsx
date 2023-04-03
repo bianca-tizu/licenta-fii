@@ -1,4 +1,4 @@
-import { Alert } from "antd";
+import { Alert, notification } from "antd";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import JoyRide from "react-joyride";
@@ -45,7 +45,14 @@ const Tour = () => {
           "reward",
           response.data?.joinRewardSystem?.joinedRewardSystem
         );
-        mapSystemChallenges();
+        const { data } = await mapSystemChallenges();
+        if (data?.mapSystemChallengesToUser?.notifications) {
+          data?.mapSystemChallengesToUser?.notifications.forEach(message =>
+            notification["info"]({
+              message: message,
+            })
+          );
+        }
       } else if (response.errors) {
         setErrors(true);
       }

@@ -54,6 +54,16 @@ const typeDefs = `
     author: User
   }
 
+  type NotificationMessage {
+    message: String
+  }
+
+  type MappedChallenges {
+    _id: ID
+    challenges: [Challenges]
+    notifications: [String]
+  }
+
   type Questions {
     questions: [Question]
     questionsNo: Int
@@ -73,7 +83,7 @@ const typeDefs = `
     isUserAlreadyVotedQuestion(questionId: ID): [Votes]
 
     getSystemChallenges: [Challenges]
-    mapSystemChallengesToUser: [Challenges]
+    mapSystemChallengesToUser: MappedChallenges
     checkAndUpdateSystemChallengesStatus: Challenges
 
   }

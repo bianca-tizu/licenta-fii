@@ -1,7 +1,11 @@
 query MapSystemChallengesToUser {
   mapSystemChallengesToUser {
     _id
-    content
-    status
+    challenges {
+      _id
+      content
+      lookupId
+    }
+    notifications
   }
 }

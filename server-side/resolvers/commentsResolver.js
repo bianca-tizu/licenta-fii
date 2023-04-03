@@ -2,6 +2,8 @@ import { Question } from "../models/Question.model.js";
 import { User } from "../models/User.model.js";
 import { Comment } from "../models/Comment.model.js";
 
+import { checkSystemChallenges } from "../utils/checkSystemChallenges.js";
+
 const commentsResolver = {
   Query: {
     getCommentsForQuestion: async (_, args, context) => {
@@ -32,7 +34,9 @@ const commentsResolver = {
       });
 
       const result = await comment.save();
-      const author = await User.findById(context.user._id);
+      const author = await User.findById(context.user._id).populate(
+        "challenges"
+      );
       const question = await Question.findById(args.comment.questionId);
       if (!author) {
         throw new Error("User not found");
@@ -46,6 +50,14 @@ const commentsResolver = {
         { $push: { comments: args.comment._id } },
         { new: true, useFindAndModify: false }
       );
+
+      if (author.joinedRewardSystem && author.challenges.length > 0) {
+        checkSystemChallenges(
+          author.questions,
+          author.challenges,
+          context.user._id
+        );
+      }
 
       return {
         ...result._doc,

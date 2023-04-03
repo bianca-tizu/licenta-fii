@@ -1,6 +1,8 @@
 import { Question } from "../models/Question.model.js";
 import { User } from "../models/User.model.js";
 
+import { checkSystemChallenges } from "../utils/checkSystemChallenges.js";
+
 const questionResolver = {
   Query: {
     hello: () => {
@@ -90,11 +92,19 @@ const questionResolver = {
       if (!author) {
         throw new Error("User not found");
       }
-      await User.findByIdAndUpdate(
+      const currentUser = await User.findByIdAndUpdate(
         context.user._id,
         { $push: { questions: question._id } },
         { new: true, useFindAndModify: false }
-      );
+      ).populate("challenges");
+
+      if (currentUser.joinedRewardSystem && currentUser.challenges.length > 0) {
+        checkSystemChallenges(
+          currentUser.questions,
+          currentUser.challenges,
+          context.user._id
+        );
+      }
 
       return { ...result._doc, author: { ...author._doc } };
     },

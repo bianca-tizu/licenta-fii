@@ -1,7 +1,7 @@
 overwrite: true
 schema: "http://localhost:8000/graphql"
 headers:
-  Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNDcyZmZlMWE5NjVkNmNiZmUzOTE0NSIsImlhdCI6MTY0ODgzNTU4MywiZXhwIjoxNjgwMzkzMTgzfQ.4cPMEQ3SlQa-wKpXx8FWALOQdEYOQbw2EqAMvQAAGN4"
+  Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2Q3ZWU4Y2ZjMmRmMTVlYTRhZTE0MWUiLCJpYXQiOjE2ODA1NDkxNTMsImV4cCI6MTY4MDU2MzU1M30.c8yzkilpMQz2mP5Sv-eNsirpZYSPN5gV7xljyG8Ibws"
 documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
