@@ -55,8 +55,7 @@ const Answer = ({ comment, setAllComments }) => {
               cancelText: "No",
               width: 450,
             });
-          }}
-        >
+          }}>
           Delete
         </span>,
 
@@ -72,15 +71,15 @@ const Answer = ({ comment, setAllComments }) => {
   return (
     <Comment
       actions={getActionsForComment()}
-      author={<a>{author.username}</a>}
+      author={<a>{author ? author.username : "Unknown"}</a>}
       avatar={
         <Avatar
           src={
-            author.avatarUrl
+            author
               ? author.avatarUrl
               : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
           }
-          alt={author.username}
+          alt={author ? author.username : "Avatar"}
         />
       }
       content={
@@ -89,8 +88,7 @@ const Answer = ({ comment, setAllComments }) => {
             triggerType: ["text"],
             editing: isEditable,
             onChange: handleChange,
-          }}
-        >
+          }}>
           {message}
         </Paragraph>
       }
@@ -98,8 +96,7 @@ const Answer = ({ comment, setAllComments }) => {
         <Tooltip title={format(parseInt(createdAt, 10), "dd/MM/yyyy")}>
           <span>{formatDistanceToNow(parseInt(createdAt, 10))}</span>
         </Tooltip>
-      }
-    ></Comment>
+      }></Comment>
   );
 };
 
