@@ -153,7 +153,7 @@ export type NotificationMessage = {
 
 export type Query = {
   __typename?: 'Query';
-  checkAndUpdateSystemChallengesStatus?: Maybe<Challenges>;
+  checkAndUpdateSystemChallengesStatus?: Maybe<Array<Maybe<Scalars['String']>>>;
   getAllDraftsQuestions?: Maybe<Array<Maybe<Question>>>;
   getAllQuestions?: Maybe<Questions>;
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
@@ -451,6 +451,14 @@ export type JoinRewardSystemMutation = (
   )> }
 );
 
+export type CheckAndUpdateSystemChallengesStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CheckAndUpdateSystemChallengesStatusQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'checkAndUpdateSystemChallengesStatus'>
+);
+
 export type GetAllDraftsQuestionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -493,7 +501,7 @@ export type GetCurrentUserQuery = (
   { __typename?: 'Query' }
   & { getCurrentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, '_id' | 'avatarUrl' | 'username' | 'studentId' | 'email' | 'life' | 'level' | 'experience' | 'challengesChecked'>
+    & Pick<User, '_id' | 'avatarUrl' | 'username' | 'studentId' | 'email' | 'life' | 'level' | 'experience' | 'challengesChecked' | 'joinedRewardSystem'>
   )> }
 );
 
@@ -1049,6 +1057,38 @@ export function useJoinRewardSystemMutation(baseOptions?: Apollo.MutationHookOpt
 export type JoinRewardSystemMutationHookResult = ReturnType<typeof useJoinRewardSystemMutation>;
 export type JoinRewardSystemMutationResult = Apollo.MutationResult<JoinRewardSystemMutation>;
 export type JoinRewardSystemMutationOptions = Apollo.BaseMutationOptions<JoinRewardSystemMutation, JoinRewardSystemMutationVariables>;
+export const CheckAndUpdateSystemChallengesStatusDocument = gql`
+    query CheckAndUpdateSystemChallengesStatus {
+  checkAndUpdateSystemChallengesStatus
+}
+    `;
+
+/**
+ * __useCheckAndUpdateSystemChallengesStatusQuery__
+ *
+ * To run a query within a React component, call `useCheckAndUpdateSystemChallengesStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckAndUpdateSystemChallengesStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckAndUpdateSystemChallengesStatusQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCheckAndUpdateSystemChallengesStatusQuery(baseOptions?: Apollo.QueryHookOptions<CheckAndUpdateSystemChallengesStatusQuery, CheckAndUpdateSystemChallengesStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckAndUpdateSystemChallengesStatusQuery, CheckAndUpdateSystemChallengesStatusQueryVariables>(CheckAndUpdateSystemChallengesStatusDocument, options);
+      }
+export function useCheckAndUpdateSystemChallengesStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckAndUpdateSystemChallengesStatusQuery, CheckAndUpdateSystemChallengesStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckAndUpdateSystemChallengesStatusQuery, CheckAndUpdateSystemChallengesStatusQueryVariables>(CheckAndUpdateSystemChallengesStatusDocument, options);
+        }
+export type CheckAndUpdateSystemChallengesStatusQueryHookResult = ReturnType<typeof useCheckAndUpdateSystemChallengesStatusQuery>;
+export type CheckAndUpdateSystemChallengesStatusLazyQueryHookResult = ReturnType<typeof useCheckAndUpdateSystemChallengesStatusLazyQuery>;
+export type CheckAndUpdateSystemChallengesStatusQueryResult = Apollo.QueryResult<CheckAndUpdateSystemChallengesStatusQuery, CheckAndUpdateSystemChallengesStatusQueryVariables>;
 export const GetAllDraftsQuestionsDocument = gql`
     query GetAllDraftsQuestions {
   getAllDraftsQuestions {
@@ -1149,6 +1189,7 @@ export const GetCurrentUserDocument = gql`
     level
     experience
     challengesChecked
+    joinedRewardSystem
   }
 }
     `;

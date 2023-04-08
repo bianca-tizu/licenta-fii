@@ -69,6 +69,12 @@ const typeDefs = `
     questionsNo: Int
   }
 
+  type Notification {
+    message: String
+    type: String
+    seen: Boolean
+  }
+
   type Query {
     hello: String
     getCurrentUser: User
@@ -84,7 +90,9 @@ const typeDefs = `
 
     getSystemChallenges: [Challenges]
     mapSystemChallengesToUser: MappedChallenges
-    checkAndUpdateSystemChallengesStatus: Challenges
+    checkAndUpdateSystemChallengesStatus: [String]
+
+    getAllNotifications: [Notification]
 
   }
 
@@ -134,6 +142,11 @@ const typeDefs = `
     title: String!
     isSystemChallenge: Boolean!
     content: String
+  } 
+  
+  input NotificationInput{
+    message: String
+    type: String
   }
 
   type AuthPayload {
@@ -161,6 +174,7 @@ const typeDefs = `
     joinRewardSystem: User
 
     createChallenge(challenge: ChallengeInput): Challenges
+    createNotification(notification: NotificationInput): Notification
   }
 `;
 

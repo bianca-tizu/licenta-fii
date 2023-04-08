@@ -1,40 +1,54 @@
 import { Challenges } from "../models/Challenges.model.js";
 import { User } from "../models/User.model.js";
 import { Comment } from "../models/Comment.model.js";
+import { Notification } from "../models/Notification.model.js";
 
 const updateUserLevel = async userId => {
   const user = await User.findById(userId);
+  let notifications = [];
   if (user.life < 100) {
     user.life += 10;
+    notifications.push("You've gained some life");
   }
 
   if (user.level < 5 && user.experience < 50) {
     user.experience += 20;
+    notifications.push("Congrats, you've gained 20 exp.");
     if (user.experience >= 50) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 50;
+      notifications.push(`Yay, you got to the ${user.level} level`);
     }
   } else if (user.level >= 5 && user.level <= 10 && user.experience < 75) {
     user.experience += 15;
+    notifications.push("Congrats, you've gained 15 exp.");
+
     if (user.experience >= 75) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 75;
+      notifications.push(`Yay, you got to the ${user.level} level`);
     }
   } else if (user.level > 10 && user.level < 25 && user.experience < 100) {
     user.experience += 10;
+    notifications.push("Congrats, you've gained 10 exp.");
+
     if (user.experience >= 100) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 100;
+      notifications.push(`Yay, you got to the ${user.level} level`);
     }
   } else if (user.level >= 25 && user.experience < 150) {
     user.experience += 5;
+    notifications.push("Congrats, you've gained 5 exp.");
+
     if (user.experience >= 150) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 150;
+      notifications.push(`Yay, you got to the ${user.level} level`);
     }
   }
 
@@ -55,6 +69,17 @@ const updateUserLevel = async userId => {
       },
     }
   );
+
+  if (notifications) {
+    const mappedNotifications = notifications.map(notification => {
+      return { message: notification, user: user._id, type: "USER" };
+    });
+
+    await Notification.insertMany(mappedNotifications, {
+      upsert: true,
+    });
+    notifications = [];
+  }
 };
 
 const getCurrentChallenge = (challenges, id) => {
@@ -251,13 +276,28 @@ export const checkSystemChallenges = async (questions, challenges, userId) => {
       notifications.push(personalChallenge);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       { _id: userId },
       { $set: { challengesChecked: true } }
     );
-    if (updatedUser) {
-      return notifications;
-    }
+
+    notifications.forEach(async notification => {
+      const existsInDB = await Notification.exists({
+        message: notification.message,
+      });
+
+      if (!existsInDB) {
+        const newNotification = new Notification({
+          message: notification,
+          user: userId,
+          type: "SYSTEM_CHALLENGE",
+        });
+
+        await newNotification.save();
+      }
+    });
+
+    // notifications = [];
   } catch (err) {
     await User.findByIdAndUpdate(
       { _id: userId },

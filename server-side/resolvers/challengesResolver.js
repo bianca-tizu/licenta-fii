@@ -1,5 +1,6 @@
 import { Challenges } from "../models/Challenges.model.js";
 import { Question } from "../models/Question.model.js";
+import { Notification } from "../models/Notification.model.js";
 import { SystemChallenges } from "../models/SystemChallenges.model.js";
 import { User } from "../models/User.model.js";
 
@@ -63,19 +64,25 @@ const challengesResolver = {
       const currentUser = await User.findById(context.user._id).populate(
         "challenges"
       );
-      if (currentUser.challenges.length > 0) {
-        notifications = checkSystemChallenges(
+
+      if (currentUser.challenges) {
+        await checkSystemChallenges(
           currentUser.questions,
           currentUser.challenges,
           context.user._id
         );
       }
 
+      const systemChallengesNotifications = await Notification.find({
+        type: "SYSTEM_CHALLENGE",
+        user: context.user._id,
+      });
+
       const challenges = await Challenges.find({ author: context.user._id });
 
       return {
         challenges: challenges,
-        notifications: notifications,
+        notifications: systemChallengesNotifications,
       };
     },
     checkAndUpdateSystemChallengesStatus: async (parent, args, context) => {

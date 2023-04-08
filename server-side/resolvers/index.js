@@ -3,6 +3,7 @@ import userResolver from "./userResolver.js";
 import commentsResolver from "./commentsResolver.js";
 import votesResolver from "./votesResolver.js";
 import challengesResolver from "./challengesResolver.js";
+import notificationsResolver from "./notificationsResolver.js";
 
 const resolvers = {
   Query: {
@@ -11,6 +12,7 @@ const resolvers = {
     ...commentsResolver.Query,
     ...votesResolver.Query,
     ...challengesResolver.Query,
+    ...notificationsResolver.Query,
   },
   Mutation: {
     ...questionResolver.Mutation,
@@ -18,6 +20,7 @@ const resolvers = {
     ...commentsResolver.Mutation,
     ...votesResolver.Mutation,
     ...challengesResolver.Mutation,
+    ...notificationsResolver.Mutation,
   },
 };
 

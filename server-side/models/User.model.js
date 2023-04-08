@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import { Notification } from "./Notification.model.js";
 import { Question } from "./Question.model.js";
 import { Challenges } from "./Challenges.model.js";
 
@@ -59,6 +60,9 @@ export const UserSchema = new mongoose.Schema({
   },
   challenges: [{ type: mongoose.Schema.Types.ObjectId, ref: "Challenges" }],
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
+  notifications: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
+  ],
 });
 
 export const User = mongoose.model("User", UserSchema);

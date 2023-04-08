@@ -9,5 +9,6 @@ query GetCurrentUser {
     level
     experience
     challengesChecked
+    joinedRewardSystem
   }
 }
