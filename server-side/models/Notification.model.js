@@ -2,9 +2,6 @@ import mongoose from "mongoose";
 import { User } from "./User.model.js";
 
 export const NotificationSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-  },
   message: {
     type: String,
   },

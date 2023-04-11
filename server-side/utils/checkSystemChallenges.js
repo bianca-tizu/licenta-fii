@@ -282,22 +282,22 @@ export const checkSystemChallenges = async (questions, challenges, userId) => {
     );
 
     notifications.forEach(async notification => {
-      const existsInDB = await Notification.exists({
-        message: notification.message,
+      const existsInDB = await Notification.find({
+        message: notification,
+        user: userId,
       });
 
-      if (!existsInDB) {
+      if (!existsInDB.length) {
         const newNotification = new Notification({
           message: notification,
           user: userId,
           type: "SYSTEM_CHALLENGE",
         });
-
         await newNotification.save();
       }
     });
 
-    // notifications = [];
+    notifications = [];
   } catch (err) {
     await User.findByIdAndUpdate(
       { _id: userId },
