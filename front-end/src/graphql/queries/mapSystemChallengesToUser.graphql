@@ -6,6 +6,8 @@ query MapSystemChallengesToUser {
       content
       lookupId
     }
-    notifications
+    notifications {
+      message
+    }
   }
 }

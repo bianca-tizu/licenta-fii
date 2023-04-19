@@ -37,14 +37,24 @@ const AddQuestion = ({
     content: "",
   });
   const [tags, setTags] = React.useState([]);
+  const [notifications, setNotifications] = React.useState("");
   const [error, setError] = React.useState("");
 
   const [createQuestion] = useCreateQuestionMutation({
     awaitRefetchQueries: true,
     refetchQueries: [{ query: QuestionsDocument }],
     onCompleted(data) {
-      if (!data.createQuestion?.isDraft) {
+      if (!data.createQuestion?.question?.isDraft) {
         window.location.reload();
+        if (data.createQuestion?.notifications?.message) {
+          notification.open({
+            message: "Notification Title",
+            description: data?.createQuestion?.notifications.message,
+            style: {
+              width: 600,
+            },
+          });
+        }
       } else {
         setIsDraftVisible(true);
       }

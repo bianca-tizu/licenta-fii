@@ -5,10 +5,21 @@ import { QuestionsProvider } from "../../contexts/QuestionsProvider";
 
 import "./dashboard.css";
 import Tour from "../header/reward-system/tour/tour";
+import {
+  useCheckAndUpdateSystemChallengesStatusLazyQuery,
+  useCheckAndUpdateSystemChallengesStatusQuery,
+} from "../../generated/graphql";
 
 const Dashboard = () => {
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
   const [openTutorial, setOpenTutorial] = React.useState(false);
+
+  const { data } = useCheckAndUpdateSystemChallengesStatusQuery();
+
+  React.useEffect(() => {
+    //check system challenges and show notifications
+    // console.log(data);
+  }, []);
 
   return (
     <QuestionsProvider>

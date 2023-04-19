@@ -65,7 +65,7 @@ export type MappedChallenges = {
   __typename?: 'MappedChallenges';
   _id?: Maybe<Scalars['ID']>;
   challenges?: Maybe<Array<Maybe<Challenges>>>;
-  notifications?: Maybe<Array<Maybe<Scalars['String']>>>;
+  notifications?: Maybe<Array<Maybe<Notification>>>;
 };
 
 export type Mutation = {
@@ -73,7 +73,8 @@ export type Mutation = {
   countVotesForQuestion?: Maybe<Scalars['Int']>;
   createChallenge?: Maybe<Challenges>;
   createComment?: Maybe<Comment>;
-  createQuestion?: Maybe<Question>;
+  createNotification?: Maybe<Notification>;
+  createQuestion?: Maybe<Questions>;
   deleteComment?: Maybe<Scalars['ID']>;
   deleteQuestion?: Maybe<Scalars['ID']>;
   editComment?: Maybe<Comment>;
@@ -99,6 +100,11 @@ export type MutationCreateChallengeArgs = {
 
 export type MutationCreateCommentArgs = {
   comment?: Maybe<CommentInput>;
+};
+
+
+export type MutationCreateNotificationArgs = {
+  notification?: Maybe<NotificationInput>;
 };
 
 
@@ -146,6 +152,18 @@ export type MutationUpdateUserArgs = {
   user?: Maybe<UserInput>;
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  message?: Maybe<Scalars['String']>;
+  seen?: Maybe<Scalars['Boolean']>;
+  type?: Maybe<Scalars['String']>;
+};
+
+export type NotificationInput = {
+  message?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+};
+
 export type NotificationMessage = {
   __typename?: 'NotificationMessage';
   message?: Maybe<Scalars['String']>;
@@ -155,6 +173,7 @@ export type Query = {
   __typename?: 'Query';
   checkAndUpdateSystemChallengesStatus?: Maybe<Array<Maybe<Scalars['String']>>>;
   getAllDraftsQuestions?: Maybe<Array<Maybe<Question>>>;
+  getAllNotifications?: Maybe<Array<Maybe<Notification>>>;
   getAllQuestions?: Maybe<Questions>;
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
   getCurrentUser?: Maybe<User>;
@@ -213,6 +232,8 @@ export type QuestionInput = {
 
 export type Questions = {
   __typename?: 'Questions';
+  notifications?: Maybe<Notification>;
+  question?: Maybe<Question>;
   questions?: Maybe<Array<Maybe<Question>>>;
   questionsNo?: Maybe<Scalars['Int']>;
 };
@@ -307,11 +328,17 @@ export type CreateQuestionMutationVariables = Exact<{
 export type CreateQuestionMutation = (
   { __typename?: 'Mutation' }
   & { createQuestion?: Maybe<(
-    { __typename?: 'Question' }
-    & Pick<Question, '_id' | 'title' | 'content' | 'votes' | 'tags' | 'isDraft'>
-    & { author?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, '_id' | 'avatarUrl'>
+    { __typename?: 'Questions' }
+    & { question?: Maybe<(
+      { __typename?: 'Question' }
+      & Pick<Question, '_id' | 'title' | 'content' | 'votes' | 'tags' | 'isDraft'>
+      & { author?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, '_id' | 'avatarUrl'>
+      )> }
+    )>, notifications?: Maybe<(
+      { __typename?: 'Notification' }
+      & Pick<Notification, 'message'>
     )> }
   )> }
 );
@@ -536,10 +563,13 @@ export type MapSystemChallengesToUserQuery = (
   { __typename?: 'Query' }
   & { mapSystemChallengesToUser?: Maybe<(
     { __typename?: 'MappedChallenges' }
-    & Pick<MappedChallenges, '_id' | 'notifications'>
+    & Pick<MappedChallenges, '_id'>
     & { challenges?: Maybe<Array<Maybe<(
       { __typename?: 'Challenges' }
       & Pick<Challenges, '_id' | 'content' | 'lookupId'>
+    )>>>, notifications?: Maybe<Array<Maybe<(
+      { __typename?: 'Notification' }
+      & Pick<Notification, 'message'>
     )>>> }
   )> }
 );
@@ -664,16 +694,21 @@ export const CreateQuestionDocument = gql`
   createQuestion(
     question: {title: $title, content: $content, tags: $tags, isDraft: $isDraft}
   ) {
-    _id
-    title
-    content
-    author {
+    question {
       _id
-      avatarUrl
+      title
+      content
+      author {
+        _id
+        avatarUrl
+      }
+      votes
+      tags
+      isDraft
     }
-    votes
-    tags
-    isDraft
+    notifications {
+      message
+    }
   }
 }
     `;
@@ -1300,7 +1335,9 @@ export const MapSystemChallengesToUserDocument = gql`
       content
       lookupId
     }
-    notifications
+    notifications {
+      message
+    }
   }
 }
     `;

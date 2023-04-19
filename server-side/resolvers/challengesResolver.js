@@ -95,11 +95,21 @@ const challengesResolver = {
           "challenges"
         );
         const { questions, challenges } = currentUser;
-        const notifications = checkSystemChallenges(
+        const notifications = await checkSystemChallenges(
           questions,
           challenges,
           context.user._id
         );
+
+        // if (notifications) {
+        //   const test = currentUser.notifications.some(currentNotification => {
+        //     notifications.find(
+        //       notification => notification === currentNotification.message
+        //     );
+        //   });
+
+        //   console.log(test);
+        // }
         return notifications;
       } catch (err) {
         throw new Error("Oops, there was a problem.");

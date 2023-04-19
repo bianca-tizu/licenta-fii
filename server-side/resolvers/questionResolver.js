@@ -72,6 +72,7 @@ const questionResolver = {
   Mutation: {
     createQuestion: async (parent, args, context) => {
       const { title, content, tags, isDraft } = args.question;
+      let notifications = [];
 
       if (!context.user) {
         throw new Error("You're not allowed to view the questions");
@@ -99,14 +100,17 @@ const questionResolver = {
       ).populate("challenges");
 
       if (currentUser.joinedRewardSystem && currentUser.challenges.length > 0) {
-        checkSystemChallenges(
+        notifications = checkSystemChallenges(
           currentUser.questions,
           currentUser.challenges,
           context.user._id
         );
       }
 
-      return { ...result._doc, author: { ...author._doc } };
+      return {
+        question: { ...result._doc, author: { ...author._doc } },
+        notifications,
+      };
     },
 
     deleteQuestion: async (parent, args, context) => {

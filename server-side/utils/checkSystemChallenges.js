@@ -205,7 +205,7 @@ const dailyAppCheckin = async (challenges, userId) => {
         systemChallengeId: challengeToUpdate.systemChallengeId,
         status: { $ne: "finished" },
       },
-      { $set: { status: "finished" } }
+      { $set: { status: "progress" } }
     );
     if (updatedChallenge.matchedCount) {
       updateUserLevel(userId);
@@ -296,8 +296,7 @@ export const checkSystemChallenges = async (questions, challenges, userId) => {
         await newNotification.save();
       }
     });
-
-    notifications = [];
+    return notifications;
   } catch (err) {
     await User.findByIdAndUpdate(
       { _id: userId },

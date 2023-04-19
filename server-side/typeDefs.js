@@ -154,8 +154,13 @@ const typeDefs = `
     user: User!
   }
 
+  type Questions {
+    question: Question
+    notifications: Notification
+  }
+
   type Mutation {
-    createQuestion(question: QuestionInput): Question
+    createQuestion(question: QuestionInput): Questions
     deleteQuestion(id: ID): ID
     updateQuestion(question: UpdateQuestionInput): Question
     

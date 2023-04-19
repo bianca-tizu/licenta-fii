@@ -12,15 +12,20 @@ mutation CreateQuestion(
       isDraft: $isDraft
     }
   ) {
-    _id
-    title
-    content
-    author {
+    question {
       _id
-      avatarUrl
+      title
+      content
+      author {
+        _id
+        avatarUrl
+      }
+      votes
+      tags
+      isDraft
     }
-    votes
-    tags
-    isDraft
+    notifications {
+      message
+    }
   }
 }

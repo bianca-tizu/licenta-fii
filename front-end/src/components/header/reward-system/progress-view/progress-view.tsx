@@ -25,7 +25,6 @@ const ProgressView = () => {
     if (data?.getSystemChallenges) {
       setSystemChallenges(data.getSystemChallenges as Challenges[]);
     }
-    console.log(data);
   }, [data?.getSystemChallenges]);
 
   const onNewChallenge = () => {
