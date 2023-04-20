@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { HeartTwoTone, StarTwoTone } from "@ant-design/icons";
-import { Badge, Progress } from "antd";
+import { Badge, List, Progress, Steps, StepsProps, Tabs } from "antd";
 import Card from "antd/lib/card/Card";
 
 import "./progress-view.css";
@@ -16,6 +16,7 @@ const ProgressView = () => {
   const [experiencePercent, setExperiencePercent] = useState(0);
   const [showNewChallengeForm, setShowNewChallengeForm] = useState(false);
   const [systemChallenges, setSystemChallenges] = useState<Challenges[]>([]);
+  const [showSystemChallenges, setShowSystemChallenges] = useState(true);
 
   const { data, error } = useGetSystemChallengesQuery({
     fetchPolicy: "network-only",
@@ -63,26 +64,59 @@ const ProgressView = () => {
           <>new challenge form</>
         ) : (
           <>
-            {systemChallenges
-              .filter(
-                challenge =>
-                  challenge.status === "started" ||
-                  challenge.status === "progress"
-              )
-              .map((systemChallenge, index) => {
-                const { _id, status, content } = systemChallenge;
-                if (index < 4) {
-                  return (
-                    <p key={_id}>
-                      <Badge
-                        style={{ paddingRight: "10px" }}
-                        status={status === "started" ? "default" : "processing"}
-                      />
-                      {content}
-                    </p>
-                  );
-                }
-              })}
+            <Tabs
+              defaultActiveKey="1"
+              type="card"
+              onChange={() => setShowSystemChallenges(!showSystemChallenges)}
+              items={[
+                {
+                  label: "Challenges",
+                  key: "1",
+                },
+                {
+                  label: "Personal Challenges",
+                  key: "2",
+                },
+              ]}
+            />
+            {showSystemChallenges ? (
+              systemChallenges
+                .filter(
+                  challenge =>
+                    challenge.status === "started" ||
+                    challenge.status === "progress"
+                )
+                .map((systemChallenge, index) => {
+                  const { _id, status, content } = systemChallenge;
+                  if (index < 4) {
+                    return (
+                      <p key={_id}>
+                        <Badge
+                          style={{ paddingRight: "10px" }}
+                          status={
+                            status === "started" ? "default" : "processing"
+                          }
+                        />
+                        {content}
+                      </p>
+                    );
+                  }
+                })
+            ) : (
+              <List
+                itemLayout="horizontal"
+                dataSource={[]}
+                renderItem={(item, index) => {
+                  <List.Item>
+                    <List.Item.Meta description={item} />
+                    <Steps
+                      style={{ marginTop: 8 }}
+                      status={item as StepsProps["status"]}
+                    />
+                  </List.Item>;
+                }}
+              />
+            )}
           </>
         )}
       </Card>
