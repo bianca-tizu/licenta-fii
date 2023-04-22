@@ -11,3 +11,7 @@
 .ant-progress-line{
     margin-left: 10px;
 }
+
+.ant-input-group.ant-input-group-compact {
+    display: flex !important;
+}

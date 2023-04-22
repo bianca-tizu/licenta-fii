@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { HeartTwoTone, StarTwoTone } from "@ant-design/icons";
-import { Badge, List, Progress, Steps, StepsProps, Tabs } from "antd";
+import { Badge, Input, List, Progress, Steps, StepsProps, Tabs } from "antd";
 import Card from "antd/lib/card/Card";
 
 import "./progress-view.css";
@@ -30,6 +30,7 @@ const ProgressView = () => {
 
   const onNewChallenge = () => {
     setShowNewChallengeForm(!showNewChallengeForm);
+    setShowSystemChallenges(true);
   };
 
   return (
@@ -61,13 +62,21 @@ const ProgressView = () => {
           </Button>
         }>
         {showNewChallengeForm ? (
-          <>new challenge form</>
+          <>
+            <p>Define a new challenge</p>
+            <Input.Group compact>
+              <Input placeholder="Add you challenge" />
+              <Button type="primary">Add</Button>
+            </Input.Group>
+          </>
         ) : (
           <>
             <Tabs
               defaultActiveKey="1"
               type="card"
-              onChange={() => setShowSystemChallenges(!showSystemChallenges)}
+              onChange={selectedKey =>
+                setShowSystemChallenges(selectedKey === "1")
+              }
               items={[
                 {
                   label: "Challenges",
