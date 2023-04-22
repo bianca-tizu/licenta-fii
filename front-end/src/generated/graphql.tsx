@@ -175,6 +175,7 @@ export type Query = {
   getAllQuestions?: Maybe<Questions>;
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
   getCurrentUser?: Maybe<User>;
+  getPersonalChallenges?: Maybe<Array<Maybe<Challenges>>>;
   getQuestion?: Maybe<Question>;
   getSystemChallenges?: Maybe<Array<Maybe<Challenges>>>;
   hello?: Maybe<Scalars['String']>;
@@ -546,6 +547,17 @@ export type GetCurrentUserQuery = (
     { __typename?: 'User' }
     & Pick<User, '_id' | 'avatarUrl' | 'username' | 'studentId' | 'email' | 'life' | 'level' | 'experience' | 'challengesChecked' | 'joinedRewardSystem'>
   )> }
+);
+
+export type GetPersonalChallengesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPersonalChallengesQuery = (
+  { __typename?: 'Query' }
+  & { getPersonalChallenges?: Maybe<Array<Maybe<(
+    { __typename?: 'Challenges' }
+    & Pick<Challenges, '_id' | 'content' | 'status'>
+  )>>> }
 );
 
 export type GetSystemChallengesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1312,6 +1324,42 @@ export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
 export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
 export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
+export const GetPersonalChallengesDocument = gql`
+    query GetPersonalChallenges {
+  getPersonalChallenges {
+    _id
+    content
+    status
+  }
+}
+    `;
+
+/**
+ * __useGetPersonalChallengesQuery__
+ *
+ * To run a query within a React component, call `useGetPersonalChallengesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPersonalChallengesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPersonalChallengesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPersonalChallengesQuery(baseOptions?: Apollo.QueryHookOptions<GetPersonalChallengesQuery, GetPersonalChallengesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPersonalChallengesQuery, GetPersonalChallengesQueryVariables>(GetPersonalChallengesDocument, options);
+      }
+export function useGetPersonalChallengesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPersonalChallengesQuery, GetPersonalChallengesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPersonalChallengesQuery, GetPersonalChallengesQueryVariables>(GetPersonalChallengesDocument, options);
+        }
+export type GetPersonalChallengesQueryHookResult = ReturnType<typeof useGetPersonalChallengesQuery>;
+export type GetPersonalChallengesLazyQueryHookResult = ReturnType<typeof useGetPersonalChallengesLazyQuery>;
+export type GetPersonalChallengesQueryResult = Apollo.QueryResult<GetPersonalChallengesQuery, GetPersonalChallengesQueryVariables>;
 export const GetSystemChallengesDocument = gql`
     query GetSystemChallenges {
   getSystemChallenges {

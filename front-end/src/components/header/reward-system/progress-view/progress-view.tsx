@@ -19,32 +19,50 @@ import "./progress-view.css";
 
 import {
   Challenges,
+  GetPersonalChallengesDocument,
   useCreateChallengeMutation,
   useGetSystemChallengesQuery,
 } from "../../../../generated/graphql";
+import { useGetPersonalChallengesQuery } from "../../../../generated/graphql";
 
 const ProgressView = () => {
   const [lifePercent, setLifePercent] = useState(100);
   const [experiencePercent, setExperiencePercent] = useState(0);
   const [showNewChallengeForm, setShowNewChallengeForm] = useState(false);
   const [systemChallenges, setSystemChallenges] = useState<Challenges[]>([]);
+  const [personalChallenges, setPersonalChallenges] = useState<Challenges[]>(
+    []
+  );
   const [showSystemChallenges, setShowSystemChallenges] = useState(true);
 
   const { data, error } = useGetSystemChallengesQuery({
     fetchPolicy: "network-only",
   });
 
-  const [createChallenge] = useCreateChallengeMutation();
+  const personalChallengeValues = useGetPersonalChallengesQuery({
+    fetchPolicy: "network-only",
+  });
+
+  const [createChallenge] = useCreateChallengeMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: GetPersonalChallengesDocument }],
+  });
 
   useEffect(() => {
     if (data?.getSystemChallenges) {
       setSystemChallenges(data.getSystemChallenges as Challenges[]);
     }
 
-    if (error?.message) {
-      console.log(error.message);
+    if (personalChallengeValues.data?.getPersonalChallenges) {
+      setPersonalChallenges(
+        personalChallengeValues.data.getPersonalChallenges as Challenges[]
+      );
     }
-  }, [data?.getSystemChallenges]);
+
+    if (error?.message || personalChallengeValues.error) {
+      console.log("Error", error?.message || personalChallengeValues.error);
+    }
+  }, [data?.getSystemChallenges, personalChallengeValues.data]);
 
   const onNewChallenge = () => {
     setShowNewChallengeForm(!showNewChallengeForm);
@@ -162,13 +180,13 @@ const ProgressView = () => {
             ) : (
               <List
                 itemLayout="horizontal"
-                dataSource={[]}
+                dataSource={personalChallenges}
                 renderItem={(item, index) => {
                   <List.Item>
-                    <List.Item.Meta description={item} />
+                    <List.Item.Meta description={item.content} />
                     <Steps
                       style={{ marginTop: 8 }}
-                      status={item as StepsProps["status"]}
+                      status={item.status as StepsProps["status"]}
                     />
                   </List.Item>;
                 }}

@@ -1,0 +1,7 @@
+query GetPersonalChallenges {
+  getPersonalChallenges {
+    _id
+    content
+    status
+  }
+}

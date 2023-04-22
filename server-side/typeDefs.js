@@ -88,6 +88,7 @@ const typeDefs = `
     isUserAlreadyVotedQuestion(questionId: ID): [Votes]
 
     getSystemChallenges: [Challenges]
+    getPersonalChallenges: [Challenges]
     mapSystemChallengesToUser: MappedChallenges
     checkAndUpdateSystemChallengesStatus: [String]
 

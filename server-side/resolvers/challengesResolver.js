@@ -19,6 +19,18 @@ const challengesResolver = {
 
       return challenges;
     },
+    getPersonalChallenges: async (parent, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to see challenges.");
+      }
+
+      const challenges = await Challenges.find({
+        isSystemChallenge: false,
+        author: context.user._id,
+      });
+
+      return challenges;
+    },
     mapSystemChallengesToUser: async (parent, args, context) => {
       if (!context.user) {
         throw new Error("You're not allowed to see these challenges.");
