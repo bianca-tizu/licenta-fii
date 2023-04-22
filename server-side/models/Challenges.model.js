@@ -3,9 +3,6 @@ import { User } from "./User.model.js";
 import { SystemChallenges } from "./SystemChallenges.model.js";
 
 export const ChallengesSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-  },
   content: {
     type: String,
     required: true,

@@ -22,8 +22,8 @@ import {
   GetPersonalChallengesDocument,
   useCreateChallengeMutation,
   useGetSystemChallengesQuery,
+  useGetPersonalChallengesQuery,
 } from "../../../../generated/graphql";
-import { useGetPersonalChallengesQuery } from "../../../../generated/graphql";
 
 const ProgressView = () => {
   const [lifePercent, setLifePercent] = useState(100);
@@ -80,7 +80,10 @@ const ProgressView = () => {
           },
         });
         if (response) {
-          // refetch getPersonalChallenge
+          setPersonalChallenges(prev => [
+            response.data?.createChallenge as Challenges,
+            ...prev,
+          ]);
         }
       } catch (err: any) {
         console.log(err);
@@ -140,9 +143,9 @@ const ProgressView = () => {
             <Tabs
               defaultActiveKey="1"
               type="card"
-              onChange={selectedKey =>
-                setShowSystemChallenges(selectedKey === "1")
-              }
+              onChange={selectedKey => {
+                setShowSystemChallenges(selectedKey === "1");
+              }}
               items={[
                 {
                   label: "Challenges",
@@ -154,44 +157,61 @@ const ProgressView = () => {
                 },
               ]}
             />
-            {showSystemChallenges ? (
-              systemChallenges
-                .filter(
-                  challenge =>
-                    challenge.status === "started" ||
-                    challenge.status === "progress"
-                )
-                .map((systemChallenge, index) => {
-                  const { _id, status, content } = systemChallenge;
-                  if (index < 4) {
-                    return (
-                      <p key={_id}>
-                        <Badge
-                          style={{ paddingRight: "10px" }}
-                          status={
-                            status === "started" ? "default" : "processing"
-                          }
-                        />
-                        {content}
-                      </p>
-                    );
-                  }
-                })
-            ) : (
-              <List
-                itemLayout="horizontal"
-                dataSource={personalChallenges}
-                renderItem={(item, index) => {
-                  <List.Item>
-                    <List.Item.Meta description={item.content} />
-                    <Steps
-                      style={{ marginTop: 8 }}
-                      status={item.status as StepsProps["status"]}
-                    />
-                  </List.Item>;
-                }}
-              />
-            )}
+            {
+              showSystemChallenges
+                ? systemChallenges
+                    .filter(
+                      challenge =>
+                        challenge.status === "started" ||
+                        challenge.status === "progress"
+                    )
+                    .map((systemChallenge, index) => {
+                      const { _id, status, content } = systemChallenge;
+                      if (index < 4) {
+                        return (
+                          <p key={_id}>
+                            <Badge
+                              style={{ paddingRight: "10px" }}
+                              status={
+                                status === "started" ? "default" : "processing"
+                              }
+                            />
+                            {content}
+                          </p>
+                        );
+                      }
+                    })
+                : personalChallenges.map((personalChallenge, index) => {
+                    if (index < 4) {
+                      return (
+                        <p key={personalChallenge._id}>
+                          <Badge
+                            style={{ paddingRight: "10px" }}
+                            status={
+                              personalChallenge.status === "started"
+                                ? "default"
+                                : "processing"
+                            }
+                          />
+                          {personalChallenge.content}
+                        </p>
+                      );
+                    }
+                  })
+              // <List
+              //   itemLayout="horizontal"
+              //   dataSource={personalChallenges}
+              //   renderItem={(item, index) => {
+              //     <List.Item actions={[<a key="list-loadmore-edit">edit</a>]}>
+              //       <List.Item.Meta description={item.content} />
+              //       {/* <Steps
+              //         style={{ marginTop: 8 }}
+              //         status={item.status as StepsProps["status"]}
+              //       /> */}
+              //     </List.Item>;
+              //   }}
+              // />
+            }
           </>
         )}
       </Card>
