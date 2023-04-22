@@ -46,7 +46,6 @@ const typeDefs = `
 
   type Challenges {
     _id: ID
-    title: String
     content: String
     status: String
     lookupId: Int
@@ -139,9 +138,8 @@ const typeDefs = `
   }
 
   input ChallengeInput{
-    title: String!
     isSystemChallenge: Boolean!
-    content: String
+    content: String!
   } 
   
   input NotificationInput{

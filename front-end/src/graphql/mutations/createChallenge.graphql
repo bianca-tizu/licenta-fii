@@ -1,0 +1,12 @@
+mutation CreateChallenge($content: String!, $isSystemChallenge: Boolean!) {
+  createChallenge(
+    challenge: { content: $content, isSystemChallenge: $isSystemChallenge }
+  ) {
+    _id
+    author {
+      avatarUrl
+    }
+    content
+    status
+  }
+}

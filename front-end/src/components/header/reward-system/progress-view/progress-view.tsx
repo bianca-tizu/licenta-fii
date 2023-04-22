@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
 
 import { HeartTwoTone, StarTwoTone } from "@ant-design/icons";
-import { Badge, Input, List, Progress, Steps, StepsProps, Tabs } from "antd";
+import {
+  Badge,
+  Form,
+  Input,
+  List,
+  Progress,
+  Steps,
+  StepsProps,
+  Tabs,
+  Button,
+  notification,
+} from "antd";
 import Card from "antd/lib/card/Card";
 
 import "./progress-view.css";
-import { Button } from "antd/lib/radio";
+
 import {
   Challenges,
+  useCreateChallengeMutation,
   useGetSystemChallengesQuery,
 } from "../../../../generated/graphql";
 
@@ -22,15 +34,43 @@ const ProgressView = () => {
     fetchPolicy: "network-only",
   });
 
+  const [createChallenge] = useCreateChallengeMutation();
+
   useEffect(() => {
     if (data?.getSystemChallenges) {
       setSystemChallenges(data.getSystemChallenges as Challenges[]);
+    }
+
+    if (error?.message) {
+      console.log(error.message);
     }
   }, [data?.getSystemChallenges]);
 
   const onNewChallenge = () => {
     setShowNewChallengeForm(!showNewChallengeForm);
     setShowSystemChallenges(true);
+  };
+
+  const handleAddChallenge = async values => {
+    if (values.challenge) {
+      onNewChallenge();
+      try {
+        const response = await createChallenge({
+          variables: {
+            content: values.challenge,
+            isSystemChallenge: false,
+          },
+        });
+        if (response) {
+          // refetch getPersonalChallenge
+        }
+      } catch (err: any) {
+        console.log(err);
+        notification.error({
+          message: "Oops, there was a problem with your request.",
+        });
+      }
+    }
   };
 
   return (
@@ -64,10 +104,18 @@ const ProgressView = () => {
         {showNewChallengeForm ? (
           <>
             <p>Define a new challenge</p>
-            <Input.Group compact>
-              <Input placeholder="Add you challenge" />
-              <Button type="primary">Add</Button>
-            </Input.Group>
+            <Form name="personalChallengeForm" onFinish={handleAddChallenge}>
+              <Input.Group compact>
+                <Form.Item name="challenge" className="challenge-wrapper">
+                  <Input placeholder="Add your challenge" allowClear />
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Add
+                  </Button>
+                </Form.Item>
+              </Input.Group>
+            </Form>
           </>
         ) : (
           <>

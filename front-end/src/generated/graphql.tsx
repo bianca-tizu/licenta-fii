@@ -21,9 +21,8 @@ export type AuthPayload = {
 };
 
 export type ChallengeInput = {
-  content?: Maybe<Scalars['String']>;
+  content: Scalars['String'];
   isSystemChallenge: Scalars['Boolean'];
-  title: Scalars['String'];
 };
 
 export type Challenges = {
@@ -34,7 +33,6 @@ export type Challenges = {
   isSystemChallenge?: Maybe<Scalars['Boolean']>;
   lookupId?: Maybe<Scalars['Int']>;
   status?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
 };
 
 export type Comment = {
@@ -294,6 +292,24 @@ export type CountVotesForQuestionMutationVariables = Exact<{
 export type CountVotesForQuestionMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'countVotesForQuestion'>
+);
+
+export type CreateChallengeMutationVariables = Exact<{
+  content: Scalars['String'];
+  isSystemChallenge: Scalars['Boolean'];
+}>;
+
+
+export type CreateChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & { createChallenge?: Maybe<(
+    { __typename?: 'Challenges' }
+    & Pick<Challenges, '_id' | 'content' | 'status'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'avatarUrl'>
+    )> }
+  )> }
 );
 
 export type CreateCommentMutationVariables = Exact<{
@@ -645,6 +661,47 @@ export function useCountVotesForQuestionMutation(baseOptions?: Apollo.MutationHo
 export type CountVotesForQuestionMutationHookResult = ReturnType<typeof useCountVotesForQuestionMutation>;
 export type CountVotesForQuestionMutationResult = Apollo.MutationResult<CountVotesForQuestionMutation>;
 export type CountVotesForQuestionMutationOptions = Apollo.BaseMutationOptions<CountVotesForQuestionMutation, CountVotesForQuestionMutationVariables>;
+export const CreateChallengeDocument = gql`
+    mutation CreateChallenge($content: String!, $isSystemChallenge: Boolean!) {
+  createChallenge(
+    challenge: {content: $content, isSystemChallenge: $isSystemChallenge}
+  ) {
+    _id
+    author {
+      avatarUrl
+    }
+    content
+    status
+  }
+}
+    `;
+export type CreateChallengeMutationFn = Apollo.MutationFunction<CreateChallengeMutation, CreateChallengeMutationVariables>;
+
+/**
+ * __useCreateChallengeMutation__
+ *
+ * To run a mutation, you first call `useCreateChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChallengeMutation, { data, loading, error }] = useCreateChallengeMutation({
+ *   variables: {
+ *      content: // value for 'content'
+ *      isSystemChallenge: // value for 'isSystemChallenge'
+ *   },
+ * });
+ */
+export function useCreateChallengeMutation(baseOptions?: Apollo.MutationHookOptions<CreateChallengeMutation, CreateChallengeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateChallengeMutation, CreateChallengeMutationVariables>(CreateChallengeDocument, options);
+      }
+export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
+export type CreateChallengeMutationResult = Apollo.MutationResult<CreateChallengeMutation>;
+export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<CreateChallengeMutation, CreateChallengeMutationVariables>;
 export const CreateCommentDocument = gql`
     mutation CreateComment($questionId: ID, $message: String) {
   createComment(comment: {questionId: $questionId, message: $message}) {
