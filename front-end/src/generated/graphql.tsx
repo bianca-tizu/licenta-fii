@@ -81,6 +81,7 @@ export type Mutation = {
   loginUser: AuthPayload;
   registerUser: AuthPayload;
   removeUser?: Maybe<Scalars['ID']>;
+  updateChallengeStatus?: Maybe<Challenges>;
   updateQuestion?: Maybe<Question>;
   updateUser?: Maybe<User>;
 };
@@ -138,6 +139,11 @@ export type MutationLoginUserArgs = {
 
 export type MutationRegisterUserArgs = {
   user?: Maybe<RegisterInput>;
+};
+
+
+export type MutationUpdateChallengeStatusArgs = {
+  challengeId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -446,6 +452,19 @@ export type RemoveUserMutationVariables = Exact<{ [key: string]: never; }>;
 export type RemoveUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'removeUser'>
+);
+
+export type UpdateChallengeStatusMutationVariables = Exact<{
+  challengeId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type UpdateChallengeStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { updateChallengeStatus?: Maybe<(
+    { __typename?: 'Challenges' }
+    & Pick<Challenges, '_id' | 'content' | 'status'>
+  )> }
 );
 
 export type UpdateQuestionMutationVariables = Exact<{
@@ -1044,6 +1063,41 @@ export function useRemoveUserMutation(baseOptions?: Apollo.MutationHookOptions<R
 export type RemoveUserMutationHookResult = ReturnType<typeof useRemoveUserMutation>;
 export type RemoveUserMutationResult = Apollo.MutationResult<RemoveUserMutation>;
 export type RemoveUserMutationOptions = Apollo.BaseMutationOptions<RemoveUserMutation, RemoveUserMutationVariables>;
+export const UpdateChallengeStatusDocument = gql`
+    mutation UpdateChallengeStatus($challengeId: ID) {
+  updateChallengeStatus(challengeId: $challengeId) {
+    _id
+    content
+    status
+  }
+}
+    `;
+export type UpdateChallengeStatusMutationFn = Apollo.MutationFunction<UpdateChallengeStatusMutation, UpdateChallengeStatusMutationVariables>;
+
+/**
+ * __useUpdateChallengeStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateChallengeStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateChallengeStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateChallengeStatusMutation, { data, loading, error }] = useUpdateChallengeStatusMutation({
+ *   variables: {
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useUpdateChallengeStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateChallengeStatusMutation, UpdateChallengeStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateChallengeStatusMutation, UpdateChallengeStatusMutationVariables>(UpdateChallengeStatusDocument, options);
+      }
+export type UpdateChallengeStatusMutationHookResult = ReturnType<typeof useUpdateChallengeStatusMutation>;
+export type UpdateChallengeStatusMutationResult = Apollo.MutationResult<UpdateChallengeStatusMutation>;
+export type UpdateChallengeStatusMutationOptions = Apollo.BaseMutationOptions<UpdateChallengeStatusMutation, UpdateChallengeStatusMutationVariables>;
 export const UpdateQuestionDocument = gql`
     mutation UpdateQuestion($id: ID, $title: String, $content: String, $tags: [String!]!, $isDraft: Boolean) {
   updateQuestion(

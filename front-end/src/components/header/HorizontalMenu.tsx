@@ -114,12 +114,12 @@ const HorizontalMenu = ({
       icon: <RadiusSettingOutlined className="menu-item-icon" />,
     },
     {
-      key: "profile",
-      icon: <UserOutlined className="menu-item-icon" />,
-    },
-    {
       key: "rewards",
       icon: <GiftOutlined className="menu-item-icon" />,
+    },
+    {
+      key: "profile",
+      icon: <UserOutlined className="menu-item-icon" />,
     },
     {
       key: "logout",
@@ -175,16 +175,6 @@ const HorizontalMenu = ({
         </Spin>
       </Modal>
 
-      {/* user profile */}
-      <Modal
-        open={isUserProfileVisible}
-        keyboard
-        maskClosable
-        onCancel={() => setIsUserProfileVisible(false)}
-        footer={null}>
-        <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
-      </Modal>
-
       {/* Reward system */}
       <Modal
         className={cookies.reward ? "" : "reward-system-modal"}
@@ -198,6 +188,16 @@ const HorizontalMenu = ({
           setOpenTutorial={setOpenTutorial}
           setIsRewardSystemVisible={setIsRewardSystemVisible}
         />
+      </Modal>
+
+      {/* user profile */}
+      <Modal
+        open={isUserProfileVisible}
+        keyboard
+        maskClosable
+        onCancel={() => setIsUserProfileVisible(false)}
+        footer={null}>
+        <UserProfile setIsUserProfileVisible={setIsUserProfileVisible} />
       </Modal>
 
       {/* Logout dialog */}

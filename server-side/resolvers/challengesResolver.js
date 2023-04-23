@@ -158,6 +158,24 @@ const challengesResolver = {
       return { ...result._doc, author: { ...author._doc } };
     },
   },
+  updateChallengeStatus: async (parent, args, context) => {
+    if (!context.user) {
+      throw new Error("You're not allowed to create a challenge.");
+    }
+
+    const challenge = Challenges.find({
+      _id: args.challengeId,
+      author: context.user._id,
+    });
+    if (!challenge) {
+      throw new Error("Challenge not found");
+    }
+
+    const updatedChallenge = await Challenges.findByIdAndUpdate(challenge._id, {
+      $set: { status: "finished" },
+    });
+    return updatedChallenge;
+  },
 };
 
 export default challengesResolver;

@@ -179,6 +179,7 @@ const typeDefs = `
 
     createChallenge(challenge: ChallengeInput): Challenges
     createNotification(notification: NotificationInput): Notification
+    updateChallengeStatus(challengeId: ID): Challenges
   }
 `;
 

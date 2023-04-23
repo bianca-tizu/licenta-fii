@@ -18,3 +18,9 @@
 .challenge-wrapper{
     width: 100%;
 }
+
+.personal-challenge-item{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}

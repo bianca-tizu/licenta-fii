@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { HeartTwoTone, StarTwoTone } from "@ant-design/icons";
+import { CheckOutlined, HeartTwoTone, StarTwoTone } from "@ant-design/icons";
 import {
   Badge,
   Form,
@@ -23,17 +23,21 @@ import {
   useCreateChallengeMutation,
   useGetSystemChallengesQuery,
   useGetPersonalChallengesQuery,
+  useUpdateChallengeStatusMutation,
 } from "../../../../generated/graphql";
 
 const ProgressView = () => {
   const [lifePercent, setLifePercent] = useState(100);
   const [experiencePercent, setExperiencePercent] = useState(0);
+
   const [showNewChallengeForm, setShowNewChallengeForm] = useState(false);
+
   const [systemChallenges, setSystemChallenges] = useState<Challenges[]>([]);
+  const [showSystemChallenges, setShowSystemChallenges] = useState(true);
+
   const [personalChallenges, setPersonalChallenges] = useState<Challenges[]>(
     []
   );
-  const [showSystemChallenges, setShowSystemChallenges] = useState(true);
 
   const { data, error } = useGetSystemChallengesQuery({
     fetchPolicy: "network-only",
@@ -44,6 +48,11 @@ const ProgressView = () => {
   });
 
   const [createChallenge] = useCreateChallengeMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: GetPersonalChallengesDocument }],
+  });
+
+  const [updateChallenge] = useUpdateChallengeStatusMutation({
     awaitRefetchQueries: true,
     refetchQueries: [{ query: GetPersonalChallengesDocument }],
   });
@@ -91,6 +100,32 @@ const ProgressView = () => {
           message: "Oops, there was a problem with your request.",
         });
       }
+    }
+  };
+
+  const handlePersonalChallengeCheck = async challengeId => {
+    console.log(challengeId);
+    try {
+      const response = await updateChallenge({
+        variables: {
+          challengeId: challengeId,
+        },
+      });
+      if (response) {
+        setPersonalChallenges(prev =>
+          prev.map(challenge =>
+            challenge._id === challengeId
+              ? { ...challenge, status: "finished" }
+              : challenge
+          )
+        );
+        //display notifications for gaining XP and user lvl(if case)
+      }
+    } catch (err: any) {
+      console.log(err);
+      notification.error({
+        message: "Oops, there was a problem with your request.",
+      });
     }
   };
 
@@ -157,61 +192,63 @@ const ProgressView = () => {
                 },
               ]}
             />
-            {
-              showSystemChallenges
-                ? systemChallenges
-                    .filter(
-                      challenge =>
-                        challenge.status === "started" ||
-                        challenge.status === "progress"
-                    )
-                    .map((systemChallenge, index) => {
-                      const { _id, status, content } = systemChallenge;
-                      if (index < 4) {
-                        return (
-                          <p key={_id}>
-                            <Badge
-                              style={{ paddingRight: "10px" }}
-                              status={
-                                status === "started" ? "default" : "processing"
-                              }
-                            />
-                            {content}
-                          </p>
-                        );
-                      }
-                    })
-                : personalChallenges.map((personalChallenge, index) => {
+            {showSystemChallenges
+              ? systemChallenges
+                  .filter(
+                    challenge =>
+                      challenge.status === "started" ||
+                      challenge.status === "progress"
+                  )
+                  .map((systemChallenge, index) => {
+                    const { _id, status, content } = systemChallenge;
                     if (index < 4) {
                       return (
-                        <p key={personalChallenge._id}>
+                        <p key={_id}>
                           <Badge
                             style={{ paddingRight: "10px" }}
                             status={
-                              personalChallenge.status === "started"
-                                ? "default"
-                                : "processing"
+                              status === "started" ? "default" : "processing"
                             }
                           />
-                          {personalChallenge.content}
+                          {content}
                         </p>
                       );
                     }
                   })
-              // <List
-              //   itemLayout="horizontal"
-              //   dataSource={personalChallenges}
-              //   renderItem={(item, index) => {
-              //     <List.Item actions={[<a key="list-loadmore-edit">edit</a>]}>
-              //       <List.Item.Meta description={item.content} />
-              //       {/* <Steps
-              //         style={{ marginTop: 8 }}
-              //         status={item.status as StepsProps["status"]}
-              //       /> */}
-              //     </List.Item>;
-              //   }}
-              // />
-            }
+              : personalChallenges
+                  .filter(
+                    challenge =>
+                      challenge.status === "started" ||
+                      challenge.status === "progress"
+                  )
+                  .map((personalChallenge, index) => {
+                    if (index < 4) {
+                      return (
+                        <div className="personal-challenge-item">
+                          <p key={personalChallenge._id}>
+                            <Badge
+                              style={{ paddingRight: "10px" }}
+                              status={
+                                personalChallenge.status === "started"
+                                  ? "default"
+                                  : "processing"
+                              }
+                            />
+                            {personalChallenge.content}
+                          </p>
+                          <Button
+                            shape="circle"
+                            icon={<CheckOutlined />}
+                            onClick={() =>
+                              handlePersonalChallengeCheck(
+                                personalChallenge._id
+                              )
+                            }
+                          />
+                        </div>
+                      );
+                    }
+                  })}
           </>
         )}
       </Card>
