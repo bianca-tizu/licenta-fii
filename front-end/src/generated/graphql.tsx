@@ -79,6 +79,7 @@ export type Mutation = {
   forgetPassword: User;
   joinRewardSystem?: Maybe<User>;
   loginUser: AuthPayload;
+  mapSystemChallengesToUser?: Maybe<MappedChallenges>;
   registerUser: AuthPayload;
   removeUser?: Maybe<Scalars['ID']>;
   updateChallengeStatus?: Maybe<Challenges>;
@@ -181,12 +182,11 @@ export type Query = {
   getAllQuestions?: Maybe<Questions>;
   getCommentsForQuestion?: Maybe<Array<Maybe<Comment>>>;
   getCurrentUser?: Maybe<User>;
-  getPersonalChallenges?: Maybe<Array<Maybe<Challenges>>>;
+  getPersonalChallenges?: Maybe<RetrievedChallenges>;
   getQuestion?: Maybe<Question>;
-  getSystemChallenges?: Maybe<Array<Maybe<Challenges>>>;
+  getSystemChallenges?: Maybe<RetrievedChallenges>;
   hello?: Maybe<Scalars['String']>;
   isUserAlreadyVotedQuestion?: Maybe<Array<Maybe<Votes>>>;
-  mapSystemChallengesToUser?: Maybe<MappedChallenges>;
   searchQuestions?: Maybe<Array<Maybe<Question>>>;
 };
 
@@ -249,6 +249,12 @@ export type RegisterInput = {
   studentId?: Maybe<Scalars['String']>;
 };
 
+export type RetrievedChallenges = {
+  __typename?: 'RetrievedChallenges';
+  challenges?: Maybe<Array<Maybe<Challenges>>>;
+  user?: Maybe<UserExperience>;
+};
+
 export type UpdateQuestionInput = {
   content?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
@@ -275,6 +281,12 @@ export type User = {
   resetPassToken?: Maybe<Scalars['String']>;
   studentId?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
+};
+
+export type UserExperience = {
+  __typename?: 'UserExperience';
+  experience?: Maybe<Scalars['Int']>;
+  life?: Maybe<Scalars['Int']>;
 };
 
 export type UserInput = {
@@ -431,6 +443,24 @@ export type LoginMutation = (
   ) }
 );
 
+export type MapSystemChallengesToUserMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MapSystemChallengesToUserMutation = (
+  { __typename?: 'Mutation' }
+  & { mapSystemChallengesToUser?: Maybe<(
+    { __typename?: 'MappedChallenges' }
+    & Pick<MappedChallenges, '_id'>
+    & { challenges?: Maybe<Array<Maybe<(
+      { __typename?: 'Challenges' }
+      & Pick<Challenges, '_id' | 'content' | 'lookupId'>
+    )>>>, notifications?: Maybe<Array<Maybe<(
+      { __typename?: 'Notification' }
+      & Pick<Notification, 'message'>
+    )>>> }
+  )> }
+);
+
 export type RegisterMutationVariables = Exact<{
   sid: Scalars['String'];
   email: Scalars['String'];
@@ -573,10 +603,16 @@ export type GetPersonalChallengesQueryVariables = Exact<{ [key: string]: never; 
 
 export type GetPersonalChallengesQuery = (
   { __typename?: 'Query' }
-  & { getPersonalChallenges?: Maybe<Array<Maybe<(
-    { __typename?: 'Challenges' }
-    & Pick<Challenges, '_id' | 'content' | 'status'>
-  )>>> }
+  & { getPersonalChallenges?: Maybe<(
+    { __typename?: 'RetrievedChallenges' }
+    & { challenges?: Maybe<Array<Maybe<(
+      { __typename?: 'Challenges' }
+      & Pick<Challenges, '_id' | 'content' | 'status'>
+    )>>>, user?: Maybe<(
+      { __typename?: 'UserExperience' }
+      & Pick<UserExperience, 'experience' | 'life'>
+    )> }
+  )> }
 );
 
 export type GetSystemChallengesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -584,10 +620,16 @@ export type GetSystemChallengesQueryVariables = Exact<{ [key: string]: never; }>
 
 export type GetSystemChallengesQuery = (
   { __typename?: 'Query' }
-  & { getSystemChallenges?: Maybe<Array<Maybe<(
-    { __typename?: 'Challenges' }
-    & Pick<Challenges, '_id' | 'content' | 'status'>
-  )>>> }
+  & { getSystemChallenges?: Maybe<(
+    { __typename?: 'RetrievedChallenges' }
+    & { challenges?: Maybe<Array<Maybe<(
+      { __typename?: 'Challenges' }
+      & Pick<Challenges, '_id' | 'content' | 'status'>
+    )>>>, user?: Maybe<(
+      { __typename?: 'UserExperience' }
+      & Pick<UserExperience, 'experience' | 'life'>
+    )> }
+  )> }
 );
 
 export type IsUserAlreadyVotedQuestionQueryVariables = Exact<{
@@ -601,24 +643,6 @@ export type IsUserAlreadyVotedQuestionQuery = (
     { __typename?: 'Votes' }
     & Pick<Votes, 'voted'>
   )>>> }
-);
-
-export type MapSystemChallengesToUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MapSystemChallengesToUserQuery = (
-  { __typename?: 'Query' }
-  & { mapSystemChallengesToUser?: Maybe<(
-    { __typename?: 'MappedChallenges' }
-    & Pick<MappedChallenges, '_id'>
-    & { challenges?: Maybe<Array<Maybe<(
-      { __typename?: 'Challenges' }
-      & Pick<Challenges, '_id' | 'content' | 'lookupId'>
-    )>>>, notifications?: Maybe<Array<Maybe<(
-      { __typename?: 'Notification' }
-      & Pick<Notification, 'message'>
-    )>>> }
-  )> }
 );
 
 export type QuestionsQueryVariables = Exact<{
@@ -998,6 +1022,46 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MapSystemChallengesToUserDocument = gql`
+    mutation MapSystemChallengesToUser {
+  mapSystemChallengesToUser {
+    _id
+    challenges {
+      _id
+      content
+      lookupId
+    }
+    notifications {
+      message
+    }
+  }
+}
+    `;
+export type MapSystemChallengesToUserMutationFn = Apollo.MutationFunction<MapSystemChallengesToUserMutation, MapSystemChallengesToUserMutationVariables>;
+
+/**
+ * __useMapSystemChallengesToUserMutation__
+ *
+ * To run a mutation, you first call `useMapSystemChallengesToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMapSystemChallengesToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [mapSystemChallengesToUserMutation, { data, loading, error }] = useMapSystemChallengesToUserMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMapSystemChallengesToUserMutation(baseOptions?: Apollo.MutationHookOptions<MapSystemChallengesToUserMutation, MapSystemChallengesToUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MapSystemChallengesToUserMutation, MapSystemChallengesToUserMutationVariables>(MapSystemChallengesToUserDocument, options);
+      }
+export type MapSystemChallengesToUserMutationHookResult = ReturnType<typeof useMapSystemChallengesToUserMutation>;
+export type MapSystemChallengesToUserMutationResult = Apollo.MutationResult<MapSystemChallengesToUserMutation>;
+export type MapSystemChallengesToUserMutationOptions = Apollo.BaseMutationOptions<MapSystemChallengesToUserMutation, MapSystemChallengesToUserMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($sid: String!, $email: String!, $password: String!) {
   registerUser(user: {studentId: $sid, email: $email, password: $password}) {
@@ -1381,9 +1445,15 @@ export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, 
 export const GetPersonalChallengesDocument = gql`
     query GetPersonalChallenges {
   getPersonalChallenges {
-    _id
-    content
-    status
+    challenges {
+      _id
+      content
+      status
+    }
+    user {
+      experience
+      life
+    }
   }
 }
     `;
@@ -1417,9 +1487,15 @@ export type GetPersonalChallengesQueryResult = Apollo.QueryResult<GetPersonalCha
 export const GetSystemChallengesDocument = gql`
     query GetSystemChallenges {
   getSystemChallenges {
-    _id
-    content
-    status
+    challenges {
+      _id
+      content
+      status
+    }
+    user {
+      experience
+      life
+    }
   }
 }
     `;
@@ -1485,48 +1561,6 @@ export function useIsUserAlreadyVotedQuestionLazyQuery(baseOptions?: Apollo.Lazy
 export type IsUserAlreadyVotedQuestionQueryHookResult = ReturnType<typeof useIsUserAlreadyVotedQuestionQuery>;
 export type IsUserAlreadyVotedQuestionLazyQueryHookResult = ReturnType<typeof useIsUserAlreadyVotedQuestionLazyQuery>;
 export type IsUserAlreadyVotedQuestionQueryResult = Apollo.QueryResult<IsUserAlreadyVotedQuestionQuery, IsUserAlreadyVotedQuestionQueryVariables>;
-export const MapSystemChallengesToUserDocument = gql`
-    query MapSystemChallengesToUser {
-  mapSystemChallengesToUser {
-    _id
-    challenges {
-      _id
-      content
-      lookupId
-    }
-    notifications {
-      message
-    }
-  }
-}
-    `;
-
-/**
- * __useMapSystemChallengesToUserQuery__
- *
- * To run a query within a React component, call `useMapSystemChallengesToUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useMapSystemChallengesToUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMapSystemChallengesToUserQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMapSystemChallengesToUserQuery(baseOptions?: Apollo.QueryHookOptions<MapSystemChallengesToUserQuery, MapSystemChallengesToUserQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MapSystemChallengesToUserQuery, MapSystemChallengesToUserQueryVariables>(MapSystemChallengesToUserDocument, options);
-      }
-export function useMapSystemChallengesToUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MapSystemChallengesToUserQuery, MapSystemChallengesToUserQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MapSystemChallengesToUserQuery, MapSystemChallengesToUserQueryVariables>(MapSystemChallengesToUserDocument, options);
-        }
-export type MapSystemChallengesToUserQueryHookResult = ReturnType<typeof useMapSystemChallengesToUserQuery>;
-export type MapSystemChallengesToUserLazyQueryHookResult = ReturnType<typeof useMapSystemChallengesToUserLazyQuery>;
-export type MapSystemChallengesToUserQueryResult = Apollo.QueryResult<MapSystemChallengesToUserQuery, MapSystemChallengesToUserQueryVariables>;
 export const QuestionsDocument = gql`
     query Questions($offset: Int, $limit: Int) {
   getAllQuestions(offset: $offset, limit: $limit) {

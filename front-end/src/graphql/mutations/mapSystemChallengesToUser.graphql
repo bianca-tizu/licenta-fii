@@ -1,4 +1,4 @@
-query MapSystemChallengesToUser {
+mutation MapSystemChallengesToUser {
   mapSystemChallengesToUser {
     _id
     challenges {

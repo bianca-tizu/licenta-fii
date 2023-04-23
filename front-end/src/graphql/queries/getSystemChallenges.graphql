@@ -1,7 +1,13 @@
 query GetSystemChallenges {
   getSystemChallenges {
-    _id
-    content
-    status
+    challenges {
+      _id
+      content
+      status
+    }
+    user {
+      experience
+      life
+    }
   }
 }

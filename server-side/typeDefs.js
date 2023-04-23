@@ -87,13 +87,22 @@ const typeDefs = `
 
     isUserAlreadyVotedQuestion(questionId: ID): [Votes]
 
-    getSystemChallenges: [Challenges]
-    getPersonalChallenges: [Challenges]
-    mapSystemChallengesToUser: MappedChallenges
+    getSystemChallenges: RetrievedChallenges
+    getPersonalChallenges: RetrievedChallenges
     checkAndUpdateSystemChallengesStatus: [String]
 
     getAllNotifications: [Notification]
 
+  }
+
+  type UserExperience {
+    experience: Int
+    life: Int
+  }
+
+  type RetrievedChallenges {
+    challenges: [Challenges]
+    user: UserExperience
   }
 
   input QuestionInput {
@@ -180,6 +189,8 @@ const typeDefs = `
     createChallenge(challenge: ChallengeInput): Challenges
     createNotification(notification: NotificationInput): Notification
     updateChallengeStatus(challengeId: ID): Challenges
+    mapSystemChallengesToUser: MappedChallenges
+
   }
 `;
 

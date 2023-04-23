@@ -2,85 +2,7 @@ import { Challenges } from "../models/Challenges.model.js";
 import { User } from "../models/User.model.js";
 import { Comment } from "../models/Comment.model.js";
 import { Notification } from "../models/Notification.model.js";
-
-const updateUserLevel = async userId => {
-  const user = await User.findById(userId);
-  let notifications = [];
-  if (user.life < 100) {
-    user.life += 10;
-    notifications.push("You've gained some life");
-  }
-
-  if (user.level < 5 && user.experience < 50) {
-    user.experience += 20;
-    notifications.push("Congrats, you've gained 20 exp.");
-    if (user.experience >= 50) {
-      user.level++;
-      user.life = 100;
-      user.experience = user.experience - 50;
-      notifications.push(`Yay, you got to the ${user.level} level`);
-    }
-  } else if (user.level >= 5 && user.level <= 10 && user.experience < 75) {
-    user.experience += 15;
-    notifications.push("Congrats, you've gained 15 exp.");
-
-    if (user.experience >= 75) {
-      user.level++;
-      user.life = 100;
-      user.experience = user.experience - 75;
-      notifications.push(`Yay, you got to the ${user.level} level`);
-    }
-  } else if (user.level > 10 && user.level < 25 && user.experience < 100) {
-    user.experience += 10;
-    notifications.push("Congrats, you've gained 10 exp.");
-
-    if (user.experience >= 100) {
-      user.level++;
-      user.life = 100;
-      user.experience = user.experience - 100;
-      notifications.push(`Yay, you got to the ${user.level} level`);
-    }
-  } else if (user.level >= 25 && user.experience < 150) {
-    user.experience += 5;
-    notifications.push("Congrats, you've gained 5 exp.");
-
-    if (user.experience >= 150) {
-      user.level++;
-      user.life = 100;
-      user.experience = user.experience - 150;
-      notifications.push(`Yay, you got to the ${user.level} level`);
-    }
-  }
-
-  await User.updateOne(
-    {
-      _id: userId,
-      $or: [
-        { life: { $ne: user.life } },
-        { level: { $ne: user.level } },
-        { experience: { $ne: user.experience } },
-      ],
-    },
-    {
-      $set: {
-        life: user.life,
-        level: user.level,
-        experience: user.experience,
-      },
-    }
-  );
-
-  if (notifications) {
-    const mappedNotifications = notifications.map(notification => {
-      return { message: notification, user: user._id, type: "USER" };
-    });
-
-    await Notification.insertMany(mappedNotifications, {
-      upsert: true,
-    });
-    notifications = [];
-  }
-};
+import { updateUserLevel } from "./updateUserLevel.js";
 
 const getCurrentChallenge = (challenges, id) => {
   return challenges.filter(challenge => challenge.lookupId === id)[0];
@@ -98,7 +20,7 @@ const checkAndUpdateFirstQuestion = async (challenges, userId) => {
     { $set: { status: "finished" } }
   );
   if (updatedChallenge.matchedCount) {
-    updateUserLevel(userId);
+    updateUserLevel(userId, "system");
 
     return "Hooray, you've added your first question";
   }
@@ -118,7 +40,7 @@ const checkAndUpdateFirstAnswer = async (challenges, userId) => {
       { $set: { status: "finished" } }
     );
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId);
+      updateUserLevel(userId, "system");
 
       return "Hooray, you've added your first answer";
     }
@@ -139,7 +61,7 @@ const checkAndUpdateFiveAnswers = async (challenges, userId) => {
       { $set: { status: "finished" } }
     );
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId);
+      updateUserLevel(userId, "system");
       return "Wooow, you've made it! You've managed to add 5 answers.";
     }
   } else if (comments.length > 0 && comments.length < 5) {
@@ -167,7 +89,7 @@ const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
     );
 
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId);
+      updateUserLevel(userId, "system");
 
       return "Wooow, you've made it! You've managed to add 5 questions.";
     }
@@ -208,7 +130,7 @@ const dailyAppCheckin = async (challenges, userId) => {
       { $set: { status: "progress" } }
     );
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId);
+      updateUserLevel(userId, "system");
       return "Yay, you checked the app daily. Good job!";
     }
   }
@@ -230,7 +152,7 @@ const addPersonalChallenge = async (challenges, userId) => {
       { $set: { status: "progress" } }
     );
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId);
+      updateUserLevel(userId, "system");
 
       return "You did it! You added your first challenge.";
     }

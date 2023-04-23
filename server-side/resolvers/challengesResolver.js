@@ -5,6 +5,7 @@ import { SystemChallenges } from "../models/SystemChallenges.model.js";
 import { User } from "../models/User.model.js";
 
 import { checkSystemChallenges } from "../utils/checkSystemChallenges.js";
+import { updateUserLevel } from "../utils/updateUserLevel.js";
 
 const challengesResolver = {
   Query: {
@@ -13,23 +14,131 @@ const challengesResolver = {
         throw new Error("You're not allowed to see challenges.");
       }
 
-      const challenges = await Challenges.find({
+      const challengesCounter = await Challenges.find({
+        author: context.user._id,
         isSystemChallenge: true,
-      });
+      }).count();
 
-      return challenges;
+      if (challengesCounter) {
+        const challenges = await Challenges.find({
+          isSystemChallenge: true,
+        }).populate("author");
+        return {
+          challenges: challenges,
+          user: {
+            life: challenges[0].author.life,
+            experience: challenges[0].author.experience,
+          },
+        };
+      }
     },
     getPersonalChallenges: async (parent, args, context) => {
       if (!context.user) {
         throw new Error("You're not allowed to see challenges.");
       }
 
-      const challenges = await Challenges.find({
-        isSystemChallenge: false,
+      const challengesCounter = await Challenges.find({
         author: context.user._id,
+        isSystemChallenge: true,
+      }).count();
+      if (challengesCounter) {
+        const challenges = await Challenges.find({
+          isSystemChallenge: false,
+          author: context.user._id,
+        }).populate("author");
+
+        return {
+          challenges: challenges,
+          user: {
+            life: challenges[0].author.life,
+            experience: challenges[0].author.experience,
+          },
+        };
+      }
+    },
+
+    checkAndUpdateSystemChallengesStatus: async (parent, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to see these challenges.");
+      }
+
+      try {
+        const currentUser = await User.findById(context.user._id).populate(
+          "challenges"
+        );
+        const { questions, challenges } = currentUser;
+        const notifications = await checkSystemChallenges(
+          questions,
+          challenges,
+          context.user._id
+        );
+
+        // if (notifications) {
+        //   const test = currentUser.notifications.some(currentNotification => {
+        //     notifications.find(
+        //       notification => notification === currentNotification.message
+        //     );
+        //   });
+
+        //   console.log(test);
+        // }
+        return notifications;
+      } catch (err) {
+        throw new Error("Oops, there was a problem.");
+      }
+    },
+  },
+  Mutation: {
+    createChallenge: async (parent, args, context) => {
+      const { content, isSystemChallenge } = args.challenge;
+      if (!context.user) {
+        throw new Error("You're not allowed to create a challenge.");
+      }
+
+      const challenge = new Challenges({
+        content: content ?? "",
+        status: "started",
+        isSystemChallenge: isSystemChallenge,
+        author: context.user._id,
+        createdAt: new Date(Date.now()),
       });
 
-      return challenges;
+      const result = await challenge.save();
+      const author = await User.findById(context.user._id);
+
+      if (!author) {
+        throw new Error("User not found");
+      }
+      await User.findByIdAndUpdate(
+        context.user._id,
+        { $push: { challenges: result._id } },
+        { new: true, useFindAndModify: false }
+      );
+
+      return { ...result._doc, author: { ...author._doc } };
+    },
+    updateChallengeStatus: async (parent, args, context) => {
+      if (!context.user) {
+        throw new Error("You're not allowed to create a challenge.");
+      }
+
+      const challenge = await Challenges.findOne({
+        _id: args.challengeId,
+        author: context.user._id,
+      }).populate("author");
+
+      if (!challenge) {
+        throw new Error("Challenge not found");
+      } else {
+        const updatedChallenge = await Challenges.findOneAndUpdate(
+          { _id: challenge._id, author: context.user._id },
+          {
+            $set: { status: "finished" },
+          }
+        );
+        updateUserLevel(updatedChallenge.author._id, "personal");
+        return challenge;
+      }
     },
     mapSystemChallengesToUser: async (parent, args, context) => {
       if (!context.user) {
@@ -97,84 +206,6 @@ const challengesResolver = {
         notifications: systemChallengesNotifications,
       };
     },
-    checkAndUpdateSystemChallengesStatus: async (parent, args, context) => {
-      if (!context.user) {
-        throw new Error("You're not allowed to see these challenges.");
-      }
-
-      try {
-        const currentUser = await User.findById(context.user._id).populate(
-          "challenges"
-        );
-        const { questions, challenges } = currentUser;
-        const notifications = await checkSystemChallenges(
-          questions,
-          challenges,
-          context.user._id
-        );
-
-        // if (notifications) {
-        //   const test = currentUser.notifications.some(currentNotification => {
-        //     notifications.find(
-        //       notification => notification === currentNotification.message
-        //     );
-        //   });
-
-        //   console.log(test);
-        // }
-        return notifications;
-      } catch (err) {
-        throw new Error("Oops, there was a problem.");
-      }
-    },
-  },
-  Mutation: {
-    createChallenge: async (parent, args, context) => {
-      const { content, isSystemChallenge } = args.challenge;
-      if (!context.user) {
-        throw new Error("You're not allowed to create a challenge.");
-      }
-
-      const challenge = new Challenges({
-        content: content ?? "",
-        status: "started",
-        isSystemChallenge: isSystemChallenge,
-        author: context.user._id,
-        createdAt: new Date(Date.now()),
-      });
-
-      const result = await challenge.save();
-      const author = await User.findById(context.user._id);
-
-      if (!author) {
-        throw new Error("User not found");
-      }
-      await User.findByIdAndUpdate(
-        context.user._id,
-        { $push: { challenges: result._id } },
-        { new: true, useFindAndModify: false }
-      );
-
-      return { ...result._doc, author: { ...author._doc } };
-    },
-  },
-  updateChallengeStatus: async (parent, args, context) => {
-    if (!context.user) {
-      throw new Error("You're not allowed to create a challenge.");
-    }
-
-    const challenge = Challenges.find({
-      _id: args.challengeId,
-      author: context.user._id,
-    });
-    if (!challenge) {
-      throw new Error("Challenge not found");
-    }
-
-    const updatedChallenge = await Challenges.findByIdAndUpdate(challenge._id, {
-      $set: { status: "finished" },
-    });
-    return updatedChallenge;
   },
 };
 

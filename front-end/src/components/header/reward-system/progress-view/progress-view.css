@@ -11,16 +11,3 @@
 .ant-progress-line{
     margin-left: 10px;
 }
-
-.ant-input-group.ant-input-group-compact{
-    display: flex !important;
-}
-.challenge-wrapper{
-    width: 100%;
-}
-
-.personal-challenge-item{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-}

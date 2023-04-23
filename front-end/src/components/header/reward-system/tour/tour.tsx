@@ -3,8 +3,9 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import JoyRide from "react-joyride";
 import {
+  GetSystemChallengesDocument,
   useJoinRewardSystemMutation,
-  useMapSystemChallengesToUserLazyQuery,
+  useMapSystemChallengesToUserMutation,
 } from "../../../../generated/graphql";
 
 // Tour steps
@@ -33,7 +34,7 @@ const TOUR_STEPS = [
 
 const Tour = () => {
   const [joinedRewardSystem] = useJoinRewardSystemMutation();
-  const [mapSystemChallenges] = useMapSystemChallengesToUserLazyQuery();
+  const [mapSystemChallenges] = useMapSystemChallengesToUserMutation();
   const [, setCookie] = useCookies(["reward"]);
   const [errors, setErrors] = useState(false);
 
@@ -45,7 +46,11 @@ const Tour = () => {
           "reward",
           response.data?.joinRewardSystem?.joinedRewardSystem
         );
-        const { data } = await mapSystemChallenges();
+        const { data } = await mapSystemChallenges({
+          awaitRefetchQueries: true,
+          refetchQueries: [{ query: GetSystemChallengesDocument }],
+        });
+
         if (data?.mapSystemChallengesToUser?.notifications) {
           data?.mapSystemChallengesToUser?.notifications.forEach(message =>
             notification["info"]({
