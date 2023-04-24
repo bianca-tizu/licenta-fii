@@ -1,0 +1,5 @@
+mutation UpdateNotificationStatus($notificationId: ID) {
+  updateNotificationStatus(notificationId: $notificationId) {
+    message
+  }
+}

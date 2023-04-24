@@ -29,6 +29,7 @@ const ProgressView = () => {
   const [showNewChallengeForm, setShowNewChallengeForm] = useState(false);
 
   const [showSystemChallenges, setShowSystemChallenges] = useState(true);
+  const [selectedTabKey, setSelectedTabKey] = useState("1");
 
   const currentUser = useGetCurrentUserQuery({ fetchPolicy: "network-only" });
 
@@ -60,7 +61,11 @@ const ProgressView = () => {
 
         <div className="progress-item">
           <StarTwoTone style={{ marginRight: "10px" }} />
-          <Progress percent={experiencePercent} status="active" />
+          <Progress
+            percent={experiencePercent}
+            status="active"
+            format={percent => `${percent}xp`}
+          />
         </div>
       </Card>
       <Card
@@ -83,6 +88,7 @@ const ProgressView = () => {
               type="card"
               onChange={selectedKey => {
                 setShowSystemChallenges(selectedKey === "1");
+                setSelectedTabKey(selectedKey);
               }}
               items={[
                 {

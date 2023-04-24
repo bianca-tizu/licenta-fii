@@ -35,5 +35,25 @@ const notificationsResolver = {
       return { ...result };
     },
   },
+  updateNotificationStatus: async (parent, args, context) => {
+    if (!context.user) {
+      throw new Error("You're not allowed to create notifications.");
+    }
+
+    await removeSeenNotifications(context.user._id);
+
+    const notification = await Notification.find({
+      user: context.user._id,
+      _id: args.notificationId,
+    });
+
+    if (notification) {
+      await Notification.updateOne(
+        { _id: args.notificationId },
+        { $set: { seen: true } }
+      );
+      return notification;
+    }
+  },
 };
 export default notificationsResolver;

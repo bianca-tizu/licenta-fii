@@ -162,7 +162,7 @@ const addPersonalChallenge = async (challenges, userId) => {
 export const checkSystemChallenges = async (questions, challenges, userId) => {
   try {
     const notifications = [];
-    if (questions.length > 0) {
+    if (questions.length) {
       const firstQuestion = await checkAndUpdateFirstQuestion(
         challenges,
         userId

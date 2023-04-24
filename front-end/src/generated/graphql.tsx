@@ -83,6 +83,7 @@ export type Mutation = {
   registerUser: AuthPayload;
   removeUser?: Maybe<Scalars['ID']>;
   updateChallengeStatus?: Maybe<MappedChallenges>;
+  updateNotificationStatus?: Maybe<Notification>;
   updateQuestion?: Maybe<Question>;
   updateUser?: Maybe<User>;
 };
@@ -145,6 +146,11 @@ export type MutationRegisterUserArgs = {
 
 export type MutationUpdateChallengeStatusArgs = {
   challengeId?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationUpdateNotificationStatusArgs = {
+  notificationId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -500,6 +506,19 @@ export type UpdateChallengeStatusMutation = (
       { __typename?: 'Notification' }
       & Pick<Notification, 'message'>
     )>>> }
+  )> }
+);
+
+export type UpdateNotificationStatusMutationVariables = Exact<{
+  notificationId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type UpdateNotificationStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { updateNotificationStatus?: Maybe<(
+    { __typename?: 'Notification' }
+    & Pick<Notification, 'message'>
   )> }
 );
 
@@ -1173,6 +1192,39 @@ export function useUpdateChallengeStatusMutation(baseOptions?: Apollo.MutationHo
 export type UpdateChallengeStatusMutationHookResult = ReturnType<typeof useUpdateChallengeStatusMutation>;
 export type UpdateChallengeStatusMutationResult = Apollo.MutationResult<UpdateChallengeStatusMutation>;
 export type UpdateChallengeStatusMutationOptions = Apollo.BaseMutationOptions<UpdateChallengeStatusMutation, UpdateChallengeStatusMutationVariables>;
+export const UpdateNotificationStatusDocument = gql`
+    mutation UpdateNotificationStatus($notificationId: ID) {
+  updateNotificationStatus(notificationId: $notificationId) {
+    message
+  }
+}
+    `;
+export type UpdateNotificationStatusMutationFn = Apollo.MutationFunction<UpdateNotificationStatusMutation, UpdateNotificationStatusMutationVariables>;
+
+/**
+ * __useUpdateNotificationStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateNotificationStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNotificationStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNotificationStatusMutation, { data, loading, error }] = useUpdateNotificationStatusMutation({
+ *   variables: {
+ *      notificationId: // value for 'notificationId'
+ *   },
+ * });
+ */
+export function useUpdateNotificationStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNotificationStatusMutation, UpdateNotificationStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateNotificationStatusMutation, UpdateNotificationStatusMutationVariables>(UpdateNotificationStatusDocument, options);
+      }
+export type UpdateNotificationStatusMutationHookResult = ReturnType<typeof useUpdateNotificationStatusMutation>;
+export type UpdateNotificationStatusMutationResult = Apollo.MutationResult<UpdateNotificationStatusMutation>;
+export type UpdateNotificationStatusMutationOptions = Apollo.BaseMutationOptions<UpdateNotificationStatusMutation, UpdateNotificationStatusMutationVariables>;
 export const UpdateQuestionDocument = gql`
     mutation UpdateQuestion($id: ID, $title: String, $content: String, $tags: [String!]!, $isDraft: Boolean) {
   updateQuestion(

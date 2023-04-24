@@ -64,7 +64,6 @@ const challengesResolver = {
         };
       }
     },
-
     checkAndUpdateSystemChallengesStatus: async (parent, args, context) => {
       if (!context.user) {
         throw new Error("You're not allowed to see these challenges.");
@@ -74,22 +73,12 @@ const challengesResolver = {
         const currentUser = await User.findById(context.user._id).populate(
           "challenges"
         );
-        const { questions, challenges } = currentUser;
+
         const notifications = await checkSystemChallenges(
-          questions,
-          challenges,
+          currentUser?.questions ?? [],
+          currentUser?.challenges ?? [],
           context.user._id
         );
-
-        // if (notifications) {
-        //   const test = currentUser.notifications.some(currentNotification => {
-        //     notifications.find(
-        //       notification => notification === currentNotification.message
-        //     );
-        //   });
-
-        //   console.log(test);
-        // }
         return notifications;
       } catch (err) {
         throw new Error("Oops, there was a problem.");

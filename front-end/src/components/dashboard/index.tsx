@@ -6,20 +6,29 @@ import { QuestionsProvider } from "../../contexts/QuestionsProvider";
 import "./dashboard.css";
 import Tour from "../header/reward-system/tour/tour";
 import {
-  useCheckAndUpdateSystemChallengesStatusLazyQuery,
   useCheckAndUpdateSystemChallengesStatusQuery,
+  useUpdateNotificationStatusMutation,
 } from "../../generated/graphql";
+import { notification } from "antd";
 
 const Dashboard = () => {
   const [isDraftVisible, setIsDraftVisible] = React.useState(false);
   const [openTutorial, setOpenTutorial] = React.useState(false);
 
   const { data } = useCheckAndUpdateSystemChallengesStatusQuery();
+  const [updateNotification] = useUpdateNotificationStatusMutation();
 
   React.useEffect(() => {
-    //check system challenges and show notifications
-    // console.log(data);
-  }, []);
+    if (data?.checkAndUpdateSystemChallengesStatus) {
+      data.checkAndUpdateSystemChallengesStatus.forEach(notif => {
+        notification.info({
+          message: notif,
+          duration: 0,
+          onClose: () => updateNotification(),
+        });
+      });
+    }
+  }, [data?.checkAndUpdateSystemChallengesStatus]);
 
   return (
     <QuestionsProvider>

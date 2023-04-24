@@ -12,6 +12,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 import dotenv from "dotenv";
 import { Question } from "../models/Question.model.js";
 import { Challenges } from "../models/Challenges.model.js";
+import removeSeenNotifications from "../utils/removeSeenNotifications.js";
 
 dotenv.config();
 

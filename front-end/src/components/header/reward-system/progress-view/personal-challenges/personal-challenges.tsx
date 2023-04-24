@@ -5,6 +5,7 @@ import {
   GetPersonalChallengesDocument,
   useGetPersonalChallengesQuery,
   useUpdateChallengeStatusMutation,
+  useUpdateNotificationStatusMutation,
 } from "../../../../../generated/graphql";
 import { useEffect, useState } from "react";
 
@@ -21,6 +22,7 @@ const PersonalChallenges = ({ setLifePercent, setExperiencePercent }) => {
     awaitRefetchQueries: true,
     refetchQueries: [{ query: GetPersonalChallengesDocument }],
   });
+  const [updateNotification] = useUpdateNotificationStatusMutation();
 
   const handlePersonalChallengeCheck = async challengeId => {
     try {
@@ -37,10 +39,11 @@ const PersonalChallenges = ({ setLifePercent, setExperiencePercent }) => {
           response.data.updateChallengeStatus.notifications.forEach(notif => {
             notification.info({
               message: notif?.message,
+              duration: 0,
+              onClose: () => updateNotification(),
             });
           });
         }
-        //display notifications for gaining XP and user lvl(if case)
       }
     } catch (err: any) {
       console.log(err);

@@ -186,11 +186,12 @@ const typeDefs = `
 
     joinRewardSystem: User
 
-    createChallenge(challenge: ChallengeInput): Challenges
     createNotification(notification: NotificationInput): Notification
+    updateNotificationStatus(notificationId: ID): Notification
+
+    createChallenge(challenge: ChallengeInput): Challenges
     updateChallengeStatus(challengeId: ID): MappedChallenges
     mapSystemChallengesToUser: MappedChallenges
-
   }
 `;
 

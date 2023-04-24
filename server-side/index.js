@@ -18,6 +18,7 @@ import resolvers from "./resolvers/index.js";
 import errorController from "./errorController.js";
 import { getUser } from "./utils/getUser.js";
 import { seedSystemChallenges } from "./utils/seedChallenges.js";
+import removeSeenNotifications from "./utils/removeSeenNotifications.js";
 
 dotenv.config();
 export const pubsub = new PubSub();
