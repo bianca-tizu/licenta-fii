@@ -29,11 +29,17 @@ const PersonalChallenges = ({ setLifePercent, setExperiencePercent }) => {
           challengeId: challengeId,
         },
       });
-      if (response) {
+      if (response.data?.updateChallengeStatus?.challenges) {
         notification.success({
           message: "Your challenge was successfully marked as done.",
         });
-        // setLifePercent(response.data?.updateChallengeStatus.);
+        if (response.data.updateChallengeStatus.notifications?.length) {
+          response.data.updateChallengeStatus.notifications.forEach(notif => {
+            notification.info({
+              message: notif?.message,
+            });
+          });
+        }
         //display notifications for gaining XP and user lvl(if case)
       }
     } catch (err: any) {
@@ -45,7 +51,7 @@ const PersonalChallenges = ({ setLifePercent, setExperiencePercent }) => {
   };
 
   useEffect(() => {
-    if (personalChallengeValues.data?.getPersonalChallenges) {
+    if (personalChallengeValues.data?.getPersonalChallenges?.challenges) {
       setChallenges(
         personalChallengeValues.data.getPersonalChallenges
           .challenges as Challenges[]
@@ -57,11 +63,7 @@ const PersonalChallenges = ({ setLifePercent, setExperiencePercent }) => {
         personalChallengeValues.data.getPersonalChallenges.user?.experience ?? 0
       );
     }
-
-    if (personalChallengeValues.error) {
-      console.log("Error", personalChallengeValues.error);
-    }
-  }, [personalChallengeValues.data?.getPersonalChallenges]);
+  }, [personalChallengeValues.data?.getPersonalChallenges?.challenges]);
   return (
     <>
       {challenges.filter(

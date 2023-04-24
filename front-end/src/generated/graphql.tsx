@@ -82,7 +82,7 @@ export type Mutation = {
   mapSystemChallengesToUser?: Maybe<MappedChallenges>;
   registerUser: AuthPayload;
   removeUser?: Maybe<Scalars['ID']>;
-  updateChallengeStatus?: Maybe<Challenges>;
+  updateChallengeStatus?: Maybe<MappedChallenges>;
   updateQuestion?: Maybe<Question>;
   updateUser?: Maybe<User>;
 };
@@ -492,8 +492,14 @@ export type UpdateChallengeStatusMutationVariables = Exact<{
 export type UpdateChallengeStatusMutation = (
   { __typename?: 'Mutation' }
   & { updateChallengeStatus?: Maybe<(
-    { __typename?: 'Challenges' }
-    & Pick<Challenges, '_id' | 'content' | 'status'>
+    { __typename?: 'MappedChallenges' }
+    & { challenges?: Maybe<Array<Maybe<(
+      { __typename?: 'Challenges' }
+      & Pick<Challenges, '_id' | 'content' | 'status'>
+    )>>>, notifications?: Maybe<Array<Maybe<(
+      { __typename?: 'Notification' }
+      & Pick<Notification, 'message'>
+    )>>> }
   )> }
 );
 
@@ -1130,9 +1136,14 @@ export type RemoveUserMutationOptions = Apollo.BaseMutationOptions<RemoveUserMut
 export const UpdateChallengeStatusDocument = gql`
     mutation UpdateChallengeStatus($challengeId: ID) {
   updateChallengeStatus(challengeId: $challengeId) {
-    _id
-    content
-    status
+    challenges {
+      _id
+      content
+      status
+    }
+    notifications {
+      message
+    }
   }
 }
     `;

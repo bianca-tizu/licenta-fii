@@ -1,7 +1,12 @@
 mutation UpdateChallengeStatus($challengeId: ID) {
   updateChallengeStatus(challengeId: $challengeId) {
-    _id
-    content
-    status
+    challenges {
+      _id
+      content
+      status
+    }
+    notifications {
+      message
+    }
   }
 }

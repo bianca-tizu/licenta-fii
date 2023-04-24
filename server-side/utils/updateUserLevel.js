@@ -12,43 +12,50 @@ export const updateUserLevel = async (userId, challengeType) => {
   }
 
   if (user.level < 5 && user.experience < 50) {
-    user.experience += challengeType === "system" ? 20 : 3;
-    notifications.push("Congrats, you've gained 20 exp.");
+    const exp = challengeType === "system" ? 20 : 3;
+    user.experience += exp;
+    notifications.push(`Congrats, you've gained ${exp} exp.`);
     if (user.experience >= 50) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 50;
-      notifications.push(`Yay, you got to the ${user.level} level`);
+      notifications.push(`Yay, you got to the level ${user.level}!`);
     }
   } else if (user.level >= 5 && user.level <= 10 && user.experience < 75) {
-    user.experience += challengeType === "system" ? 15 : 3;
-    notifications.push("Congrats, you've gained 15 exp.");
+    const exp = challengeType === "system" ? 15 : 3;
+
+    user.experience += exp;
+    notifications.push(`Congrats, you've gained ${exp} exp.`);
 
     if (user.experience >= 75) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 75;
-      notifications.push(`Yay, you got to the ${user.level} level`);
+      notifications.push(`Yay, you got to the level ${user.level}!`);
     }
   } else if (user.level > 10 && user.level < 25 && user.experience < 100) {
-    user.experience += challengeType === "system" ? 10 : 3;
-    notifications.push("Congrats, you've gained 10 exp.");
+    const exp = challengeType === "system" ? 10 : 3;
+
+    user.experience += exp;
+    notifications.push(`Congrats, you've gained ${exp} exp.`);
 
     if (user.experience >= 100) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 100;
-      notifications.push(`Yay, you got to the ${user.level} level`);
+      notifications.push(`Yay, you got to the level ${user.level}!`);
     }
   } else if (user.level >= 25 && user.experience < 150) {
-    user.experience += challengeType === "system" ? 5 : 3;
-    notifications.push("Congrats, you've gained 5 exp.");
+    const exp = challengeType === "system" ? 5 : 3;
+
+    user.experience += exp;
+    notifications.push(`Congrats, you've gained ${exp} exp.`);
 
     if (user.experience >= 150) {
       user.level++;
       user.life = 100;
       user.experience = user.experience - 150;
-      notifications.push(`Yay, you got to the ${user.level} level`);
+      notifications.push(`Yay, you got to the level ${user.level}!`);
     }
   }
 

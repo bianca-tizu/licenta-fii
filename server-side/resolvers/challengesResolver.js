@@ -23,11 +23,16 @@ const challengesResolver = {
         const challenges = await Challenges.find({
           isSystemChallenge: true,
         }).populate("author");
+
+        const user = await User.findById(context.user._id);
+
         return {
-          challenges: challenges,
+          challenges: challenges ?? [],
           user: {
-            life: challenges[0].author.life,
-            experience: challenges[0].author.experience,
+            life: challenges[0].author ? challenges[0].author.life : user.life,
+            experience: challenges[0].author
+              ? challenges[0].author.experience
+              : user.experience,
           },
         };
       }
@@ -46,12 +51,15 @@ const challengesResolver = {
           isSystemChallenge: false,
           author: context.user._id,
         }).populate("author");
+        const user = await User.findById(context.user._id);
 
         return {
-          challenges: challenges,
+          challenges: challenges ?? [],
           user: {
-            life: challenges[0].author.life,
-            experience: challenges[0].author.experience,
+            life: challenges[0].author ? challenges[0].author.life : user.life,
+            experience: challenges[0].author
+              ? challenges[0].author.experience
+              : user.experience,
           },
         };
       }
@@ -131,13 +139,27 @@ const challengesResolver = {
         throw new Error("Challenge not found");
       } else {
         const updatedChallenge = await Challenges.findOneAndUpdate(
-          { _id: challenge._id, author: context.user._id },
+          {
+            _id: challenge._id,
+            author: context.user._id,
+            status: { $ne: "finished" },
+          },
           {
             $set: { status: "finished" },
           }
         );
-        updateUserLevel(updatedChallenge.author._id, "personal");
-        return challenge;
+
+        if (!updatedChallenge) {
+          throw new Error("Challenge already finished");
+        }
+        const levelUp = await updateUserLevel(
+          updatedChallenge.author._id,
+          "personal"
+        );
+        return {
+          challenges: [challenge],
+          notifications: levelUp.notifications,
+        };
       }
     },
     mapSystemChallengesToUser: async (parent, args, context) => {

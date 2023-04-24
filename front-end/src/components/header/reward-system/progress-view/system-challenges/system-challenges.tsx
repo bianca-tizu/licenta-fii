@@ -13,14 +13,12 @@ const SystemChallenges = () => {
   });
 
   useEffect(() => {
-    if (data?.getSystemChallenges) {
-      setChallenges(data.getSystemChallenges.challenges as Challenges[]);
+    if (data?.getSystemChallenges?.challenges) {
+      setChallenges(
+        (data.getSystemChallenges.challenges as Challenges[]) ?? []
+      );
     }
-
-    if (error?.message) {
-      console.log("Error", error?.message);
-    }
-  }, [data?.getSystemChallenges]);
+  }, [data?.getSystemChallenges?.challenges]);
 
   return (
     <>
@@ -45,7 +43,7 @@ const SystemChallenges = () => {
             }
           })
       ) : (
-        <Empty />
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
     </>
   );
