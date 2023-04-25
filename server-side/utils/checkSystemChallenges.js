@@ -161,64 +161,71 @@ const addPersonalChallenge = async (challenges, userId) => {
 
 export const checkSystemChallenges = async (questions, challenges, userId) => {
   try {
+    const alreadyCheckedChallenges = await User.find({
+      _id: userId,
+      challengesChecked: true,
+    });
     const notifications = [];
-    if (questions.length) {
-      const firstQuestion = await checkAndUpdateFirstQuestion(
-        challenges,
-        userId
-      );
+    if (!alreadyCheckedChallenges) {
+      if (questions.length) {
+        const firstQuestion = await checkAndUpdateFirstQuestion(
+          challenges,
+          userId
+        );
 
-      if (firstQuestion) {
-        notifications.push(firstQuestion);
+        if (firstQuestion) {
+          notifications.push(firstQuestion);
+        }
+        const fiveQuestions = await checkAndUpdateFiveQuestions(
+          questions,
+          challenges,
+          userId
+        );
+        if (fiveQuestions) {
+          notifications.push(fiveQuestions);
+        }
       }
-      const fiveQuestions = await checkAndUpdateFiveQuestions(
-        questions,
-        challenges,
-        userId
-      );
-      if (fiveQuestions) {
-        notifications.push(fiveQuestions);
+
+      const firstAnswer = await checkAndUpdateFirstAnswer(challenges, userId);
+      if (firstAnswer) {
+        notifications.push(firstAnswer);
+      }
+      const fiveAnswers = await checkAndUpdateFiveAnswers(challenges, userId);
+      if (fiveAnswers) {
+        notifications.push(fiveAnswers);
+      }
+      const dailyCheckin = await dailyAppCheckin(challenges, userId);
+      if (dailyCheckin) {
+        notifications.push(dailyCheckin);
+      }
+      const personalChallenge = await addPersonalChallenge(challenges, userId);
+      if (personalChallenge) {
+        notifications.push(personalChallenge);
       }
     }
-
-    const firstAnswer = await checkAndUpdateFirstAnswer(challenges, userId);
-    if (firstAnswer) {
-      notifications.push(firstAnswer);
-    }
-    const fiveAnswers = await checkAndUpdateFiveAnswers(challenges, userId);
-    if (fiveAnswers) {
-      notifications.push(fiveAnswers);
-    }
-    const dailyCheckin = await dailyAppCheckin(challenges, userId);
-    if (dailyCheckin) {
-      notifications.push(dailyCheckin);
-    }
-    const personalChallenge = await addPersonalChallenge(challenges, userId);
-    if (personalChallenge) {
-      notifications.push(personalChallenge);
-    }
-
-    await User.findByIdAndUpdate(
-      { _id: userId },
+    const findedUser = await User.findOneAndUpdate(
+      { _id: userId, challengesChecked: false },
       { $set: { challengesChecked: true } }
     );
 
-    notifications.forEach(async notification => {
-      const existsInDB = await Notification.find({
-        message: notification,
-        user: userId,
-      });
-
-      if (!existsInDB.length) {
-        const newNotification = new Notification({
+    if (findedUser) {
+      notifications.forEach(async notification => {
+        const existsInDB = await Notification.find({
           message: notification,
           user: userId,
-          type: "SYSTEM_CHALLENGE",
         });
-        await newNotification.save();
-      }
-    });
-    return notifications;
+
+        if (!existsInDB.length) {
+          const newNotification = new Notification({
+            message: notification,
+            user: userId,
+            type: "SYSTEM_CHALLENGE",
+          });
+          await newNotification.save();
+        }
+      });
+      return notifications;
+    }
   } catch (err) {
     await User.findByIdAndUpdate(
       { _id: userId },
