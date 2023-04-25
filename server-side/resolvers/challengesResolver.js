@@ -156,9 +156,9 @@ const challengesResolver = {
         throw new Error("You're not allowed to see these challenges.");
       }
 
-      let notifications = [];
       const systemDefinedChallenges = await SystemChallenges.find();
       const challengesCounter = await Challenges.find({
+        isSystemChallenge: true,
         author: context.user._id,
       }).count();
       const mappedChallenges = systemDefinedChallenges.map(challenge => {
@@ -177,6 +177,7 @@ const challengesResolver = {
           upsert: true,
         });
         const currentUserChallenges = await Challenges.find({
+          isSystemChallenge: true,
           author: context.user._id,
         });
 
