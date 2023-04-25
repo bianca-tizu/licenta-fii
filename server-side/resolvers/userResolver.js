@@ -12,7 +12,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 import dotenv from "dotenv";
 import { Question } from "../models/Question.model.js";
 import { Challenges } from "../models/Challenges.model.js";
-import removeSeenNotifications from "../utils/removeSeenNotifications.js";
+import { Notification } from "../models/Notification.model.js";
 
 dotenv.config();
 
@@ -220,6 +220,9 @@ const userResolver = {
         isDraft: true,
       });
       const challengesToBeRemoved = await Challenges.find({ author: user._id });
+      const notificationToBeRemoved = await Notification.find({
+        user: user._id,
+      });
 
       if (!userToBeRemoved) {
         throw new GraphQLError("No user with this email.", {
@@ -240,6 +243,13 @@ const userResolver = {
           async challenge => await Challenges.deleteMany(challenge)
         );
       }
+
+      if (notificationToBeRemoved) {
+        notificationToBeRemoved.forEach(
+          async notification => await Notification.deleteMany(notification)
+        );
+      }
+
       await User.deleteOne(userToBeRemoved);
       return userToBeRemoved._id;
     },
