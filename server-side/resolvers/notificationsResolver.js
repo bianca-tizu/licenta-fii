@@ -40,7 +40,17 @@ const notificationsResolver = {
       throw new Error("You're not allowed to create notifications.");
     }
 
-    await removeSeenNotifications(context.user._id);
+    try {
+      await Notification.deleteMany({
+        user: context.user._id,
+        $or: [
+          { type: "USER" },
+          { $and: [{ type: "SYSTEM_CHALLENGE", seen: true }] },
+        ],
+      });
+    } catch (err) {
+      console.error(err);
+    }
 
     const notification = await Notification.find({
       user: context.user._id,
@@ -53,6 +63,23 @@ const notificationsResolver = {
         { $set: { seen: true } }
       );
       return notification;
+    }
+  },
+  removeNotifications: async (parent, args, context) => {
+    if (!context.user) {
+      throw new Error("You're not allowed to remove notifications.");
+    }
+    try {
+      const removed = await Notification.deleteMany({
+        user: context.user._id,
+        $or: [
+          { type: "USER" },
+          { $and: [{ type: "SYSTEM_CHALLENGE" }, { seen: true }] },
+        ],
+      });
+      return !!removed;
+    } catch (err) {
+      console.error(err);
     }
   },
 };

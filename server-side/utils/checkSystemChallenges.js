@@ -8,17 +8,16 @@ const getCurrentChallenge = (challenges, id) => {
   return challenges.filter(challenge => challenge.lookupId === id)[0];
 };
 
-const isNotificationAlready = (dbNotifications, currentNotification) => {
-  return dbNotifications.some(
-    notification => notification.message === currentNotification.message
-  );
+const isNotificationAlready = async (currentNotification, userId) => {
+  const notificationsInDB = await Notification.find({
+    message: currentNotification.message,
+    user: userId,
+  });
+
+  return notificationsInDB;
 };
 
-const checkAndUpdateFirstQuestion = async (
-  challenges,
-  userId,
-  notificationsInDB
-) => {
+const checkAndUpdateFirstQuestion = async (challenges, userId) => {
   const challengeToUpdate = getCurrentChallenge(challenges, 1);
 
   const updatedChallenge = await Challenges.updateOne(
@@ -39,17 +38,17 @@ const checkAndUpdateFirstQuestion = async (
       type: "SYSTEM_CHALLENGE",
     });
 
-    if (!isNotificationAlready(notificationsInDB, notification)) {
+    const existsNotification = await isNotificationAlready(
+      notification,
+      userId
+    );
+    if (!existsNotification) {
       await notification.save();
     }
   }
 };
 
-const checkAndUpdateFirstAnswer = async (
-  challenges,
-  userId,
-  notificationsInDB
-) => {
+const checkAndUpdateFirstAnswer = async (challenges, userId) => {
   const comments = await Comment.find({ author: userId });
   const challengeToUpdate = getCurrentChallenge(challenges, 2);
 
@@ -71,18 +70,18 @@ const checkAndUpdateFirstAnswer = async (
         type: "SYSTEM_CHALLENGE",
       });
 
-      if (!isNotificationAlready(notificationsInDB, notification)) {
+      const existsNotification = await isNotificationAlready(
+        notification,
+        userId
+      );
+      if (!existsNotification) {
         await notification.save();
       }
     }
   }
 };
 
-const checkAndUpdateFiveAnswers = async (
-  challenges,
-  userId,
-  notificationsInDB
-) => {
+const checkAndUpdateFiveAnswers = async (challenges, userId) => {
   const comments = await Comment.find({ author: userId });
   const challengeToUpdate = getCurrentChallenge(challenges, 5);
 
@@ -103,7 +102,11 @@ const checkAndUpdateFiveAnswers = async (
         user: userId,
         type: "SYSTEM_CHALLENGE",
       });
-      if (!isNotificationAlready(notificationsInDB, notification)) {
+      const existsNotification = await isNotificationAlready(
+        notification,
+        userId
+      );
+      if (!existsNotification.length) {
         await notification.save();
       }
     }
@@ -121,18 +124,17 @@ const checkAndUpdateFiveAnswers = async (
       user: userId,
       type: "SYSTEM_CHALLENGE",
     });
-    if (!isNotificationAlready(notificationsInDB, notification)) {
+    const existsNotification = await isNotificationAlready(
+      notification,
+      userId
+    );
+    if (!existsNotification) {
       await notification.save();
     }
   }
 };
 
-const checkAndUpdateFiveQuestions = async (
-  questions,
-  challenges,
-  userId,
-  notificationsInDB
-) => {
+const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
   const challengeToUpdate = getCurrentChallenge(challenges, 4);
   if (questions.length >= 5) {
     const updatedChallenge = await Challenges.updateOne(
@@ -152,7 +154,11 @@ const checkAndUpdateFiveQuestions = async (
         user: userId,
         type: "SYSTEM_CHALLENGE",
       });
-      if (!isNotificationAlready(notificationsInDB, notification)) {
+      const existsNotification = await isNotificationAlready(
+        notification,
+        userId
+      );
+      if (!existsNotification) {
         await notification.save();
       }
     }
@@ -170,13 +176,17 @@ const checkAndUpdateFiveQuestions = async (
       user: userId,
       type: "SYSTEM_CHALLENGE",
     });
-    if (!isNotificationAlready(notificationsInDB, notification)) {
+    const existsNotification = await isNotificationAlready(
+      notification,
+      userId
+    );
+    if (!existsNotification) {
       await notification.save();
     }
   }
 };
 
-const dailyAppCheckin = async (challenges, userId, notificationsInDB) => {
+const dailyAppCheckin = async (challenges, userId) => {
   const today = new Date();
   const yesterday = new Date(today.getDate());
 
@@ -208,14 +218,18 @@ const dailyAppCheckin = async (challenges, userId, notificationsInDB) => {
         user: userId,
         type: "SYSTEM_CHALLENGE",
       });
-      if (!isNotificationAlready(notificationsInDB, notification)) {
+      const existsNotification = await isNotificationAlready(
+        notification,
+        userId
+      );
+      if (!existsNotification) {
         await notification.save();
       }
     }
   }
 };
 
-const addPersonalChallenge = async (challenges, userId, notificationsInDB) => {
+const addPersonalChallenge = async (challenges, userId) => {
   const challengeToUpdate = getCurrentChallenge(challenges, 6);
   const personalChallenges = challenges.filter(
     challenge => !challenge.isSystemChallenge
@@ -225,7 +239,7 @@ const addPersonalChallenge = async (challenges, userId, notificationsInDB) => {
     challengesChecked: true,
   });
 
-  if (personalChallenges.length && areSystemChallengesChecked) {
+  if (personalChallenges.length === 1 && areSystemChallengesChecked) {
     const updatedChallenge = await Challenges.updateOne(
       {
         author: userId,
@@ -242,7 +256,11 @@ const addPersonalChallenge = async (challenges, userId, notificationsInDB) => {
         user: userId,
         type: "SYSTEM_CHALLENGE",
       });
-      if (!isNotificationAlready(notificationsInDB, notification)) {
+      const existsNotification = await isNotificationAlready(
+        notification,
+        userId
+      );
+      if (!existsNotification) {
         await notification.save();
       }
     }
@@ -251,28 +269,21 @@ const addPersonalChallenge = async (challenges, userId, notificationsInDB) => {
 
 export const checkSystemChallenges = async (questions, challenges, userId) => {
   try {
-    const notificationsInDB = await Notification.find({
-      user: userId,
-    });
+    if (questions.length >= 1) {
+      await checkAndUpdateFirstQuestion(challenges, userId);
 
-    if (questions.length) {
-      await checkAndUpdateFirstQuestion(challenges, userId, notificationsInDB);
-
-      await checkAndUpdateFiveQuestions(
-        questions,
-        challenges,
-        userId,
-        notificationsInDB
-      );
+      if (questions.length >= 5) {
+        await checkAndUpdateFiveQuestions(questions, challenges, userId);
+      }
     }
 
-    await checkAndUpdateFirstAnswer(challenges, userId, notificationsInDB);
+    await checkAndUpdateFirstAnswer(challenges, userId);
 
-    await checkAndUpdateFiveAnswers(challenges, userId, notificationsInDB);
+    await checkAndUpdateFiveAnswers(challenges, userId);
 
-    await dailyAppCheckin(challenges, userId, notificationsInDB);
+    await dailyAppCheckin(challenges, userId);
 
-    await addPersonalChallenge(challenges, userId, notificationsInDB);
+    await addPersonalChallenge(challenges, userId);
 
     await User.findOneAndUpdate(
       { _id: userId, challengesChecked: false },

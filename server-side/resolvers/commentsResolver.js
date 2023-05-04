@@ -22,6 +22,8 @@ const commentsResolver = {
 
   Mutation: {
     createComment: async (parent, args, context) => {
+      let notifications = [];
+
       if (!context.user) {
         throw new Error("You're not allowed to add a comment.");
       }
@@ -52,7 +54,7 @@ const commentsResolver = {
       );
 
       if (author.joinedRewardSystem && author.challenges.length > 0) {
-        checkSystemChallenges(
+        notifications = checkSystemChallenges(
           author.questions,
           author.challenges,
           context.user._id
@@ -60,9 +62,12 @@ const commentsResolver = {
       }
 
       return {
-        ...result._doc,
-        author: { ...author._doc },
-        question: { ...question._doc },
+        comment: {
+          ...result._doc,
+          author: { ...author._doc },
+          question: { ...question._doc },
+        },
+        notifications,
       };
     },
 

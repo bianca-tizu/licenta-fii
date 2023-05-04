@@ -167,6 +167,11 @@ const typeDefs = `
     notifications: Notification
   }
 
+  type Comments {
+    comment: Comment
+    notifications: Notification
+  }
+
   type Mutation {
     createQuestion(question: QuestionInput): Questions
     deleteQuestion(id: ID): ID
@@ -178,7 +183,7 @@ const typeDefs = `
     forgetPassword(email: String): User!
     removeUser: ID
     
-    createComment(comment: CommentInput): Comment
+    createComment(comment: CommentInput): Comments
     deleteComment(id: ID): ID
     editComment(comment: EditCommentInput): Comment
 
@@ -188,6 +193,7 @@ const typeDefs = `
 
     createNotification(notification: NotificationInput): Notification
     updateNotificationStatus(notificationId: ID): Notification
+    removeNotifications: Boolean
 
     createChallenge(challenge: ChallengeInput): Challenges
     updateChallengeStatus(challengeId: ID): MappedChallenges

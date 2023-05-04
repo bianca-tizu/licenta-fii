@@ -9,6 +9,7 @@ import {
   Divider,
   Button,
   Form,
+  notification,
 } from "antd";
 import { CloseCircleOutlined, LikeOutlined } from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
@@ -100,9 +101,19 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
 
     if (newComment.data) {
       setAllComments(prev => [
-        newComment.data?.createComment as Comment,
+        newComment.data?.createComment?.comment as Comment,
         ...prev,
       ]);
+
+      if (newComment.data?.createComment?.notifications?.message) {
+        notification.open({
+          message: "Notification Title",
+          description: newComment.data?.createComment?.notifications.message,
+          style: {
+            width: 600,
+          },
+        });
+      }
     }
     addCommentForm.resetFields();
   };

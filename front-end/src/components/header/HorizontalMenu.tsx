@@ -21,13 +21,13 @@ import RewardSystem from "./reward-system";
 
 import "./menu.css";
 import { useCookies } from "react-cookie";
+import { useRemoveNotificationsMutation } from "../../generated/graphql";
 
 const HorizontalMenu = ({
   isSearchVisible,
   setIsSearchVisible,
   setIsDraftVisible,
   setOpenTutorial,
-  systemChallenges,
 }: any) => {
   const [isUserProfileVisible, setIsUserProfileVisible] = React.useState(false);
   const [isRewardSystemVisible, setIsRewardSystemVisible] =
@@ -47,9 +47,12 @@ const HorizontalMenu = ({
     setSearchResults,
   } = React.useContext(QuestionsContext);
 
+  const [removeNotifications] = useRemoveNotificationsMutation();
+
   let history = useHistory();
   const [cookies] = useCookies(["reward"]);
   const handleLogout = async () => {
+    await removeNotifications();
     await sessionStorage.removeItem("token");
     history.push("/");
   };

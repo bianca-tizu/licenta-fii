@@ -49,6 +49,12 @@ export type CommentInput = {
   questionId?: Maybe<Scalars['ID']>;
 };
 
+export type Comments = {
+  __typename?: 'Comments';
+  comment?: Maybe<Comment>;
+  notifications?: Maybe<Notification>;
+};
+
 export type EditCommentInput = {
   id?: Maybe<Scalars['ID']>;
   message?: Maybe<Scalars['String']>;
@@ -70,7 +76,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   countVotesForQuestion?: Maybe<Scalars['Int']>;
   createChallenge?: Maybe<Challenges>;
-  createComment?: Maybe<Comment>;
+  createComment?: Maybe<Comments>;
   createNotification?: Maybe<Notification>;
   createQuestion?: Maybe<Questions>;
   deleteComment?: Maybe<Scalars['ID']>;
@@ -81,6 +87,7 @@ export type Mutation = {
   loginUser: AuthPayload;
   mapSystemChallengesToUser?: Maybe<MappedChallenges>;
   registerUser: AuthPayload;
+  removeNotifications?: Maybe<Scalars['Boolean']>;
   removeUser?: Maybe<Scalars['ID']>;
   updateChallengeStatus?: Maybe<MappedChallenges>;
   updateNotificationStatus?: Maybe<Notification>;
@@ -346,14 +353,20 @@ export type CreateCommentMutationVariables = Exact<{
 export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
   & { createComment?: Maybe<(
-    { __typename?: 'Comment' }
-    & Pick<Comment, '_id' | 'message' | 'createdAt'>
-    & { author?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, '_id' | 'username' | 'avatarUrl'>
-    )>, question?: Maybe<(
-      { __typename?: 'Question' }
-      & Pick<Question, '_id'>
+    { __typename?: 'Comments' }
+    & { comment?: Maybe<(
+      { __typename?: 'Comment' }
+      & Pick<Comment, '_id' | 'message' | 'createdAt'>
+      & { author?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, '_id' | 'username' | 'avatarUrl'>
+      )>, question?: Maybe<(
+        { __typename?: 'Question' }
+        & Pick<Question, '_id'>
+      )> }
+    )>, notifications?: Maybe<(
+      { __typename?: 'Notification' }
+      & Pick<Notification, 'message'>
     )> }
   )> }
 );
@@ -480,6 +493,14 @@ export type RegisterMutation = (
     { __typename?: 'AuthPayload' }
     & Pick<AuthPayload, 'token'>
   ) }
+);
+
+export type RemoveNotificationsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RemoveNotificationsMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeNotifications'>
 );
 
 export type RemoveUserMutationVariables = Exact<{ [key: string]: never; }>;
@@ -785,17 +806,22 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<CreateCh
 export const CreateCommentDocument = gql`
     mutation CreateComment($questionId: ID, $message: String) {
   createComment(comment: {questionId: $questionId, message: $message}) {
-    _id
-    author {
+    comment {
       _id
-      username
-      avatarUrl
+      author {
+        _id
+        username
+        avatarUrl
+      }
+      question {
+        _id
+      }
+      message
+      createdAt
     }
-    question {
-      _id
+    notifications {
+      message
     }
-    message
-    createdAt
   }
 }
     `;
@@ -1122,6 +1148,36 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RemoveNotificationsDocument = gql`
+    mutation RemoveNotifications {
+  removeNotifications
+}
+    `;
+export type RemoveNotificationsMutationFn = Apollo.MutationFunction<RemoveNotificationsMutation, RemoveNotificationsMutationVariables>;
+
+/**
+ * __useRemoveNotificationsMutation__
+ *
+ * To run a mutation, you first call `useRemoveNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeNotificationsMutation, { data, loading, error }] = useRemoveNotificationsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRemoveNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<RemoveNotificationsMutation, RemoveNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveNotificationsMutation, RemoveNotificationsMutationVariables>(RemoveNotificationsDocument, options);
+      }
+export type RemoveNotificationsMutationHookResult = ReturnType<typeof useRemoveNotificationsMutation>;
+export type RemoveNotificationsMutationResult = Apollo.MutationResult<RemoveNotificationsMutation>;
+export type RemoveNotificationsMutationOptions = Apollo.BaseMutationOptions<RemoveNotificationsMutation, RemoveNotificationsMutationVariables>;
 export const RemoveUserDocument = gql`
     mutation RemoveUser {
   removeUser

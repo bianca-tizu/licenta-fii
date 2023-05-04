@@ -1,15 +1,20 @@
 mutation CreateComment($questionId: ID, $message: String) {
   createComment(comment: { questionId: $questionId, message: $message }) {
-    _id
-    author {
+    comment {
       _id
-      username
-      avatarUrl
+      author {
+        _id
+        username
+        avatarUrl
+      }
+      question {
+        _id
+      }
+      message
+      createdAt
     }
-    question {
-      _id
+    notifications {
+      message
     }
-    message
-    createdAt
   }
 }
