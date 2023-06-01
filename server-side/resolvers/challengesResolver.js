@@ -198,24 +198,21 @@ const challengesResolver = {
         "challenges"
       );
 
+      let notifications = [];
+
       if (currentUser.challenges) {
-        await checkSystemChallenges(
+        notifications = await checkSystemChallenges(
           currentUser.questions,
           currentUser.challenges,
           context.user._id
         );
       }
 
-      const systemChallengesNotifications = await Notification.find({
-        type: "SYSTEM_CHALLENGE",
-        user: context.user._id,
-      });
-
       const challenges = await Challenges.find({ author: context.user._id });
 
       return {
         challenges: challenges,
-        notifications: systemChallengesNotifications,
+        notifications: notifications,
       };
     },
   },
