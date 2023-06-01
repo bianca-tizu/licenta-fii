@@ -13,8 +13,6 @@ mutation CreateComment($questionId: ID, $message: String) {
       message
       createdAt
     }
-    notifications {
-      message
-    }
+    notifications
   }
 }

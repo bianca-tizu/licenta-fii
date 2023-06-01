@@ -60,7 +60,7 @@ const typeDefs = `
   type MappedChallenges {
     _id: ID
     challenges: [Challenges]
-    notifications: [Notification]
+    notifications: [String]
   }
 
   type Questions {
@@ -164,12 +164,12 @@ const typeDefs = `
 
   type Questions {
     question: Question
-    notifications: Notification
+    notifications: [String]
   }
 
   type Comments {
     comment: Comment
-    notifications: Notification
+    notifications: [String]
   }
 
   type Mutation {

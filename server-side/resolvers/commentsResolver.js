@@ -54,8 +54,8 @@ const commentsResolver = {
       );
 
       if (author.joinedRewardSystem && author.challenges.length > 0) {
-        notifications = checkSystemChallenges(
-          author.questions,
+        notifications = await checkSystemChallenges(
+          [],
           author.challenges,
           context.user._id
         );
@@ -67,7 +67,7 @@ const commentsResolver = {
           author: { ...author._doc },
           question: { ...question._doc },
         },
-        notifications,
+        notifications: notifications ?? [],
       };
     },
 

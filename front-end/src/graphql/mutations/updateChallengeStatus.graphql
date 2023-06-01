@@ -5,8 +5,6 @@ mutation UpdateChallengeStatus($challengeId: ID) {
       content
       status
     }
-    notifications {
-      message
-    }
+    notifications
   }
 }

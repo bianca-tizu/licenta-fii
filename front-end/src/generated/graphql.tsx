@@ -52,7 +52,7 @@ export type CommentInput = {
 export type Comments = {
   __typename?: 'Comments';
   comment?: Maybe<Comment>;
-  notifications?: Maybe<Notification>;
+  notifications?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type EditCommentInput = {
@@ -69,7 +69,7 @@ export type MappedChallenges = {
   __typename?: 'MappedChallenges';
   _id?: Maybe<Scalars['ID']>;
   challenges?: Maybe<Array<Maybe<Challenges>>>;
-  notifications?: Maybe<Array<Maybe<Notification>>>;
+  notifications?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type Mutation = {
@@ -250,7 +250,7 @@ export type QuestionInput = {
 
 export type Questions = {
   __typename?: 'Questions';
-  notifications?: Maybe<Notification>;
+  notifications?: Maybe<Array<Maybe<Scalars['String']>>>;
   question?: Maybe<Question>;
   questions?: Maybe<Array<Maybe<Question>>>;
   questionsNo?: Maybe<Scalars['Int']>;
@@ -354,6 +354,7 @@ export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
   & { createComment?: Maybe<(
     { __typename?: 'Comments' }
+    & Pick<Comments, 'notifications'>
     & { comment?: Maybe<(
       { __typename?: 'Comment' }
       & Pick<Comment, '_id' | 'message' | 'createdAt'>
@@ -364,9 +365,6 @@ export type CreateCommentMutation = (
         { __typename?: 'Question' }
         & Pick<Question, '_id'>
       )> }
-    )>, notifications?: Maybe<(
-      { __typename?: 'Notification' }
-      & Pick<Notification, 'message'>
     )> }
   )> }
 );
@@ -383,6 +381,7 @@ export type CreateQuestionMutation = (
   { __typename?: 'Mutation' }
   & { createQuestion?: Maybe<(
     { __typename?: 'Questions' }
+    & Pick<Questions, 'notifications'>
     & { question?: Maybe<(
       { __typename?: 'Question' }
       & Pick<Question, '_id' | 'title' | 'content' | 'votes' | 'tags' | 'isDraft'>
@@ -390,9 +389,6 @@ export type CreateQuestionMutation = (
         { __typename?: 'User' }
         & Pick<User, '_id' | 'avatarUrl'>
       )> }
-    )>, notifications?: Maybe<(
-      { __typename?: 'Notification' }
-      & Pick<Notification, 'message'>
     )> }
   )> }
 );
@@ -469,13 +465,10 @@ export type MapSystemChallengesToUserMutation = (
   { __typename?: 'Mutation' }
   & { mapSystemChallengesToUser?: Maybe<(
     { __typename?: 'MappedChallenges' }
-    & Pick<MappedChallenges, '_id'>
+    & Pick<MappedChallenges, '_id' | 'notifications'>
     & { challenges?: Maybe<Array<Maybe<(
       { __typename?: 'Challenges' }
       & Pick<Challenges, '_id' | 'content' | 'lookupId'>
-    )>>>, notifications?: Maybe<Array<Maybe<(
-      { __typename?: 'Notification' }
-      & Pick<Notification, 'message'>
     )>>> }
   )> }
 );
@@ -520,12 +513,10 @@ export type UpdateChallengeStatusMutation = (
   { __typename?: 'Mutation' }
   & { updateChallengeStatus?: Maybe<(
     { __typename?: 'MappedChallenges' }
+    & Pick<MappedChallenges, 'notifications'>
     & { challenges?: Maybe<Array<Maybe<(
       { __typename?: 'Challenges' }
       & Pick<Challenges, '_id' | 'content' | 'status'>
-    )>>>, notifications?: Maybe<Array<Maybe<(
-      { __typename?: 'Notification' }
-      & Pick<Notification, 'message'>
     )>>> }
   )> }
 );
@@ -819,9 +810,7 @@ export const CreateCommentDocument = gql`
       message
       createdAt
     }
-    notifications {
-      message
-    }
+    notifications
   }
 }
     `;
@@ -869,9 +858,7 @@ export const CreateQuestionDocument = gql`
       tags
       isDraft
     }
-    notifications {
-      message
-    }
+    notifications
   }
 }
     `;
@@ -1082,9 +1069,7 @@ export const MapSystemChallengesToUserDocument = gql`
       content
       lookupId
     }
-    notifications {
-      message
-    }
+    notifications
   }
 }
     `;
@@ -1216,9 +1201,7 @@ export const UpdateChallengeStatusDocument = gql`
       content
       status
     }
-    notifications {
-      message
-    }
+    notifications
   }
 }
     `;

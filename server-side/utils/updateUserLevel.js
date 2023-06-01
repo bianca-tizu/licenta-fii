@@ -85,8 +85,7 @@ export const updateUserLevel = async (userId, challengeType) => {
     insertedNotifications = await Notification.insertMany(mappedNotifications, {
       upsert: true,
     });
-    notifications = [];
+    return { user: updatedUser, notifications: notifications };
   }
-
-  return { user: updatedUser, notifications: insertedNotifications };
+  notifications = [];
 };

@@ -22,6 +22,7 @@ import {
   useGetCommentsForQuestionQuery,
   useGetCurrentUserQuery,
   useIsUserAlreadyVotedQuestionQuery,
+  useUpdateNotificationStatusMutation,
 } from "../../../generated/graphql";
 
 import QuestionsContext from "../../../contexts/QuestionsProvider";
@@ -38,6 +39,8 @@ type Props = {
 const QuestionDetail = ({ selectedQuestion }: Props) => {
   const [countVotesForQuestionMutation] = useCountVotesForQuestionMutation();
   const [createCommentMutation] = useCreateCommentMutation();
+  const [updateNotification] = useUpdateNotificationStatusMutation();
+
   const { data, error } = useGetCommentsForQuestionQuery({
     variables: { questionId: selectedQuestion._id },
     fetchPolicy: "network-only",
@@ -105,13 +108,14 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
         ...prev,
       ]);
 
-      if (newComment.data?.createComment?.notifications?.message) {
-        notification.open({
-          message: "Notification Title",
-          description: newComment.data?.createComment?.notifications.message,
-          style: {
-            width: 600,
-          },
+      if (newComment.data?.createComment?.notifications?.length) {
+        console.log(newComment);
+        newComment.data.createComment.notifications.forEach(notif => {
+          return notification.info({
+            message: notif,
+            duration: 0,
+            onClose: () => updateNotification(),
+          });
         });
       }
     }

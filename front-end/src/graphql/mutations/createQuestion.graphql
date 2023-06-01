@@ -24,8 +24,6 @@ mutation CreateQuestion(
       tags
       isDraft
     }
-    notifications {
-      message
-    }
+    notifications
   }
 }

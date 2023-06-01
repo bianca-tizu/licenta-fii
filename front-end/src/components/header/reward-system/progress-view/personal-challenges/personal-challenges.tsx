@@ -38,7 +38,7 @@ const PersonalChallenges = ({ setLifePercent, setExperiencePercent }) => {
         if (response.data.updateChallengeStatus.notifications?.length) {
           response.data.updateChallengeStatus.notifications.forEach(notif => {
             notification.info({
-              message: notif?.message,
+              message: notif,
               duration: 0,
               onClose: () => updateNotification(),
             });

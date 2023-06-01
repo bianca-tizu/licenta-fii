@@ -100,7 +100,7 @@ const questionResolver = {
       ).populate("challenges");
 
       if (currentUser.joinedRewardSystem && currentUser.challenges.length > 0) {
-        notifications = checkSystemChallenges(
+        notifications = await checkSystemChallenges(
           currentUser.questions,
           currentUser.challenges,
           context.user._id
@@ -109,7 +109,7 @@ const questionResolver = {
 
       return {
         question: { ...result._doc, author: { ...author._doc } },
-        notifications,
+        notifications: [notifications] ?? [],
       };
     },
 

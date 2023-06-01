@@ -14,6 +14,7 @@ import {
   Question,
   QuestionsDocument,
   useCreateQuestionMutation,
+  useUpdateNotificationStatusMutation,
   useUpdateQuestionMutation,
 } from "../../../generated/graphql";
 
@@ -37,8 +38,9 @@ const AddQuestion = ({
     content: "",
   });
   const [tags, setTags] = React.useState([]);
-  const [notifications, setNotifications] = React.useState("");
   const [error, setError] = React.useState("");
+
+  const [updateNotification] = useUpdateNotificationStatusMutation();
 
   const [createQuestion] = useCreateQuestionMutation({
     awaitRefetchQueries: true,
@@ -46,13 +48,13 @@ const AddQuestion = ({
     onCompleted(data) {
       if (!data.createQuestion?.question?.isDraft) {
         window.location.reload();
-        if (data.createQuestion?.notifications?.message) {
-          notification.open({
-            message: "Notification Title",
-            description: data?.createQuestion?.notifications.message,
-            style: {
-              width: 600,
-            },
+        if (data.createQuestion?.notifications?.length) {
+          data.createQuestion.notifications.forEach(notif => {
+            notification.info({
+              message: notif,
+              duration: 0,
+              onClose: () => updateNotification(),
+            });
           });
         }
       } else {
@@ -322,7 +324,7 @@ const AddQuestion = ({
           }>
           Publish
         </Button>
-        <Button type="dashed" htmlType="button" onClick={handleDraftQuestion}>
+        <Button type="ghost" onClick={handleDraftQuestion}>
           Draft
         </Button>
       </div>
