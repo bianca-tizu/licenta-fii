@@ -3,7 +3,6 @@ import { User } from "../models/User.model.js";
 import { Comment } from "../models/Comment.model.js";
 
 import { checkSystemChallenges } from "../utils/checkSystemChallenges.js";
-
 const commentsResolver = {
   Query: {
     getCommentsForQuestion: async (_, args, context) => {
@@ -22,7 +21,7 @@ const commentsResolver = {
 
   Mutation: {
     createComment: async (parent, args, context) => {
-      let notifications = [];
+      let notifications;
 
       if (!context.user) {
         throw new Error("You're not allowed to add a comment.");
@@ -67,7 +66,7 @@ const commentsResolver = {
           author: { ...author._doc },
           question: { ...question._doc },
         },
-        notifications: notifications ?? [],
+        notifications: notifications,
       };
     },
 

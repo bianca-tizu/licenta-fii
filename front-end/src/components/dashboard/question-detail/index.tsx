@@ -109,7 +109,6 @@ const QuestionDetail = ({ selectedQuestion }: Props) => {
       ]);
 
       if (newComment.data?.createComment?.notifications?.length) {
-        console.log(newComment);
         newComment.data.createComment.notifications.forEach(notif => {
           return notification.info({
             message: notif,

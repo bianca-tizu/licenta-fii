@@ -47,7 +47,6 @@ const Tour = () => {
           response.data?.joinRewardSystem?.joinedRewardSystem
         );
         const { data } = await mapSystemChallenges({
-          awaitRefetchQueries: true,
           refetchQueries: [{ query: GetSystemChallengesDocument }],
         });
 

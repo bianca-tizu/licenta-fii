@@ -42,9 +42,9 @@ const checkAndUpdateFirstQuestion = async (challenges, userId) => {
   );
 
   if (updatedChallenge.matchedCount) {
-    updateUserLevel(userId, "system");
+    await updateUserLevel(userId, "system");
 
-    const { message } = addNotification(
+    const { message } = await addNotification(
       "Hooray, you've added your first question",
       userId
     );
@@ -54,7 +54,6 @@ const checkAndUpdateFirstQuestion = async (challenges, userId) => {
 
 const checkAndUpdateFirstAnswer = async (challenges, userId) => {
   const comments = await Comment.find({ author: userId });
-  console.log("comments", comments);
   const challengeToUpdate = getCurrentChallenge(challenges, 2);
 
   if (comments.length) {
@@ -91,8 +90,8 @@ const checkAndUpdateFiveAnswers = async (challenges, userId) => {
       { $set: { status: "finished" } }
     );
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId, "system");
-      const { message } = addNotification(
+      await updateUserLevel(userId, "system");
+      const { message } = await addNotification(
         "Wooow, you've made it! You've managed to add 5 answers.",
         userId
       );
@@ -106,7 +105,7 @@ const checkAndUpdateFiveAnswers = async (challenges, userId) => {
       },
       { $set: { status: "progress" } }
     );
-    const { message } = addNotification(
+    const { message } = await addNotification(
       "Yay, you've started to work on the 5 answers challenge.",
       userId
     );
@@ -127,8 +126,8 @@ const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
     );
 
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId, "system");
-      const { message } = addNotification(
+      await updateUserLevel(userId, "system");
+      const { message } = await addNotification(
         "Wooow, you've made it! You've managed to add 5 questions.",
         userId
       );
@@ -142,7 +141,7 @@ const checkAndUpdateFiveQuestions = async (questions, challenges, userId) => {
       },
       { $set: { status: "progress" } }
     );
-    const { message } = addNotification(
+    const { message } = await addNotification(
       "Yay, you've started to work on the 5 questions challenge.",
       userId
     );
@@ -175,8 +174,8 @@ const dailyAppCheckin = async (challenges, userId) => {
       { $set: { status: "progress" } }
     );
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId, "system");
-      const { message } = addNotification(
+      await updateUserLevel(userId, "system");
+      const { message } = await addNotification(
         "Yay, you checked the app daily. Good job!",
         userId
       );
@@ -205,8 +204,8 @@ const addPersonalChallenge = async (challenges, userId) => {
       { $set: { status: "finished" } }
     );
     if (updatedChallenge.matchedCount) {
-      updateUserLevel(userId, "system");
-      const { message } = addNotification(
+      await updateUserLevel(userId, "system");
+      const { message } = await addNotification(
         "You did it! You added your first challenge.",
         userId
       );
@@ -235,14 +234,12 @@ export const checkSystemChallenges = async (questions, challenges, userId) => {
     }
 
     const firstAnswer = await checkAndUpdateFirstAnswer(challenges, userId);
-    console.log("firstAnswer", firstAnswer);
     firstAnswer && notifications.push(firstAnswer);
 
     const firstFiveAnswers = await checkAndUpdateFiveAnswers(
       challenges,
       userId
     );
-    console.log("firstFiveAnswers", firstFiveAnswers);
 
     firstFiveAnswers && notifications.push(firstFiveAnswers);
 
@@ -256,8 +253,6 @@ export const checkSystemChallenges = async (questions, challenges, userId) => {
       { _id: userId, challengesChecked: false },
       { $set: { challengesChecked: true } }
     );
-
-    console.log(notifications);
 
     return notifications;
   } catch (err) {

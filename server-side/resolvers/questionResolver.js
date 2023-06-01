@@ -109,7 +109,7 @@ const questionResolver = {
 
       return {
         question: { ...result._doc, author: { ...author._doc } },
-        notifications: [notifications] ?? [],
+        notifications: notifications,
       };
     },
 
